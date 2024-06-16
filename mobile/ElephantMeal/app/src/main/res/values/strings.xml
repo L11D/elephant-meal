@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Elephant Meal</string>
+    <string name="logo_image">Логотип приложения</string>
+    <string name="logo_text">ELEPHANT MEAL</string>
+    <string name="welcome_image">Картинка приветственного экрана</string>
+    <string name="slogan">Мы то, что мы едим</string>
+    <string name="app_description">Улучшайте своё питание за счёт легкого и быстрого составления рациона, учитывающего ваши предпочтения и стиль жизни.</string>
+    <string name="registration">Регистрация</string>
+    <string name="login">Войти</string>
 </resources>
