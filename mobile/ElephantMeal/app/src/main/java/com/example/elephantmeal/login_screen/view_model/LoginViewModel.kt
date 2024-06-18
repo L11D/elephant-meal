@@ -49,11 +49,6 @@ class LoginViewModel @Inject constructor(
 
     }
 
-    // Регистрация
-    fun onRegisterButtonClick() {
-
-    }
-
     // Изменение активности кнопки авторизации
     private fun changeLoginButtonEnable() {
         _state.update { currentState ->

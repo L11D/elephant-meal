@@ -44,7 +44,8 @@ import com.example.elephantmeal.ui.theme.PrimaryColor
 // Экран входа
 @Composable
 fun LoginScreen(
-    onBackButtonClick: () -> Boolean,
+    onBackButtonClick: () -> Unit,
+    onRegisterButtonClick: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -55,8 +56,10 @@ fun LoginScreen(
             .background(Color.White)
     ) {
         Box {
+            // Логотип приложения
             ElephantMealLogo()
 
+            // Кнопка возврата
             Image(
                 modifier = Modifier
                     .padding(24.dp, 48.dp, 0.dp, 0.dp)
@@ -69,7 +72,7 @@ fun LoginScreen(
             )
         }
 
-
+        // Заголовок экрана
         Text(
             modifier = Modifier
                 .padding(24.dp, 58.dp, 0.dp, 0.dp),
@@ -168,7 +171,7 @@ fun LoginScreen(
                         interactionSource = interactionSource,
                         indication = null
                     ) {
-                        viewModel.onRegisterButtonClick()
+                        onRegisterButtonClick()
                     },
                 text = stringResource(id = R.string.create_account),
                 style = TextStyle(
@@ -177,6 +180,5 @@ fun LoginScreen(
                 )
             )
         }
-
     }
 }
