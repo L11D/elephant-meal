@@ -3,7 +3,6 @@ package com.example.elephantmeal.welcome_screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.elephantmeal.R
-import com.example.elephantmeal.ui.theme.GrayColor
+import com.example.elephantmeal.common.presentation.ElephantMealLogo
+import com.example.elephantmeal.ui.theme.DarkGrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
 
 // Приветственный экран
@@ -42,28 +42,7 @@ fun WelcomeScreen(
             .background(Color.White)
     ) {
         // Логотип приложения
-        Box {
-            Image(
-                modifier = Modifier
-                    .padding(0.dp, 16.dp, 0.dp, 0.dp)
-                    .fillMaxWidth(),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = stringResource(id = R.string.logo_image)
-            )
-
-            Text(
-                modifier = Modifier
-                    .padding(0.dp, 0.dp, 0.dp, 24.dp)
-                    .align(Alignment.BottomCenter),
-                text = stringResource(id = R.string.logo_text),
-                style = TextStyle(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = 7.sp
-                )
-            )
-        }
+        ElephantMealLogo()
 
         // Картинка приветственного экрана
         Image(
@@ -97,7 +76,7 @@ fun WelcomeScreen(
             lineHeight = 26.sp,
             style = TextStyle(
                 fontSize = 16.sp,
-                color = GrayColor
+                color = DarkGrayColor
             )
         )
 
@@ -111,7 +90,7 @@ fun WelcomeScreen(
                 .height(56.dp)
                 .border(
                     width = 1.dp,
-                    color = GrayColor,
+                    color = DarkGrayColor,
                     shape = RoundedCornerShape(8.dp)
                 ),
             shape = RoundedCornerShape(8.dp),

@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.elephantmeal.login_screen.LoginScreen
+import com.example.elephantmeal.login_screen.presentation.LoginScreen
 import com.example.elephantmeal.welcome_screen.WelcomeScreen
 
 @Composable
@@ -31,7 +31,11 @@ fun ElephantMealNavigation(
 
         // Экран входа
         composable(Screen.LoginScreen.name) {
-            LoginScreen()
+            LoginScreen(
+                onBackButtonClick = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
