@@ -76,7 +76,7 @@ fun WelcomeScreen(
             contentDescription = stringResource(id = R.string.welcome_image)
         )
 
-        // Мы то, что мы едим
+        // Надпись Мы то, что мы едим
         Text(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
