@@ -1,0 +1,5 @@
+package com.example.elephantmeal.registration_first_screen.view_model
+
+data class RegistrationFirstUiState(
+    val isContinueEnabled: Boolean = false
+)

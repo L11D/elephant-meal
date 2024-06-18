@@ -36,6 +36,7 @@ import com.example.elephantmeal.R
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
 import com.example.elephantmeal.common.presentation.InputField
 import com.example.elephantmeal.common.presentation.PasswordInputField
+import com.example.elephantmeal.common.presentation.PrimaryButton
 import com.example.elephantmeal.login_screen.view_model.LoginViewModel
 import com.example.elephantmeal.ui.theme.DisabledButtonColor
 import com.example.elephantmeal.ui.theme.GrayColor
@@ -126,30 +127,11 @@ fun LoginScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         // Кнопка входа
-        Button(
-            modifier = Modifier
-                .padding(24.dp, 0.dp, 24.dp, 0.dp)
-                .height(56.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp),
-            enabled = state.isLoginEnabled,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = PrimaryColor,
-                disabledContainerColor = DisabledButtonColor
-            ),
-            onClick = { /*TODO*/ }
-        ) {
-            Text(
-                modifier = Modifier
-                    .align(Alignment.CenterVertically),
-                text = stringResource(id = R.string.login),
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
-            )
-        }
+        PrimaryButton(
+            topPadding = 0.dp,
+            isEnabled = state.isLoginEnabled,
+            onClick = { viewModel.onLoginButtonClick() }
+        )
 
         // Регистрация
         Row(

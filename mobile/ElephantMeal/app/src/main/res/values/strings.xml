@@ -16,4 +16,9 @@
     <string name="have_no_account">Ещё нет аккаунта?</string>
     <string name="create_account">Зарегистрируйтесь</string>
     <string name="back_button">Кнопка возврата</string>
+    <string name="surname">Фамилия</string>
+    <string name="name">Имя</string>
+    <string name="last_name">Отчество</string>
+    <string name="continuation">Продолжить</string>
+    <string name="already_have_an_account">Уже есть аккаунт?</string>
 </resources>

@@ -52,6 +52,14 @@ fun ElephantMealNavigation(
             RegistrationFirstScreen(
                 onBackButtonClick = {
                     navController.popBackStack()
+                },
+
+                onLoginButtonClick = {
+                    navController.navigate(Screen.LoginScreen.name) {
+                        popUpTo(Screen.RegistrationFirstScreen.name) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

@@ -57,4 +57,9 @@ class LoginViewModel @Inject constructor(
             )
         }
     }
+
+    // Авторизация
+    fun onLoginButtonClick() {
+
+    }
 }
