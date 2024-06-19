@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.elephantmeal.login_screen.domain.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-
+    private val _loginUseCase: LoginUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state = _state.asStateFlow()
@@ -27,6 +28,12 @@ class LoginViewModel @Inject constructor(
     fun onEmailChange(newEmail: String) {
         email = newEmail
         changeLoginButtonEnable()
+
+        _state.update { currentState ->
+            currentState.copy(
+                isEmailValid = true
+            )
+        }
     }
 
     // Ввод пароля
@@ -60,6 +67,13 @@ class LoginViewModel @Inject constructor(
 
     // Авторизация
     fun onLoginButtonClick() {
+        val isEmailValid = _loginUseCase.isEmailValid(email)
 
+        _state.update { currentState ->
+            currentState.copy(
+                isEmailValid = isEmailValid,
+                isLoggedIn = isEmailValid
+            )
+        }
     }
 }

@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.elephantmeal.R
 import com.example.elephantmeal.ui.theme.DarkGrayColor
+import com.example.elephantmeal.ui.theme.ErrorColor
 import com.example.elephantmeal.ui.theme.LightGrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
 
@@ -46,6 +47,7 @@ fun InputField(
     label: String,
     topPadding: Dp,
     value: String,
+    isError: Boolean = false,
     onValueChange: (String) -> Unit
 ) {
     var isFocused by remember {
@@ -98,7 +100,12 @@ fun InputField(
                 .clip(RoundedCornerShape(8.dp))
                 .fillMaxWidth()
                 .background(
-                    if (isFocused) PrimaryColor else LightGrayColor
+                    if (isError)
+                        ErrorColor
+                    else if (isFocused)
+                        PrimaryColor
+                    else
+                        LightGrayColor
                 )
                 .align(Alignment.BottomCenter)
         )

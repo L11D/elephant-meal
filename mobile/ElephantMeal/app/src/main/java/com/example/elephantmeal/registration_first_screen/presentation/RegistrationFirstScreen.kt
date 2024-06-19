@@ -1,4 +1,4 @@
-package com.example.elephantmeal.registration_first_screen
+package com.example.elephantmeal.registration_first_screen.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import com.example.elephantmeal.common.presentation.ElephantMealLogo
 import com.example.elephantmeal.common.presentation.InputField
 import com.example.elephantmeal.common.presentation.PrimaryButton
 import com.example.elephantmeal.registration_first_screen.view_model.RegistrationFirstViewModel
+import com.example.elephantmeal.ui.theme.ErrorColor
 import com.example.elephantmeal.ui.theme.GrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
 
@@ -41,10 +43,19 @@ import com.example.elephantmeal.ui.theme.PrimaryColor
 fun RegistrationFirstScreen(
     onBackButtonClick: () -> Unit,
     onLoginButtonClick: () -> Unit,
+    onContinueButtonClick: () -> Unit,
     viewModel: RegistrationFirstViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
+    LaunchedEffect(null) {
+        viewModel.state.collect {
+            if (it.isLoggedIn) {
+                onContinueButtonClick()
+            }
+        }
+    }
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -107,8 +118,22 @@ fun RegistrationFirstScreen(
             label = stringResource(id = R.string.email),
             topPadding = 16.dp,
             value = viewModel.email,
+            isError = !state.isEmailValid,
             onValueChange = { viewModel.editEmail(it) }
         )
+
+        // Ошибка ввода некорректного email
+        if (!state.isEmailValid) {
+            Text(
+                modifier = Modifier
+                    .padding(24.dp, 8.dp, 0.dp, 0.dp),
+                text = stringResource(id = R.string.invalid_email),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = ErrorColor
+                )
+            )
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 

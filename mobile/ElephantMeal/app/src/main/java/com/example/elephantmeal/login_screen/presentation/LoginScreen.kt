@@ -9,14 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,7 +35,7 @@ import com.example.elephantmeal.common.presentation.InputField
 import com.example.elephantmeal.common.presentation.PasswordInputField
 import com.example.elephantmeal.common.presentation.PrimaryButton
 import com.example.elephantmeal.login_screen.view_model.LoginViewModel
-import com.example.elephantmeal.ui.theme.DisabledButtonColor
+import com.example.elephantmeal.ui.theme.ErrorColor
 import com.example.elephantmeal.ui.theme.GrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
 
@@ -47,9 +44,18 @@ import com.example.elephantmeal.ui.theme.PrimaryColor
 fun LoginScreen(
     onBackButtonClick: () -> Unit,
     onRegisterButtonClick: () -> Unit,
+    onLogin: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(null) {
+        viewModel.state.collect {
+            if (it.isLoggedIn) {
+                onLogin()
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -89,6 +95,7 @@ fun LoginScreen(
             label = stringResource(id = R.string.email),
             topPadding = 48.dp,
             value = viewModel.email,
+            isError = !state.isEmailValid,
             onValueChange = { viewModel.onEmailChange(it) }
         )
 
@@ -125,6 +132,19 @@ fun LoginScreen(
         )
 
         Spacer(modifier = Modifier.weight(1f))
+
+        // Отображение ошибки некорректного ввода email
+        if (!state.isEmailValid) {
+            Text(
+                modifier = Modifier
+                    .padding(24.dp, 0.dp, 0.dp, 16.dp),
+                text = stringResource(id = R.string.invalid_email),
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    color = ErrorColor
+                )
+            )
+        }
 
         // Кнопка входа
         PrimaryButton(
