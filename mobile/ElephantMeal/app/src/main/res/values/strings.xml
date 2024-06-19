@@ -34,4 +34,7 @@
     <string name="optional_warning">Эти данные не обязательны для регистрации, однако они помогут нам оптимальнее составлять для вас рацион.</string>
     <string name="skip">Пропустить</string>
     <string name="sign_in">Войдите</string>
+    <string name="repeat_password">Повторите пароль</string>
+    <string name="register">Зарегистрироваться</string>
+    <string name="passwords_not_match">Пароль и его подтверждение не совпадают</string>
 </resources>

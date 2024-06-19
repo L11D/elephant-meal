@@ -89,9 +89,9 @@ fun InputField(
                 disabledBorderColor = Color.White,
                 errorBorderColor = Color.White,
                 focusedBorderColor = Color.White,
-                focusedLabelColor = DarkGrayColor,
-                unfocusedLabelColor = DarkGrayColor,
-                disabledLabelColor = DarkGrayColor
+                focusedLabelColor = GrayColor,
+                unfocusedLabelColor = GrayColor,
+                disabledLabelColor = GrayColor
             ),
         )
 
@@ -121,6 +121,7 @@ fun PasswordInputField(
     label: String,
     topPadding: Dp,
     value: String,
+    isError: Boolean = false,
     onValueChange: (String) -> Unit,
     onPasswordVisibilityChange: () -> Unit
 ) {
@@ -166,9 +167,9 @@ fun PasswordInputField(
                     disabledBorderColor = Color.White,
                     errorBorderColor = Color.White,
                     focusedBorderColor = Color.White,
-                    focusedLabelColor = DarkGrayColor,
-                    unfocusedLabelColor = DarkGrayColor,
-                    disabledLabelColor = DarkGrayColor
+                    focusedLabelColor = GrayColor,
+                    unfocusedLabelColor = GrayColor,
+                    disabledLabelColor = GrayColor
                 ),
             )
 
@@ -199,16 +200,21 @@ fun PasswordInputField(
                 .clip(RoundedCornerShape(8.dp))
                 .fillMaxWidth()
                 .background(
-                    if (isFocused) PrimaryColor else LightGrayColor
+                    if (isError)
+                        ErrorColor
+                    else if (isFocused)
+                        PrimaryColor
+                    else
+                        LightGrayColor
                 )
                 .align(Alignment.BottomCenter)
         )
     }
 }
 
-// Поле ввода дня рождения
+// Поле ввода даты рождения
 @Composable
-fun BirthdayInputField(
+fun BirthDateInputField(
     label: String,
     topPadding: Dp,
     value: String,
@@ -258,9 +264,9 @@ fun BirthdayInputField(
                     disabledBorderColor = Color.White,
                     errorBorderColor = Color.White,
                     focusedBorderColor = Color.White,
-                    focusedLabelColor = DarkGrayColor,
-                    unfocusedLabelColor = DarkGrayColor,
-                    disabledLabelColor = DarkGrayColor
+                    focusedLabelColor = GrayColor,
+                    unfocusedLabelColor = GrayColor,
+                    disabledLabelColor = GrayColor
                 ),
             )
 
@@ -340,9 +346,9 @@ fun NumberInputField(
                     disabledBorderColor = Color.White,
                     errorBorderColor = Color.White,
                     focusedBorderColor = Color.White,
-                    focusedLabelColor = DarkGrayColor,
-                    unfocusedLabelColor = DarkGrayColor,
-                    disabledLabelColor = DarkGrayColor
+                    focusedLabelColor = GrayColor,
+                    unfocusedLabelColor = GrayColor,
+                    disabledLabelColor = GrayColor
                 ),
             )
 

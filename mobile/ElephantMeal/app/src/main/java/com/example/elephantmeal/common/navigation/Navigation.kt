@@ -8,7 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
-import com.example.elephantmeal.registration_third_screen.RegistrationThirdScreen
+import com.example.elephantmeal.registration_third_screen.presentation.RegistrationThirdScreen
 import com.example.elephantmeal.welcome_screen.WelcomeScreen
 
 @Composable
@@ -18,7 +18,7 @@ fun ElephantMealNavigation(
     NavHost(
         navController = navController,
         startDestination = Screen.WelcomeScreen.name
-      //  startDestination = Screen.RegistrationSecondScreen.name
+       // startDestination = Screen.RegistrationThirdScreen.name
     ) {
         // Приветственный экран
         composable(Screen.WelcomeScreen.name) {
@@ -96,7 +96,21 @@ fun ElephantMealNavigation(
 
         // Третий экран регистрации
         composable(Screen.RegistrationThirdScreen.name) {
-            RegistrationThirdScreen()
+            RegistrationThirdScreen(
+                onBackButtonClick = {
+                    navController.popBackStack()
+                },
+
+                onLoginButtonClick = {
+                    navController.navigate(Screen.LoginScreen.name) {
+                        popUpTo(Screen.WelcomeScreen.name)
+                    }
+                },
+
+                onRegistered = {
+
+                }
+            )
         }
     }
 }

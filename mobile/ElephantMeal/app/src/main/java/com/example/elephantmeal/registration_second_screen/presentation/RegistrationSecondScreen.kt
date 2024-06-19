@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
-import com.example.elephantmeal.common.presentation.BirthdayInputField
+import com.example.elephantmeal.common.presentation.BirthDateInputField
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
 import com.example.elephantmeal.common.presentation.NumberInputField
 import com.example.elephantmeal.common.presentation.PrimaryButton
@@ -52,7 +52,6 @@ import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun RegistrationSecondScreen(
@@ -61,6 +60,7 @@ fun RegistrationSecondScreen(
     onContinueButtonClick: () -> Unit,
     viewModel: RegistrationSecondViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.events.collect {
@@ -78,12 +78,12 @@ fun RegistrationSecondScreen(
             .background(Color.White)
     ) {
         // Логотип приложения
-        RegistrationSecondScreenLogo(
+        LogoWithBackButton(
             onBackButtonClick = onBackButtonClick
         )
 
         // Заголовок экрана
-        RegistrationSecondScreenHeader()
+        RegistrationScreenHeader()
 
         // Выбор пола
         GenderSelection()
@@ -130,7 +130,7 @@ fun RegistrationSecondScreen(
         // Кнопка продолжить
         PrimaryButton(
             topPadding = 0.dp,
-            text = stringResource(id = R.string.skip),
+            text = stringResource(id = if (state.isFilled) R.string.continuation else R.string.skip),
             onClick = {
                 viewModel.onContinueButtonClick()
             }
@@ -143,7 +143,7 @@ fun RegistrationSecondScreen(
 
 // Логотип приложения
 @Composable
-fun RegistrationSecondScreenLogo(
+fun LogoWithBackButton(
     onBackButtonClick: () -> Unit
 ) {
     Box {
@@ -166,7 +166,7 @@ fun RegistrationSecondScreenLogo(
 
 // Заголовок экрана
 @Composable
-fun RegistrationSecondScreenHeader() {
+fun RegistrationScreenHeader() {
     Text(
         modifier = Modifier
             .padding(24.dp, 58.dp, 0.dp, 0.dp),
@@ -287,7 +287,7 @@ fun SelectBirthday(
         ),
     )
 
-    BirthdayInputField(
+    BirthDateInputField(
         label = stringResource(id = R.string.birth_date),
         topPadding = 16.dp,
         value = viewModel.birthDate,
