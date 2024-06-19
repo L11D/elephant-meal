@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
+import com.example.elephantmeal.registration_second_screen.RegistrationSecondScreen
 import com.example.elephantmeal.welcome_screen.WelcomeScreen
 
 @Composable
@@ -67,9 +68,14 @@ fun ElephantMealNavigation(
                 },
 
                 onContinueButtonClick = {
-
+                    navController.navigate(Screen.RegistrationSecondScreen.name)
                 }
             )
+        }
+
+        // Второй экран регистрации
+        composable(Screen.RegistrationSecondScreen.name) {
+            RegistrationSecondScreen()
         }
     }
 }
