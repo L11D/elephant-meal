@@ -4,10 +4,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -18,6 +22,9 @@ class RegistrationSecondViewModel @Inject constructor(
 ): ViewModel() {
     private val _state = MutableStateFlow(RegistrationSecondUiState())
     val state = _state.asStateFlow()
+
+    private val _events = MutableSharedFlow<RegistrationSecondEvent>()
+    val events = _events.asSharedFlow()
 
     var birthDate by mutableStateOf("")
         private set
@@ -115,6 +122,8 @@ class RegistrationSecondViewModel @Inject constructor(
 
     // Переход на следующий экран
     fun onContinueButtonClick() {
-
+        viewModelScope.launch {
+            _events.emit(RegistrationSecondEvent.Continue)
+        }
     }
 }

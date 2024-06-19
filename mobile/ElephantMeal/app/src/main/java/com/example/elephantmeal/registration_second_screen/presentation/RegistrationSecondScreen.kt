@@ -1,4 +1,4 @@
-package com.example.elephantmeal.registration_second_screen
+package com.example.elephantmeal.registration_second_screen.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -39,6 +40,7 @@ import com.example.elephantmeal.common.presentation.ElephantMealLogo
 import com.example.elephantmeal.common.presentation.NumberInputField
 import com.example.elephantmeal.common.presentation.PrimaryButton
 import com.example.elephantmeal.registration_second_screen.view_model.Gender
+import com.example.elephantmeal.registration_second_screen.view_model.RegistrationSecondEvent
 import com.example.elephantmeal.registration_second_screen.view_model.RegistrationSecondViewModel
 import com.example.elephantmeal.ui.theme.DarkGrayColor
 import com.example.elephantmeal.ui.theme.DeselectedGenderColor
@@ -50,13 +52,26 @@ import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun RegistrationSecondScreen(
     onBackButtonClick: () -> Unit,
     onLoginButtonClick: () -> Unit,
+    onContinueButtonClick: () -> Unit,
     viewModel: RegistrationSecondViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect {
+            when (it) {
+                is RegistrationSecondEvent.Continue -> {
+                    onContinueButtonClick()
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
