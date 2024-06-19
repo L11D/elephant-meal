@@ -24,7 +24,8 @@ import com.example.elephantmeal.ui.theme.PrimaryColor
 @Composable
 fun PrimaryButton(
     topPadding: Dp,
-    isEnabled: Boolean,
+    isEnabled: Boolean = true,
+    text: String,
     onClick: () -> Unit
 ) {
     Button(
@@ -45,7 +46,7 @@ fun PrimaryButton(
         Text(
             modifier = Modifier
                 .align(Alignment.CenterVertically),
-            text = stringResource(id = R.string.continuation),
+            text = text,
             style = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,

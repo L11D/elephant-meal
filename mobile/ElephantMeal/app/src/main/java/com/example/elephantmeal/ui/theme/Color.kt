@@ -16,3 +16,7 @@ val LightGrayColor = Color(0xFFF7F7F7)
 val PrimaryColor = Color(0xFF5C49E0)
 val DisabledButtonColor = Color(0xFFA396FF)
 val ErrorColor = Color(0xFFE04949)
+
+val GenderSelectionBackgroundColor = Color(0x1E767680)
+val DeselectedGenderColor = Color(0XFF909499)
+val SelectedGenderColor = Color(0XFF404040)

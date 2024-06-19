@@ -150,6 +150,7 @@ fun LoginScreen(
         PrimaryButton(
             topPadding = 0.dp,
             isEnabled = state.isLoginEnabled,
+            text = stringResource(id = R.string.login),
             onClick = { viewModel.onLoginButtonClick() }
         )
 

@@ -33,10 +33,12 @@ import com.example.elephantmeal.R
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
 import com.example.elephantmeal.common.presentation.InputField
 import com.example.elephantmeal.common.presentation.PrimaryButton
+import com.example.elephantmeal.registration_first_screen.view_model.RegistrationFirstEvent
 import com.example.elephantmeal.registration_first_screen.view_model.RegistrationFirstViewModel
 import com.example.elephantmeal.ui.theme.ErrorColor
 import com.example.elephantmeal.ui.theme.GrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
+import kotlinx.coroutines.flow.collect
 
 // Превый экран регстрации
 @Composable
@@ -48,10 +50,12 @@ fun RegistrationFirstScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(null) {
-        viewModel.state.collect {
-            if (it.isLoggedIn) {
-                onContinueButtonClick()
+    LaunchedEffect(Unit) {
+        viewModel.events.collect {
+            when (it) {
+                is RegistrationFirstEvent.Login -> {
+                    onContinueButtonClick()
+                }
             }
         }
     }
@@ -141,6 +145,7 @@ fun RegistrationFirstScreen(
         PrimaryButton(
             topPadding = 0.dp,
             isEnabled = state.isContinueEnabled,
+            text = stringResource(id = R.string.continuation),
             onClick = { viewModel.onContinueButtonClick() }
         )
 
@@ -170,7 +175,7 @@ fun RegistrationFirstScreen(
                     ) {
                         onLoginButtonClick()
                     },
-                text = stringResource(id = R.string.login),
+                text = stringResource(id = R.string.sign_in),
                 style = TextStyle(
                     fontSize = 14.sp,
                     color = PrimaryColor

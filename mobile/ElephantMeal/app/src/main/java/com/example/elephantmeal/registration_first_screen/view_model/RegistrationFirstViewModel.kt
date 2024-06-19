@@ -4,11 +4,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.elephantmeal.registration_first_screen.domain.RegistrationFirstUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,6 +21,9 @@ class RegistrationFirstViewModel @Inject constructor(
 ): ViewModel() {
     private val _state = MutableStateFlow(RegistrationFirstUiState())
     val state = _state.asStateFlow()
+
+    private val _events = MutableSharedFlow<RegistrationFirstEvent>()
+    val events = _events.asSharedFlow()
 
     var surname by mutableStateOf("")
         private set
@@ -77,9 +84,14 @@ class RegistrationFirstViewModel @Inject constructor(
 
         _state.update { currentState ->
             currentState.copy(
-                isEmailValid = isEmailValid,
-                isLoggedIn = isEmailValid
+                isEmailValid = isEmailValid
             )
+        }
+
+        if (isEmailValid) {
+            viewModelScope.launch {
+                _events.emit(RegistrationFirstEvent.Login)
+            }
         }
     }
 }

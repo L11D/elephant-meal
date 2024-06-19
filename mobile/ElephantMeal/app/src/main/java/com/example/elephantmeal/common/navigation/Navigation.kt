@@ -17,6 +17,7 @@ fun ElephantMealNavigation(
     NavHost(
         navController = navController,
         startDestination = Screen.WelcomeScreen.name
+      //  startDestination = Screen.RegistrationSecondScreen.name
     ) {
         // Приветственный экран
         composable(Screen.WelcomeScreen.name) {
@@ -75,7 +76,17 @@ fun ElephantMealNavigation(
 
         // Второй экран регистрации
         composable(Screen.RegistrationSecondScreen.name) {
-            RegistrationSecondScreen()
+            RegistrationSecondScreen(
+                onBackButtonClick = {
+                    navController.popBackStack()
+                },
+
+                onLoginButtonClick = {
+                    navController.navigate(Screen.LoginScreen.name) {
+                        popUpTo(Screen.WelcomeScreen.name)
+                    }
+                }
+            )
         }
     }
 }

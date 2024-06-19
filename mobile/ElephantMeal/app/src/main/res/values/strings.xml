@@ -22,4 +22,16 @@
     <string name="continuation">Продолжить</string>
     <string name="already_have_an_account">Уже есть аккаунт?</string>
     <string name="invalid_email">Некорректный адрес электронной почты</string>
+    <string name="gender">Пол</string>
+    <string name="male">Мужчина</string>
+    <string name="female">Женщина</string>
+    <string name="calendar_description">Кнопка выбора даты рождения</string>
+    <string name="birth_date">Дата рождения</string>
+    <string name="cm">см</string>
+    <string name="height">Рост</string>
+    <string name="weight">Вес</string>
+    <string name="kg">кг</string>
+    <string name="optional_warning">Эти данные не обязательны для регистрации, однако они помогут нам оптимальнее составлять для вас рацион.</string>
+    <string name="skip">Пропустить</string>
+    <string name="sign_in">Войдите</string>
 </resources>
