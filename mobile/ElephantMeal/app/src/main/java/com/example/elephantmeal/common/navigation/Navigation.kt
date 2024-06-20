@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
+import com.example.elephantmeal.planning_screen.PlanningScreen
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
 import com.example.elephantmeal.registration_third_screen.presentation.RegistrationThirdScreen
@@ -49,7 +50,11 @@ fun ElephantMealNavigation(
                 },
 
                 onLogin = {
-
+                    navController.navigate(Screen.PlanningScreen.name) {
+                        popUpTo(Screen.WelcomeScreen.name) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
@@ -108,9 +113,18 @@ fun ElephantMealNavigation(
                 },
 
                 onRegistered = {
-
+                    navController.navigate(Screen.PlanningScreen.name) {
+                        popUpTo(Screen.WelcomeScreen.name) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
+        }
+
+        // Экран составления плана питания
+        composable(Screen.PlanningScreen.name) {
+            PlanningScreen()
         }
     }
 }

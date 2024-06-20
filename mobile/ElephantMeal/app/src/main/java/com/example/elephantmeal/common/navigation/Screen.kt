@@ -5,5 +5,6 @@ enum class Screen {
     LoginScreen,
     RegistrationFirstScreen,
     RegistrationSecondScreen,
-    RegistrationThirdScreen
+    RegistrationThirdScreen,
+    PlanningScreen
 }
