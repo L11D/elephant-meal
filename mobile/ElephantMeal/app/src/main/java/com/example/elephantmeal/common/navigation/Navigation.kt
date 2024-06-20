@@ -134,7 +134,11 @@ fun ElephantMealNavigation(
 
         // Экран выбора плана питания
         composable(Screen.PlanChooseScreen.name) {
-            PlanChooseScreen()
+            PlanChooseScreen(
+                onBackButtonClick = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

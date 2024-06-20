@@ -41,4 +41,6 @@
     <string name="make_meal_plan">Составьте план своего питания</string>
     <string name="planning_description">Укажите свои предпочтения, выберите план питания, переодичность отхождения от полезной пищи для лучшего составления и планирования вашего рациона.</string>
     <string name="get_started">Приступим</string>
+    <string name="choose_plan">Выберите план</string>
+    <string name="expand_button">Кнопка раскрытия описания</string>
 </resources>
