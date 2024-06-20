@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,19 +41,32 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
 import com.example.elephantmeal.common.presentation.PrimaryButton
+import com.example.elephantmeal.plan_choose_screen.view_model.PlanChooseEvent
 import com.example.elephantmeal.plan_choose_screen.view_model.PlanChooseViewModel
 import com.example.elephantmeal.registration_second_screen.presentation.LogoWithBackButton
 import com.example.elephantmeal.ui.theme.DarkGrayColor
 import com.example.elephantmeal.ui.theme.LightGrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
+import kotlinx.coroutines.flow.collect
 
 // Экран составления плана питания
 @Composable
 fun PlanChooseScreen(
     onBackButtonClick: () -> Unit,
+    onContinue: () -> Unit,
     viewModel: PlanChooseViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect {
+            when (it) {
+                is PlanChooseEvent.Continue -> {
+                    onContinue()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier

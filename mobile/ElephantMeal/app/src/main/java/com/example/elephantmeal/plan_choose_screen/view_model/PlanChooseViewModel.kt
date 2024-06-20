@@ -1,11 +1,15 @@
 package com.example.elephantmeal.plan_choose_screen.view_model
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.elephantmeal.plan_choose_screen.domain.MealPlan
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,6 +18,9 @@ class PlanChooseViewModel @Inject constructor(
 ): ViewModel() {
     private val _state = MutableStateFlow(PlanChooseUiState())
     val state = _state.asStateFlow()
+
+    private val _events = MutableSharedFlow<PlanChooseEvent>()
+    val events = _events.asSharedFlow()
 
     init {
         _state.update { currentState ->
@@ -52,6 +59,8 @@ class PlanChooseViewModel @Inject constructor(
 
     // Продолжение составления плана питания
     fun onContinuteButtonClick() {
-
+        viewModelScope.launch {
+            _events.emit(PlanChooseEvent.Continue)
+        }
     }
 }
