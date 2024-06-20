@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
+import com.example.elephantmeal.plan_choose_screen.PlanChooseScreen
 import com.example.elephantmeal.planning_screen.PlanningScreen
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
@@ -126,9 +127,14 @@ fun ElephantMealNavigation(
         composable(Screen.PlanningScreen.name) {
             PlanningScreen(
                 onGetStartedClick = {
-
+                    navController.navigate(Screen.PlanChooseScreen.name)
                 }
             )
+        }
+
+        // Экран выбора плана питания
+        composable(Screen.PlanChooseScreen.name) {
+            PlanChooseScreen()
         }
     }
 }
