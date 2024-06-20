@@ -10,8 +10,12 @@ import pandas as pd
 from pathlib import Path
 import requests
 from tqdm import tqdm
+import ast
+
+from Embedder import embedding_ingredients
 
 n_workers = 20
+save_path = 'data//recipes//'
 
 
 def get_soup(url):
@@ -151,11 +155,41 @@ def get_pages_range():
     return pages_range
 
 
+def save_ingredients(recipe_data):
+    ingredients = set()
+    for ingredients_dict in recipe_data['ingredients']:
+        # ingredients_dict = ast.literal_eval(ingredient_str)
+        for key, value in ingredients_dict.items():
+            ingredients.add(key)
+    ingredients = list(ingredients)
+    ingredients_data = pd.DataFrame({'name': list(ingredients)})
+
+    current_datetime = datetime.today().strftime('%Y_%m_%d')
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    ingredients_data.to_csv(f'{save_path}povarenok_ingredients_{current_datetime}.csv', index=False)
+
+
+def save_ingredients_calculate_embeddings(recipe_data):
+    ingredients = set()
+    for ingredients_dict in recipe_data['ingredients']:
+        # ingredients_dict = ast.literal_eval(ingredient_str)
+        for key, value in ingredients_dict.items():
+            ingredients.add(key)
+    ingredients = list(ingredients)
+    embedding = embedding_ingredients(ingredients)
+    ingredients_data = pd.DataFrame({'name': ingredients, 'embedding': embedding})
+
+    current_datetime = datetime.today().strftime('%Y_%m_%d')
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    ingredients_data.to_csv(f'{save_path}povarenok_ingredients_{current_datetime}.csv', index=False)
+
+
 if __name__ == '__main__':
     # get_recipe_from_page('https://www.povarenok.ru/recipes/show/181238/')
     # get_recipe_from_page('https://www.povarenok.ru/recipes/show/181220/')
     # get_recipe_from_page('https://www.povarenok.ru/recipes/show/181337/')
     # get_recipe_from_page('https://www.povarenok.ru/recipes/show/181288/')
+
     pages_range = get_pages_range()
     print("Let's find all recipe urls")
 
@@ -176,11 +210,8 @@ if __name__ == '__main__':
         maped_recipes = tqdm(p.imap_unordered(get_recipe_from_page, recipe_urls), total=len(recipe_urls))
         recipes_data = pd.DataFrame(reduce(lambda x, y: x + y, maped_recipes))
 
-    save_path = 'data//recipes//'
-
     current_datetime = datetime.today().strftime('%Y_%m_%d')
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     recipes_data.to_csv(f'{save_path}povarenok_recipes_{current_datetime}.csv', index=False)
+    save_ingredients(recipes_data)
     print("Well done")
-
-

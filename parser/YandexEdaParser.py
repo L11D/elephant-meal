@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from Embedder import embedding_products
 
 
 def create_options():
@@ -40,6 +41,7 @@ def get_product(product_name, url):
         'value': value
     }
 
+
 def parse_visible_products(driver, products):
     products_elements = WebDriverWait(driver, 20).until(
         EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.UiKitDesktopProductCard_fakeWrapper'))
@@ -50,6 +52,7 @@ def parse_visible_products(driver, products):
         if any(item.get('url') == product_link for item in products):
             continue
         products.append(get_product(product_name, product_link))
+
 
 def scroll_and_parse(driver, products):
     products_elements = WebDriverWait(driver, 20).until(
@@ -71,22 +74,11 @@ def parse_page(driver, url, products):
     driver.get(url)
     scroll_and_parse(driver, products)
 
-# def parse_page(driver, url, products):
-#     driver.get(url)
-#     products_elements = WebDriverWait(driver, 20).until(
-#         EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.UiKitDesktopProductCard_fakeWrapper'))
-#     )
-#     for product_element in products_elements:
-#         product_name = product_element.get_attribute('aria-label')
-#         product_link = product_element.get_attribute('href')
-#         if product_link is None or product_name is None:
-#             print('Product is none')
-#         if any(item.get('url') == product_link for item in products):
-#             continue
-#         products.append(get_product(product_name, product_link))
-#
-#         # print(get_product(product_name, product_link))
-#         # print(f"Название: {product_name}, Ссылка: {product_link}")
+
+def add_embeddings(products_df):
+    products_embeddings = embedding_products(list(products_df['name']))
+    products_df['embedding'] = products_embeddings
+    return products_df
 
 
 catalog_pages = {
@@ -122,5 +114,8 @@ finally:
 save_path = 'data//products//'
 current_datetime = datetime.today().strftime('%Y_%m_%d')
 os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
 products_data = pd.DataFrame(products)
+# products_data = add_embeddings(products_data)
+
 products_data.to_csv(f'{save_path}yeda_lenta_products{current_datetime}.csv', index=False)
