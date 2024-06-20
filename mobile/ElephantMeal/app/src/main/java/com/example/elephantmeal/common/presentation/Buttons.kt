@@ -24,13 +24,14 @@ import com.example.elephantmeal.ui.theme.PrimaryColor
 @Composable
 fun PrimaryButton(
     topPadding: Dp,
+    bottomPadding: Dp = 0.dp,
     isEnabled: Boolean = true,
     text: String,
     onClick: () -> Unit
 ) {
     Button(
         modifier = Modifier
-            .padding(24.dp, topPadding, 24.dp, 0.dp)
+            .padding(24.dp, topPadding, 24.dp, bottomPadding)
             .height(56.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),

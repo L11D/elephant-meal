@@ -18,8 +18,8 @@ fun ElephantMealNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.WelcomeScreen.name
-       // startDestination = Screen.RegistrationThirdScreen.name
+       // startDestination = Screen.WelcomeScreen.name
+        startDestination = Screen.PlanningScreen.name
     ) {
         // Приветственный экран
         composable(Screen.WelcomeScreen.name) {
@@ -124,7 +124,11 @@ fun ElephantMealNavigation(
 
         // Экран составления плана питания
         composable(Screen.PlanningScreen.name) {
-            PlanningScreen()
+            PlanningScreen(
+                onGetStartedClick = {
+
+                }
+            )
         }
     }
 }

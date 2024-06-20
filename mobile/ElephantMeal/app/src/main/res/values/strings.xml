@@ -37,4 +37,8 @@
     <string name="repeat_password">Повторите пароль</string>
     <string name="register">Зарегистрироваться</string>
     <string name="passwords_not_match">Пароль и его подтверждение не совпадают</string>
+    <string name="planning_picture">Картинка экрана составления плана питания</string>
+    <string name="make_meal_plan">Составьте план своего питания</string>
+    <string name="planning_description">Укажите свои предпочтения, выберите план питания, переодичность отхождения от полезной пищи для лучшего составления и планирования вашего рациона.</string>
+    <string name="get_started">Приступим</string>
 </resources>
