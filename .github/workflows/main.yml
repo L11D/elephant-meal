@@ -18,4 +18,4 @@ jobs:
       - name: deploy
         run: |
           cd backend
-          ls
+          docker-compose up -d --build --force-recreate
