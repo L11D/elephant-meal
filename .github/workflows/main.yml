@@ -6,7 +6,6 @@ on:
       - main
       - develop
       - deploy-test
-	
 jobs:
   deploy:
     runs-on: self-hosted
