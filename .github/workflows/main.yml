@@ -1,5 +1,20 @@
+name: CI/CD Pipeline
+
 on:
   push:
     branches:
     - main
-    - release/*
+    - develop
+    - deploy-test
+	
+jobs:
+  deploy:
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: deploy
+      run: |
+        ls
