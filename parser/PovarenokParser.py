@@ -12,9 +12,9 @@ import requests
 from tqdm import tqdm
 import ast
 
-from Embedder import embedding_ingredients
+# from Embedder import embedding_ingredients
 
-n_workers = 20
+n_workers = 15
 save_path = 'data//recipes//'
 
 
@@ -33,33 +33,54 @@ def get_recipe_urls_from_page(url):
 
 def get_recipe_from_page(url):
     soup = get_soup(url)
-    recipe_name = soup.find('h1').get_text().strip()
+    recipe_name = None
+    if soup.find('h1'):
+        recipe_name = soup.find('h1').get_text().strip()
 
     if recipe_name == 'Страница не найдена':
         return [{'url': url, 'name': recipe_name}]
 
     # find ingredients
-    ingredients_tags = soup.findAll('li', itemprop='recipeIngredient')
     ingredients_dict = {}
-    for ingredient in ingredients_tags:
-        name = ingredient.find('a').get_text().strip()
-        amount = ingredient.find_all('span')[-1]
-        if amount is not None:
-            amount = amount.get_text().strip()
-        ingredients_dict[name] = amount
+    ingredients_tags = soup.findAll('li', itemprop='recipeIngredient')
+    if ingredients_tags is not None:
+        for ingredient in ingredients_tags:
+            name_tag = ingredient.find('a')
+            if name_tag is None:
+                continue
+            name = name_tag.get_text().strip()
+            amount_tag = ingredient.find_all('span')[-1]
+            amount = amount_tag.get_text().strip() if amount_tag is not None else None
+            # if amount is not None:
+            #     amount = amount.get_text().strip()
+            ingredients_dict[name] = amount
 
     # find instructions
     instructions_block = soup.find('ul', itemprop='recipeInstructions')
     instructions_list = []
     if instructions_block is not None:
         instructions_tags = instructions_block.findAll('li')
-        for instruction in instructions_tags:
-            description = instruction.find('div').find('p').get_text().strip()
-            instructions_list.append(description)
+        if instructions_tags is not None:
+            for instruction in instructions_tags:
+                description_div = instruction.find('div')
+                description_p = None
+                if description_div:
+                    description_p = description_div.find('p')
+                if description_p:
+                    instructions_list.append(description_p.get_text().strip())
     else:
-        divs = soup.find('article', 'item-bl').find('div').find_all('div', recursive=False)
-        div_without_attrs = [div for div in divs if not div.attrs]
-        instructions_list.append(div_without_attrs[0].get_text().strip())
+        article = soup.find('article', 'item-bl')
+        article_div = None
+        divs = None
+        if article is not None:
+            article_div = article.find('div')
+        if article_div is not None:
+            divs = article_div.find_all('div', recursive=False)
+        if divs is not None:
+            div_without_attrs = [div for div in divs if not div.attrs]
+            if div_without_attrs:
+                if len(div_without_attrs) > 0:
+                    instructions_list.append(div_without_attrs[0].get_text().strip())
 
     # find food value
     values_all = {'energy': None, 'protein': None, 'fat': None, 'carb': None}
@@ -169,19 +190,19 @@ def save_ingredients(recipe_data):
     ingredients_data.to_csv(f'{save_path}povarenok_ingredients_{current_datetime}.csv', index=False)
 
 
-def save_ingredients_calculate_embeddings(recipe_data):
-    ingredients = set()
-    for ingredients_dict in recipe_data['ingredients']:
-        # ingredients_dict = ast.literal_eval(ingredient_str)
-        for key, value in ingredients_dict.items():
-            ingredients.add(key)
-    ingredients = list(ingredients)
-    embedding = embedding_ingredients(ingredients)
-    ingredients_data = pd.DataFrame({'name': ingredients, 'embedding': embedding})
-
-    current_datetime = datetime.today().strftime('%Y_%m_%d')
-    os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    ingredients_data.to_csv(f'{save_path}povarenok_ingredients_{current_datetime}.csv', index=False)
+# def save_ingredients_calculate_embeddings(recipe_data):
+#     ingredients = set()
+#     for ingredients_dict in recipe_data['ingredients']:
+#         # ingredients_dict = ast.literal_eval(ingredient_str)
+#         for key, value in ingredients_dict.items():
+#             ingredients.add(key)
+#     ingredients = list(ingredients)
+#     embedding = embedding_ingredients(ingredients)
+#     ingredients_data = pd.DataFrame({'name': ingredients, 'embedding': embedding})
+#
+#     current_datetime = datetime.today().strftime('%Y_%m_%d')
+#     os.makedirs(os.path.dirname(save_path), exist_ok=True)
+#     ingredients_data.to_csv(f'{save_path}povarenok_ingredients_{current_datetime}.csv', index=False)
 
 
 if __name__ == '__main__':
@@ -195,17 +216,17 @@ if __name__ == '__main__':
 
     with Pool(n_workers) as p:
         p = Pool(n_workers)
-        maped_recipe_urls = tqdm(p.imap_unordered(get_recipe_urls_from_page, pages_range[0:10]),
-                                 total=len(pages_range[0:10]))
-        print(maped_recipe_urls)
+        # maped_recipe_urls = tqdm(p.imap_unordered(get_recipe_urls_from_page, pages_range[0:20]),
+        #                          total=len(pages_range[0:20]))
+        maped_recipe_urls = tqdm(p.imap_unordered(get_recipe_urls_from_page, pages_range),
+                                 total=len(pages_range))
         recipe_urls = reduce(lambda x, y: x + y, maped_recipe_urls)
         recipe_urls = set(recipe_urls)
-    print(recipe_urls)
 
     # for recipe_url in recipe_urls:
     #     get_recipe_from_page(recipe_url)
 
-    print("Let's parse all recipe urls")
+    print("Let's parse all recipes")
     with Pool(n_workers) as p:
         maped_recipes = tqdm(p.imap_unordered(get_recipe_from_page, recipe_urls), total=len(recipe_urls))
         recipes_data = pd.DataFrame(reduce(lambda x, y: x + y, maped_recipes))
