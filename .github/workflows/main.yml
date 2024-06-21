@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: deploy
-        run: |
-          cd backend
-          docker-compose up -d --build --force-recreate
+        with:
+          command: up -d --build --force-recreate
+        working-directory: backend
