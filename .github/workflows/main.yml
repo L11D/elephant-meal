@@ -17,4 +17,5 @@ jobs:
       
       - name: deploy
         run: |
+          cd backend
           ls
