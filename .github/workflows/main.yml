@@ -1,5 +1,21 @@
+name: CI/CD Pipeline
+
 on:
   push:
     branches:
-    - main
-    - release/*
+      - main
+      - develop
+      - deploy-test
+    paths:
+      - 'backend/**'
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: deploy
+        run: |
+          cd backend
+          docker-compose up -d --build --force-recreate
