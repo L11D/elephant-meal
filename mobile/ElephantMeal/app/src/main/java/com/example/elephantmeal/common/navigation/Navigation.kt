@@ -9,6 +9,7 @@ import com.example.elephantmeal.cheat_meal_screen.CheatMealScreen
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
 import com.example.elephantmeal.plan_choose_screen.presentation.PlanChooseScreen
 import com.example.elephantmeal.planning_screen.PlanningScreen
+import com.example.elephantmeal.products_ban_screen.ProductsBanScreen
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
 import com.example.elephantmeal.registration_third_screen.presentation.RegistrationThirdScreen
@@ -154,9 +155,14 @@ fun ElephantMealNavigation(
                 },
 
                 onContinue = {
-
+                    navController.navigate(Screen.ProductsBanScreen.name)
                 }
             )
+        }
+
+        // Экран указания непредпочитаемых продуктов
+        composable(Screen.ProductsBanScreen.name) {
+            ProductsBanScreen()
         }
     }
 }
