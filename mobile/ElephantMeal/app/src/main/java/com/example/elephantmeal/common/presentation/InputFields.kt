@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.elephantmeal.R
-import com.example.elephantmeal.ui.theme.DarkGrayColor
 import com.example.elephantmeal.ui.theme.ErrorColor
 import com.example.elephantmeal.ui.theme.GrayColor
 import com.example.elephantmeal.ui.theme.LightGrayColor
@@ -181,14 +180,18 @@ fun PasswordInputField(
                     .clickable {
                         onPasswordVisibilityChange()
                     },
-                imageVector = ImageVector.vectorResource(id = if (isVisible)
-                    R.drawable.closed_eye
-                else
-                    R.drawable.opened_eye),
-                contentDescription = stringResource(id = if (isVisible)
-                    R.string.closed_eye_description
-                else
-                    R.string.opened_eye_description)
+                imageVector = ImageVector.vectorResource(
+                    id = if (isVisible)
+                        R.drawable.closed_eye
+                    else
+                        R.drawable.opened_eye
+                ),
+                contentDescription = stringResource(
+                    id = if (isVisible)
+                        R.string.closed_eye_description
+                    else
+                        R.string.opened_eye_description
+                )
             )
         }
 
@@ -298,7 +301,7 @@ fun BirthDateInputField(
     }
 }
 
-// Поле ввода пароля
+// Поле ввода чисел
 @Composable
 fun NumberInputField(
     label: String,
@@ -373,6 +376,82 @@ fun NumberInputField(
                 .fillMaxWidth()
                 .background(
                     if (isFocused) PrimaryColor else LightGrayColor
+                )
+                .align(Alignment.BottomCenter)
+        )
+    }
+}
+
+// Строка поиска
+@Composable
+fun SearchField(
+    label: String,
+    topPadding: Dp,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    var isFocused by remember {
+        mutableStateOf(false)
+    }
+
+    Box(
+        modifier = Modifier
+            .padding(8.dp, topPadding, 8.dp, 0.dp)
+    ) {
+        Row {
+            OutlinedTextField(
+                modifier = Modifier
+                    .height(64.dp)
+                    .weight(1f)
+                    .onFocusChanged {
+                        isFocused = it.isFocused
+                    },
+                shape = RoundedCornerShape(8.dp),
+                value = value,
+                onValueChange = onValueChange,
+                singleLine = true,
+                maxLines = 1,
+                label = {
+                    Text(
+                        text = label,
+                        style = TextStyle(
+                            fontSize = 14.sp
+                        )
+                    )
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.White,
+                    disabledBorderColor = Color.White,
+                    errorBorderColor = Color.White,
+                    focusedBorderColor = Color.White,
+                    focusedLabelColor = GrayColor,
+                    unfocusedLabelColor = GrayColor,
+                    disabledLabelColor = GrayColor
+                ),
+            )
+
+            Image(
+                modifier = Modifier
+                    .padding(0.dp, 0.dp, 16.dp, 12.dp)
+                    .align(Alignment.Bottom)
+                    .clip(CircleShape),
+                imageVector = ImageVector.vectorResource(id = R.drawable.search_glass),
+                contentDescription = stringResource(id = R.string.search_glass_description)
+            )
+        }
+
+
+        Box(
+            modifier = Modifier
+                .padding(16.dp, 0.dp, 16.dp, 0.dp)
+                .height(2.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .fillMaxWidth()
+                .background(
+                    if (isFocused)
+                        PrimaryColor
+                    else
+                        LightGrayColor
                 )
                 .align(Alignment.BottomCenter)
         )

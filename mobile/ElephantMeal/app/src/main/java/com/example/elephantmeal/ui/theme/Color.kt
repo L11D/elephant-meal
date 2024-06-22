@@ -22,3 +22,6 @@ val DeselectedGenderColor = Color(0XFF909499)
 val SelectedGenderColor = Color(0XFF404040)
 
 val DarkBlueColor = Color(0XFF3F414E)
+
+val LightBlueColor = Color(0XFF8E97FD)
+val DeselectedCategoryColor = Color(0XFF586894)

@@ -9,7 +9,7 @@ import com.example.elephantmeal.cheat_meal_screen.CheatMealScreen
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
 import com.example.elephantmeal.plan_choose_screen.presentation.PlanChooseScreen
 import com.example.elephantmeal.planning_screen.PlanningScreen
-import com.example.elephantmeal.products_ban_screen.ProductsBanScreen
+import com.example.elephantmeal.products_ban_screen.presentation.ProductsBanScreen
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
 import com.example.elephantmeal.registration_third_screen.presentation.RegistrationThirdScreen
@@ -22,7 +22,7 @@ fun ElephantMealNavigation(
     NavHost(
         navController = navController,
        // startDestination = Screen.WelcomeScreen.name
-        startDestination = Screen.CheatMealScreen.name
+        startDestination = Screen.ProductsBanScreen.name
     ) {
         // Приветственный экран
         composable(Screen.WelcomeScreen.name) {
@@ -162,7 +162,11 @@ fun ElephantMealNavigation(
 
         // Экран указания непредпочитаемых продуктов
         composable(Screen.ProductsBanScreen.name) {
-            ProductsBanScreen()
+            ProductsBanScreen(
+                onBackButtonClick = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
