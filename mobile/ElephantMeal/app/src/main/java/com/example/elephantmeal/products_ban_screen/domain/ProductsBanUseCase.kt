@@ -25,6 +25,30 @@ class ProductsBanUseCase {
         return _categories
     }
 
+    // Выбор всех подкатегорий
+    fun selectAllSubcategories(categoryIndex: Int): List<Category> {
+        val category = _categories[categoryIndex]
+
+        val areSelected =
+            category.subcategories.count { it.isSelected } < category.subcategories.size
+
+        _categories[categoryIndex] = category.copy(
+            isSelected = true,
+            subcategories = category.subcategories.map {
+                it.copy(
+                    isSelected = areSelected,
+                    products = it.products.map {
+                        it.copy(
+                            isSelected = areSelected
+                        )
+                    }
+                )
+            }
+        )
+
+        return _categories
+    }
+
     // Выбор продукта
     fun selectProduct(
         categoryIndex: Int,
@@ -56,7 +80,7 @@ class ProductsBanUseCase {
                 if (subcategoryMapIndex == subcategoryIndex)
                     subcategory.copy(
                         isSelected =
-                            subcategory.products.count { it.isSelected } == subcategory.products.size
+                        subcategory.products.count { it.isSelected } == subcategory.products.size
                     )
                 else
                     subcategory

@@ -65,6 +65,8 @@ fun Subcategories(
         }
 
         // Кнопка выбора всех подкатегорий
+        val allSelected = state.subcategories.count { it.isSelected } == state.subcategories.size
+
         Box(
             modifier = Modifier
                 .padding(0.dp, 24.dp, 0.dp, 0.dp)
@@ -72,7 +74,16 @@ fun Subcategories(
                 .border(
                     width = 1.dp,
                     shape = RoundedCornerShape(8.dp),
-                    color = LightGrayColor
+                    color = if (allSelected)
+                        PrimaryColor
+                    else
+                        LightGrayColor
+                )
+                .background(
+                    if (allSelected)
+                        PrimaryColor.copy(alpha = 0.05f)
+                    else
+                        Color.White
                 )
                 .clickable(
                     indication = null,

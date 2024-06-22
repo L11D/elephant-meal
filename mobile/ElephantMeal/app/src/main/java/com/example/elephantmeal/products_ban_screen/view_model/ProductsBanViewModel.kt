@@ -58,7 +58,14 @@ class ProductsBanViewModel @Inject constructor(
 
     // Выбор всех подкатегорий
     fun selectAllSubcategories() {
+        val newCategories = _productsBanUseCase.selectAllSubcategories(_selectedCategoryIndex)
 
+        _state.update { currentState ->
+            currentState.copy(
+                categories = newCategories,
+                subcategories = newCategories[_selectedCategoryIndex].subcategories
+            )
+        }
     }
 
     // Выбор продукта
