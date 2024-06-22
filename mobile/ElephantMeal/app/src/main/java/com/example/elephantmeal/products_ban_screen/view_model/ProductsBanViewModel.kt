@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.elephantmeal.products_ban_screen.domain.Category
 import com.example.elephantmeal.products_ban_screen.domain.ProductsBanUseCase
+import com.example.elephantmeal.products_ban_screen.domain.Subcategory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,6 +24,7 @@ class ProductsBanViewModel @Inject constructor(
         private set
 
     private val _categories = mutableListOf<Category>()
+    private var _selectedCategoryIndex = 0
 
     init {
         _categories.addAll(_productsBanUseCase.getCategories())
@@ -43,15 +45,13 @@ class ProductsBanViewModel @Inject constructor(
 
     // Выбор категории
     fun onCategorySelected(selectedIndex: Int) {
+        _selectedCategoryIndex = selectedIndex
+        val categories = _productsBanUseCase.selectCategory(selectedIndex)
+
         _state.update { currentState ->
             currentState.copy(
-                categories = currentState.categories.mapIndexed { index, category ->
-                    if (index == selectedIndex)
-                        category.copy(isSelected = true)
-                    else
-                        category.copy(isSelected = false)
-                },
-                subcategories = currentState.categories[selectedIndex].subcategories
+                categories = categories,
+                subcategories = categories[selectedIndex].subcategories
             )
         }
     }
@@ -61,8 +61,37 @@ class ProductsBanViewModel @Inject constructor(
 
     }
 
-    // Выбор подкатегории
-    fun selectSubcategory(index: Int) {
+    // Выбор продукта
+    fun selectProduct(subcategoryIndex: Int, productIndex: Int) {
+        val newSubcategories = _productsBanUseCase.selectProduct(
+            _selectedCategoryIndex,
+            subcategoryIndex,
+            productIndex
+        )
 
+        updateSubcategoriesSelection(newSubcategories)
+    }
+
+    // Выбор всех продуктов подкатегории
+    fun selectAllProducts(subcategoryIndex: Int) {
+        val newSubcategories =
+            _productsBanUseCase.selectAllProducts(_selectedCategoryIndex, subcategoryIndex)
+
+        updateSubcategoriesSelection(newSubcategories)
+    }
+
+    // Обновление выделения продуктов и подкатегорий
+    private fun updateSubcategoriesSelection(newSubcategories: List<Subcategory>) {
+        _state.update { currentState ->
+            currentState.copy(
+                subcategories = newSubcategories,
+                categories = currentState.categories.mapIndexed { index, category ->
+                    if (index == _selectedCategoryIndex)
+                        category.copy(subcategories = newSubcategories)
+                    else
+                        category
+                }
+            )
+        }
     }
 }
