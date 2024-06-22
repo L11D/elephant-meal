@@ -43,4 +43,17 @@
     <string name="get_started">Приступим</string>
     <string name="choose_plan">Выберите план</string>
     <string name="expand_button">Кнопка раскрытия описания</string>
+    <string name="cheat_meal_header">Хотите себя побаловать?</string>
+    <string name="choose_days">Выберите дни</string>
+    <string name="choose_days_description">Они не будут попадать под категорию здорового питания. Так вы сможете добавить в свой рацион конфеты или печенья с шоколадом.</string>
+    <string name="monday">ПН</string>
+    <string name="tuesday">ВТ</string>
+    <string name="wednesday">СР</string>
+    <string name="thursday">ЧТ</string>
+    <string name="friday">ПТ</string>
+    <string name="saturday">СБ</string>
+    <string name="sunday">ВС</string>
+    <string name="cheat_meal_amount">Как много вы хотите поесть вкусненького?</string>
+    <string name="cheat_meal_amount_description">Оно будет предлагаться в позволяемых вами пределах.</string>
+    <string name="kcal">ккал</string>
 </resources>

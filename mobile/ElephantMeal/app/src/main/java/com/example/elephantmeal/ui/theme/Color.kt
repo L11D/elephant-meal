@@ -20,3 +20,5 @@ val ErrorColor = Color(0xFFE04949)
 val GenderSelectionBackgroundColor = Color(0x1E767680)
 val DeselectedGenderColor = Color(0XFF909499)
 val SelectedGenderColor = Color(0XFF404040)
+
+val DarkBlueColor = Color(0XFF3F414E)

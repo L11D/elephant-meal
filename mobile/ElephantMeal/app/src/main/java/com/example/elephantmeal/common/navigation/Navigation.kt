@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.elephantmeal.cheat_meal_screen.CheatMealScreen
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
-import com.example.elephantmeal.plan_choose_screen.PlanChooseScreen
+import com.example.elephantmeal.plan_choose_screen.presentation.PlanChooseScreen
 import com.example.elephantmeal.planning_screen.PlanningScreen
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
@@ -21,7 +21,7 @@ fun ElephantMealNavigation(
     NavHost(
         navController = navController,
        // startDestination = Screen.WelcomeScreen.name
-        startDestination = Screen.PlanningScreen.name
+        startDestination = Screen.CheatMealScreen.name
     ) {
         // Приветственный экран
         composable(Screen.WelcomeScreen.name) {
@@ -148,7 +148,15 @@ fun ElephantMealNavigation(
 
         // Экран настройки чит мила
         composable(Screen.CheatMealScreen.name) {
-            CheatMealScreen()
+            CheatMealScreen(
+                onBackButtonClick = {
+                    navController.popBackStack()
+                },
+
+                onContinue = {
+
+                }
+            )
         }
     }
 }
