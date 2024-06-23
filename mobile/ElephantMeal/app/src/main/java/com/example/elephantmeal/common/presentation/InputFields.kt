@@ -3,8 +3,11 @@ package com.example.elephantmeal.common.presentation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -38,10 +42,19 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.elephantmeal.R
+import com.example.elephantmeal.registration_second_screen.view_model.Gender
+import com.example.elephantmeal.ui.theme.DeselectedGenderColor
 import com.example.elephantmeal.ui.theme.ErrorColor
+import com.example.elephantmeal.ui.theme.GenderSelectionBackgroundColor
 import com.example.elephantmeal.ui.theme.GrayColor
 import com.example.elephantmeal.ui.theme.LightGrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
+import com.example.elephantmeal.ui.theme.SelectedGenderColor
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import java.time.LocalDate
 
 // Поле ввода
 @Composable
@@ -302,6 +315,42 @@ fun BirthDateInputField(
     }
 }
 
+// Календарь
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectBirthday(
+    onBirthdateSelected: (LocalDate) -> Unit,
+    selectedDate: LocalDate,
+    birthDateFieldValue: String
+) {
+    val calendarState = rememberSheetState()
+
+    // Календарь
+    CalendarDialog(
+        state = calendarState,
+        config = CalendarConfig(
+            yearSelection = true,
+            monthSelection = true
+        ),
+        selection = CalendarSelection.Date(
+            selectedDate = selectedDate,
+            onSelectDate = {
+                    date -> onBirthdateSelected(date)
+            }
+        ),
+    )
+
+    BirthDateInputField(
+        label = stringResource(id = R.string.birth_date),
+        topPadding = 16.dp,
+        value = birthDateFieldValue,
+        onValueChange = { },
+        onCalendarClick = {
+            calendarState.show()
+        }
+    )
+}
+
 // Поле ввода чисел
 @Composable
 fun NumberInputField(
@@ -474,5 +523,93 @@ fun SearchField(
                 )
                 .align(Alignment.BottomCenter)
         )
+    }
+}
+
+
+// Выбор пола
+@Composable
+fun GenderSelection(
+    topPadding: Dp = 20.dp,
+    selectedGender: Gender?,
+    onMaleSelected: () -> Unit,
+    onFemaleSelected: () -> Unit
+) {
+    Column {
+        // Выбор пола
+        Text(
+            modifier = Modifier
+                .padding(24.dp, topPadding, 0.dp, 0.dp),
+            text = stringResource(id = R.string.gender),
+            style = TextStyle(
+                fontSize = 14.sp,
+                color = GrayColor
+            )
+        )
+
+        val interactionSource = remember {
+            MutableInteractionSource()
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(24.dp, 12.dp, 24.dp, 0.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(8.dp))
+                .height(42.dp)
+                .background(GenderSelectionBackgroundColor)
+        ) {
+            // Кнопка Мужчина
+            Box(
+                modifier = Modifier
+                    .padding(2.dp, 2.dp, 0.dp, 2.dp)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(7.dp))
+                    .background(if (selectedGender == Gender.Male) Color.White else Color.Transparent)
+                    .weight(1f)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null
+                    ) {
+                        onMaleSelected()
+                    }
+            ) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    text = stringResource(id = R.string.male),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = if (selectedGender == Gender.Male) SelectedGenderColor else DeselectedGenderColor
+                    )
+                )
+            }
+
+            // Кнопка Женщина
+            Box(
+                modifier = Modifier
+                    .padding(0.dp, 2.dp, 2.dp, 2.dp)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(7.dp))
+                    .background(if (selectedGender == Gender.Female) Color.White else Color.Transparent)
+                    .weight(1f)
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null
+                    ) {
+                        onFemaleSelected()
+                    }
+            ) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    text = stringResource(id = R.string.female),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = if (selectedGender == Gender.Female) SelectedGenderColor else DeselectedGenderColor
+                    )
+                )
+            }
+        }
     }
 }

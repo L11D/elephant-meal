@@ -28,3 +28,5 @@ val DeselectedCategoryColor = Color(0XFF586894)
 
 val DayOfWeekGrayColor = Color(0XFF94A3B8)
 val SelectedDayBackgroundColor = Color(0XFFF0F0FF)
+
+val PersonIconBackgroundColor = Color(0XFFF3F3F3)

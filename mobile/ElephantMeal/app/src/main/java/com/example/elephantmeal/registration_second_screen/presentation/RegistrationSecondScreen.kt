@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,21 +34,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
 import com.example.elephantmeal.common.presentation.BirthDateInputField
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
+import com.example.elephantmeal.common.presentation.GenderSelection
 import com.example.elephantmeal.common.presentation.NumberInputField
 import com.example.elephantmeal.common.presentation.PrimaryButton
-import com.example.elephantmeal.registration_second_screen.view_model.Gender
+import com.example.elephantmeal.common.presentation.SelectBirthday
 import com.example.elephantmeal.registration_second_screen.view_model.RegistrationSecondEvent
 import com.example.elephantmeal.registration_second_screen.view_model.RegistrationSecondViewModel
 import com.example.elephantmeal.ui.theme.DarkGrayColor
-import com.example.elephantmeal.ui.theme.DeselectedGenderColor
-import com.example.elephantmeal.ui.theme.GenderSelectionBackgroundColor
 import com.example.elephantmeal.ui.theme.GrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
-import com.example.elephantmeal.ui.theme.SelectedGenderColor
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import java.time.LocalDate
 
 @Composable
 fun RegistrationSecondScreen(
@@ -86,10 +82,24 @@ fun RegistrationSecondScreen(
         RegistrationScreenHeader()
 
         // Выбор пола
-        GenderSelection()
+        GenderSelection(
+            selectedGender = state.gender,
+            onMaleSelected = {
+                viewModel.onMaleSelected()
+            },
+            onFemaleSelected = {
+                viewModel.onFemaleSelected()
+            }
+        )
 
         // Выбор даты рождения
-        SelectBirthday()
+        SelectBirthday(
+            onBirthdateSelected = { date ->
+                viewModel.selectBirthDate(date)
+            },
+            selectedDate = state.selectedDate,
+            birthDateFieldValue = viewModel.birthDate
+        )
 
         // Поле ввода роста
         NumberInputField(
@@ -175,126 +185,6 @@ fun RegistrationScreenHeader() {
             fontSize = 24.sp,
             fontWeight = FontWeight.SemiBold
         )
-    )
-}
-
-// Выбор пола
-@Composable
-fun GenderSelection(
-    viewModel: RegistrationSecondViewModel = hiltViewModel()
-) {
-    val state by viewModel.state.collectAsState()
-
-    Column {
-        // Выбор пола
-        Text(
-            modifier = Modifier
-                .padding(24.dp, 20.dp, 0.dp, 0.dp),
-            text = stringResource(id = R.string.gender),
-            style = TextStyle(
-                fontSize = 14.sp,
-                color = GrayColor
-            )
-        )
-
-        val interactionSource = remember {
-            MutableInteractionSource()
-        }
-
-        Row(
-            modifier = Modifier
-                .padding(24.dp, 12.dp, 24.dp, 0.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .height(42.dp)
-                .background(GenderSelectionBackgroundColor)
-        ) {
-            // Кнопка Мужчина
-            Box(
-                modifier = Modifier
-                    .padding(2.dp, 2.dp, 0.dp, 2.dp)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(7.dp))
-                    .background(if (state.gender == Gender.Male) Color.White else Color.Transparent)
-                    .weight(1f)
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null
-                    ) {
-                        viewModel.onMaleSelected()
-                    }
-            ) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Center),
-                    text = stringResource(id = R.string.male),
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        color = if (state.gender == Gender.Male) SelectedGenderColor else DeselectedGenderColor
-                    )
-                )
-            }
-
-            // Кнопка Женщина
-            Box(
-                modifier = Modifier
-                    .padding(0.dp, 2.dp, 2.dp, 2.dp)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(7.dp))
-                    .background(if (state.gender == Gender.Female) Color.White else Color.Transparent)
-                    .weight(1f)
-                    .clickable(
-                        interactionSource = interactionSource,
-                        indication = null
-                    ) {
-                        viewModel.onFemaleSelected()
-                    }
-            ) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.Center),
-                    text = stringResource(id = R.string.female),
-                    style = TextStyle(
-                        fontSize = 14.sp,
-                        color = if (state.gender == Gender.Female) SelectedGenderColor else DeselectedGenderColor
-                    )
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SelectBirthday(
-    viewModel: RegistrationSecondViewModel = hiltViewModel()
-) {
-    val state by viewModel.state.collectAsState()
-    val calendarState = rememberSheetState()
-
-    // Календарь
-    CalendarDialog(
-        state = calendarState,
-        config = CalendarConfig(
-            yearSelection = true,
-            monthSelection = true
-        ),
-        selection = CalendarSelection.Date(
-            selectedDate = state.selectedDate,
-            onSelectDate = {
-                    date -> viewModel.selectBirthDate(date)
-            }
-        ),
-    )
-
-    BirthDateInputField(
-        label = stringResource(id = R.string.birth_date),
-        topPadding = 16.dp,
-        value = viewModel.birthDate,
-        onValueChange = { },
-        onCalendarClick = {
-            calendarState.show()
-        }
     )
 }
 
