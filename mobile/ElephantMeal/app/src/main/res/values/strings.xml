@@ -57,6 +57,7 @@
     <string name="cheat_meal_amount_description">Оно будет предлагаться в позволяемых вами пределах.</string>
     <string name="kcal">ккал</string>
     <string name="products_ban_header">Что вы не хотите есть?</string>
+    <string name="products_preferences_header">Что вы хотите есть?</string>
     <string name="search_glass_description">Иконка поиска</string>
     <string name="search_by_name">Поиск по названию</string>
     <string name="select_all_subcategories">Выбрать все подкатегории</string>
