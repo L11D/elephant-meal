@@ -14,7 +14,7 @@ import com.example.elephantmeal.products_preferences_screen.presentation.Product
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
 import com.example.elephantmeal.registration_third_screen.presentation.RegistrationThirdScreen
-import com.example.elephantmeal.today_screen.TodayScreen
+import com.example.elephantmeal.today_screen.presentation.TodayScreen
 import com.example.elephantmeal.welcome_screen.WelcomeScreen
 
 @Composable

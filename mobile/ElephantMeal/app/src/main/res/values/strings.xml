@@ -73,4 +73,14 @@
     <string name="saturday_lowercase">Сб</string>
     <string name="sunday_lowercase">Вс</string>
     <string name="empty"> </string>
+    <string name="home_icon_description">Кнопка перехода на главный экран</string>
+    <string name="homepage">Главная</string>
+    <string name="today_icon_description">Кнопка перехода на экран расписания рациона</string>
+    <string name="today">Сегодня</string>
+    <string name="day_icon_description">Кнопка переключения в режим просмотра расписания на день</string>
+    <string name="day">День</string>
+    <string name="week_icon_description">Кнопка переключения в режим просмотра расписания на неделю</string>
+    <string name="week">Неделя</string>
+    <string name="menu_icon_description">Кнопка перехода на экран меню</string>
+    <string name="menu">Меню</string>
 </resources>

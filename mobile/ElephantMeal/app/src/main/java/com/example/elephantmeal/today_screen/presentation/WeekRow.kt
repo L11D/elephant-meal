@@ -1,4 +1,4 @@
-package com.example.elephantmeal.today_screen
+package com.example.elephantmeal.today_screen.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,7 +31,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
 import com.example.elephantmeal.today_screen.view_model.TodayViewModel
 import com.example.elephantmeal.ui.theme.DayOfWeekGrayColor
-import com.example.elephantmeal.ui.theme.LightBlueColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
 import com.example.elephantmeal.ui.theme.SelectedDayBackgroundColor
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
@@ -63,7 +62,7 @@ fun WeekRow(
     // Строка с днями выбранной недели
     Row(
         modifier = Modifier
-            .padding(16.dp, 16.dp, 16.dp, 0.dp)
+            .padding(16.dp, 24.dp, 16.dp, 0.dp)
             .fillMaxWidth()
     ) {
         for (date in state.selectedWeek) {

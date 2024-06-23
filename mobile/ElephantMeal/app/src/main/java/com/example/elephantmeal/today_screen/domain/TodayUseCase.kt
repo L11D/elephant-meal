@@ -1,6 +1,5 @@
 package com.example.elephantmeal.today_screen.domain
 
-import androidx.compose.ui.res.stringResource
 import com.example.elephantmeal.R
 
 class TodayUseCase {
