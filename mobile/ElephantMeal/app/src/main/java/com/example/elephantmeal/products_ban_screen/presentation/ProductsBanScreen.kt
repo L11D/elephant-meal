@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,6 +26,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
 import com.example.elephantmeal.common.presentation.PrimaryButton
 import com.example.elephantmeal.common.presentation.SearchField
+import com.example.elephantmeal.products_ban_screen.domain.Product
+import com.example.elephantmeal.products_ban_screen.view_model.ProductsBanEvent
 import com.example.elephantmeal.products_ban_screen.view_model.ProductsBanViewModel
 import com.example.elephantmeal.registration_second_screen.presentation.LogoWithBackButton
 
@@ -32,9 +35,20 @@ import com.example.elephantmeal.registration_second_screen.presentation.LogoWith
 @Composable
 fun ProductsBanScreen(
     onBackButtonClick: () -> Unit,
+    onContinue: () -> Unit,
     viewModel: ProductsBanViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect {
+            when (it) {
+                is ProductsBanEvent.Continue -> {
+                    onContinue()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -122,7 +136,7 @@ fun ProductsBanScreen(
             bottomPadding = 32.dp,
             text = stringResource(id = R.string.continuation),
             onClick = {
-                // TODO
+                viewModel.onContinue()
             }
         )
     }

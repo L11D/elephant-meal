@@ -11,7 +11,9 @@ import com.example.elephantmeal.products_ban_screen.domain.ProductsBanUseCase
 import com.example.elephantmeal.products_ban_screen.domain.Subcategory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,6 +25,9 @@ class ProductsBanViewModel @Inject constructor(
 ) : ViewModel() {
     private val _state = MutableStateFlow(ProductsBanUiState())
     val state = _state.asStateFlow()
+
+    private val _events = MutableSharedFlow<ProductsBanEvent>()
+    val events = _events.asSharedFlow()
 
     var searchField by mutableStateOf("")
         private set
@@ -168,6 +173,13 @@ class ProductsBanViewModel @Inject constructor(
                         it
                 }
             )
+        }
+    }
+
+    // Сохранение избегаемых продуктов
+    fun onContinue() {
+        viewModelScope.launch {
+            _events.emit(ProductsBanEvent.Continue)
         }
     }
 }

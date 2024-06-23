@@ -10,6 +10,7 @@ import com.example.elephantmeal.login_screen.presentation.LoginScreen
 import com.example.elephantmeal.plan_choose_screen.presentation.PlanChooseScreen
 import com.example.elephantmeal.planning_screen.PlanningScreen
 import com.example.elephantmeal.products_ban_screen.presentation.ProductsBanScreen
+import com.example.elephantmeal.products_preferences_screen.ProductsPreferencesScreen
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
 import com.example.elephantmeal.registration_third_screen.presentation.RegistrationThirdScreen
@@ -165,8 +166,17 @@ fun ElephantMealNavigation(
             ProductsBanScreen(
                 onBackButtonClick = {
                     navController.popBackStack()
+                },
+
+                onContinue = {
+                    navController.navigate(Screen.ProductsPreferencesScreen.name)
                 }
             )
+        }
+
+        // Экран указания предпочитаемых продуктов
+        composable(Screen.ProductsPreferencesScreen.name) {
+            ProductsPreferencesScreen()
         }
     }
 }

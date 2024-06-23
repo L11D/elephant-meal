@@ -9,5 +9,6 @@ enum class Screen {
     PlanningScreen,
     PlanChooseScreen,
     CheatMealScreen,
-    ProductsBanScreen
+    ProductsBanScreen,
+    ProductsPreferencesScreen
 }
