@@ -86,8 +86,9 @@ fun CategoryElement(
         // Номер категории
         Box(
             modifier = Modifier
-                .size(64.dp, 64.dp)
+                .size(56.dp, 56.dp)
                 .clip(RoundedCornerShape(25.dp))
+                .align(Alignment.CenterHorizontally)
                 .background(
                     if (isSelected)
                         LightBlueColor
@@ -116,7 +117,8 @@ fun CategoryElement(
         // Название категории
         Text(
             modifier = Modifier
-                .padding(0.dp, 16.dp, 0.dp, 0.dp),
+                .padding(0.dp, 16.dp, 0.dp, 0.dp)
+                .align(Alignment.CenterHorizontally),
             text = name,
             style = TextStyle(
                 fontSize = 16.sp,

@@ -1,16 +1,36 @@
 package com.example.elephantmeal.products_ban_screen.domain
 
+import java.util.Locale
+
 class ProductsBanUseCase {
     private var _categories = mutableListOf(
-        getCategory(),
-        getCategory(),
-        getCategory(),
-        getCategory(),
-        getCategory()
+        generateCategory(),
+        generateCategory(),
+        generateCategory(),
+        generateCategory(),
+        generateCategory()
     )
 
     fun getCategories(): List<Category> {
         return _categories
+    }
+
+    private var _allProducts = listOf<Product>()
+
+    init {
+        _allProducts = _categories.flatMap {
+            it.subcategories.flatMap {
+                it.products
+            }
+        }.distinct()
+    }
+
+    private fun updateAllProducts() {
+        _allProducts = _categories.flatMap {
+            it.subcategories.flatMap {
+                it.products
+            }
+        }.sortedBy { !it.isSelected }.distinctBy { it.name }
     }
 
     // Выбор категории
@@ -46,6 +66,8 @@ class ProductsBanUseCase {
             }
         )
 
+        updateAllProducts()
+
         return _categories
     }
 
@@ -56,15 +78,17 @@ class ProductsBanUseCase {
         productIndex: Int
     ): List<Subcategory> {
         var category = _categories[categoryIndex]
+        var isSelected: Boolean
 
         _categories[categoryIndex] = category.copy(
             subcategories = category.subcategories.mapIndexed { subcategoryMapIndex, subcategory ->
                 if (subcategoryMapIndex == subcategoryIndex)
                     subcategory.copy(
                         products = subcategory.products.mapIndexed { productMapIndex, product ->
-                            if (productMapIndex == productIndex)
-                                product.copy(isSelected = !product.isSelected)
-                            else
+                            if (productMapIndex == productIndex) {
+                                isSelected = !product.isSelected
+                                product.copy(isSelected = isSelected)
+                            } else
                                 product
                         }
                     )
@@ -87,6 +111,8 @@ class ProductsBanUseCase {
             }
         )
 
+        updateAllProducts()
+
         return _categories[categoryIndex].subcategories
     }
 
@@ -106,10 +132,54 @@ class ProductsBanUseCase {
             }
         )
 
+        updateAllProducts()
+
         return _categories[categoryIndex].subcategories
     }
 
-    private fun getCategory(): Category = Category(
+    // Поиск продуктов
+    fun searchProducts(query: String): List<Product> {
+        return _allProducts.filter {
+            it.name.lowercase(Locale.ROOT).contains(query.lowercase(Locale.ROOT))
+        }.distinct()
+    }
+
+    // Выбор подсказки
+    fun selectHints(hints: List<String>, isSelected: Boolean): List<Category> {
+        _categories = _categories.map {
+            it.copy(
+                subcategories = it.subcategories.map {
+                    it.copy(
+                        products = it.products.map {
+                            if (it.name in hints) {
+                                it.copy(
+                                    isSelected = isSelected
+                                )
+                            } else {
+                                it
+                            }
+                        }
+                    )
+                }
+            )
+        }.toMutableList()
+
+        _categories = _categories.map {
+            it.copy(
+                subcategories = it.subcategories.map {
+                    it.copy(
+                        isSelected = it.products.count { it.isSelected } == it.products.size
+                    )
+                }
+            )
+        }.toMutableList()
+
+        updateAllProducts()
+
+        return _categories
+    }
+
+    private fun generateCategory(): Category = Category(
         name = "Шоколад",
         isSelected = false,
         subcategories = listOf(

@@ -4,13 +4,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.elephantmeal.products_ban_screen.domain.Category
+import com.example.elephantmeal.products_ban_screen.domain.Product
 import com.example.elephantmeal.products_ban_screen.domain.ProductsBanUseCase
 import com.example.elephantmeal.products_ban_screen.domain.Subcategory
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,6 +45,28 @@ class ProductsBanViewModel @Inject constructor(
     // Изменение поисковой строки
     fun onSearchFieldChange(searchValue: String) {
         searchField = searchValue
+
+        val hints = _productsBanUseCase.searchProducts(searchValue)
+
+        viewModelScope.launch(Dispatchers.Default) {
+            _state.update { currentState ->
+                currentState.copy(
+                    hints = hints,
+                    isSearchVisible = hints.isNotEmpty() && searchValue.isNotEmpty()
+                )
+            }
+        }
+    }
+
+    // Очистка поисковой строки
+    fun onSearchCleared() {
+        searchField = ""
+
+        _state.update { currentState ->
+            currentState.copy(
+                isSearchVisible = false,
+            )
+        }
     }
 
     // Выбор категории
@@ -51,7 +77,8 @@ class ProductsBanViewModel @Inject constructor(
         _state.update { currentState ->
             currentState.copy(
                 categories = categories,
-                subcategories = categories[selectedIndex].subcategories
+                subcategories = categories[selectedIndex].subcategories,
+                hints = _productsBanUseCase.searchProducts(searchField)
             )
         }
     }
@@ -63,7 +90,8 @@ class ProductsBanViewModel @Inject constructor(
         _state.update { currentState ->
             currentState.copy(
                 categories = newCategories,
-                subcategories = newCategories[_selectedCategoryIndex].subcategories
+                subcategories = newCategories[_selectedCategoryIndex].subcategories,
+                hints = _productsBanUseCase.searchProducts(searchField)
             )
         }
     }
@@ -97,6 +125,47 @@ class ProductsBanViewModel @Inject constructor(
                         category.copy(subcategories = newSubcategories)
                     else
                         category
+                },
+                hints = _productsBanUseCase.searchProducts(searchField)
+            )
+        }
+    }
+
+    // Выбор всех продуктов из подсказки
+    fun selectAllHints() {
+        val isSelected = _state.value.hints.count { it.isSelected } != _state.value.hints.size
+
+        val newCategories = _productsBanUseCase.selectHints(
+            hints = _state.value.hints.map { it.name },
+            isSelected = isSelected
+        )
+
+        _state.update { currentState ->
+            currentState.copy(
+                categories = newCategories,
+                subcategories = newCategories[_selectedCategoryIndex].subcategories,
+                hints = currentState.hints.map {
+                    it.copy(isSelected = isSelected)
+                }
+            )
+        }
+    }
+
+    // Выбор продукта по подсказдке
+    fun selectHint(hint: Product) {
+        val newCategories = _productsBanUseCase.selectHints(listOf(hint.name), !hint.isSelected)
+
+        _state.update { currentState ->
+            currentState.copy(
+                categories = newCategories,
+                subcategories = newCategories[_selectedCategoryIndex].subcategories,
+                hints = currentState.hints.map {
+                    if (it.name == hint.name)
+                        it.copy(
+                            isSelected = !it.isSelected
+                        )
+                    else
+                        it
                 }
             )
         }

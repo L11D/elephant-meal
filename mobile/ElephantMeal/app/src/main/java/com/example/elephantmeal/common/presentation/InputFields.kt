@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -388,7 +389,8 @@ fun SearchField(
     label: String,
     topPadding: Dp,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    onValueClear: () -> Unit
 ) {
     var isFocused by remember {
         mutableStateOf(false)
@@ -399,6 +401,16 @@ fun SearchField(
             .padding(8.dp, topPadding, 8.dp, 0.dp)
     ) {
         Row {
+            Image(
+                modifier = Modifier
+                    .padding(16.dp, 0.dp, 0.dp, 12.dp)
+                    .align(Alignment.Bottom)
+                    .size(24.dp, 24.dp)
+                    .clip(CircleShape),
+                imageVector = ImageVector.vectorResource(id = R.drawable.search_glass),
+                contentDescription = stringResource(id = R.string.search_glass_description)
+            )
+
             OutlinedTextField(
                 modifier = Modifier
                     .height(64.dp)
@@ -430,14 +442,21 @@ fun SearchField(
                 ),
             )
 
-            Image(
-                modifier = Modifier
-                    .padding(0.dp, 0.dp, 16.dp, 12.dp)
-                    .align(Alignment.Bottom)
-                    .clip(CircleShape),
-                imageVector = ImageVector.vectorResource(id = R.drawable.search_glass),
-                contentDescription = stringResource(id = R.string.search_glass_description)
-            )
+            if (value.isNotEmpty()) {
+                Image(
+                    modifier = Modifier
+                        .padding(0.dp, 0.dp, 16.dp, 12.dp)
+                        .align(Alignment.Bottom)
+                        .size(24.dp, 24.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            onValueClear()
+                        },
+                    imageVector = ImageVector.vectorResource(id = R.drawable.cross_icon),
+                    contentDescription = stringResource(id = R.string.cross_icon_description)
+                )
+            }
+
         }
 
 

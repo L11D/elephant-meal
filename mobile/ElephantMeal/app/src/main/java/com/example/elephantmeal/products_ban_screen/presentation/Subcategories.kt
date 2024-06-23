@@ -175,7 +175,7 @@ fun SubcategoryElement(
             // Кнопка раскрытия списка продуктов
             Image(
                 modifier = Modifier
-                    .padding(0.dp, 0.dp, 16.dp, 0.dp)
+                    .padding(0.dp, 16.dp, 16.dp, 0.dp)
                     .align(Alignment.CenterVertically)
                     .clip(CircleShape)
                     .clickable {
@@ -191,21 +191,24 @@ fun SubcategoryElement(
         }
 
         // Продукты подкатегории
-        SelectAllProducts(
-            subcategory = subcategory,
-            onSelectAllClick = {
-                viewModel.selectAllProducts(subcategoryIndex)
-            }
-        )
-
-        subcategory.products.forEachIndexed { index, product ->
-            SubcategoryProductElement(
-                product = product,
-                onProductSelected = {
-                    viewModel.selectProduct(subcategoryIndex, index)
+        if (isExpanded) {
+            SelectAllProducts(
+                subcategory = subcategory,
+                onSelectAllClick = {
+                    viewModel.selectAllProducts(subcategoryIndex)
                 }
             )
+
+            subcategory.products.forEachIndexed { index, product ->
+                SubcategoryProductElement(
+                    product = product,
+                    onProductSelected = {
+                        viewModel.selectProduct(subcategoryIndex, index)
+                    }
+                )
+            }
         }
+
     }
 }
 

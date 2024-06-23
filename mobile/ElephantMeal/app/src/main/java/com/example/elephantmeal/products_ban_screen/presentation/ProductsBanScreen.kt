@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -32,6 +34,8 @@ fun ProductsBanScreen(
     onBackButtonClick: () -> Unit,
     viewModel: ProductsBanViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,12 +64,19 @@ fun ProductsBanScreen(
             value = viewModel.searchField,
             onValueChange = {
                 viewModel.onSearchFieldChange(it)
+            },
+            onValueClear = {
+                viewModel.onSearchCleared()
             }
         )
 
         Box {
             // Категории
             Categories()
+
+            // Подсказки поиска
+            if (state.isSearchVisible)
+                SearchHints()
         }
 
         Box(
