@@ -87,7 +87,7 @@ fun CategoryElement(
         Box(
             modifier = Modifier
                 .size(56.dp, 56.dp)
-                .clip(RoundedCornerShape(25.dp))
+                .clip(RoundedCornerShape(20.dp))
                 .align(Alignment.CenterHorizontally)
                 .background(
                     if (isSelected)
