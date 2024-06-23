@@ -20,22 +20,23 @@ class TodayViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
+        selectWeek()
+
         _state.update { currentState ->
             currentState.copy(
                 selectedDate = LocalDate.now(),
-                weekRation = _todayUseCase.getWeekRation(),
-                dayRation = _todayUseCase.getDayRation()
+                weekRation = _todayUseCase.getWeekRation(_state.value.selectedWeek),
+                dayRation = _todayUseCase.getDayRation(LocalDate.now())
             )
         }
-
-        selectWeek()
     }
 
     // Выбор даты
     fun selectDate(date: LocalDate) {
         _state.update { currentState ->
             currentState.copy(
-                selectedDate = date
+                selectedDate = date,
+                dayRation = _todayUseCase.getDayRation(date)
             )
         }
 

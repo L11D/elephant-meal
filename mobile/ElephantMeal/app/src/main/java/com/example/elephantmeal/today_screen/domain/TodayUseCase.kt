@@ -6,17 +6,20 @@ import java.time.LocalDate
 class TodayUseCase {
 
     // Получение расписания рациона на неделю
-    fun getWeekRation(): List<Mealtime> {
-        return generateMealtime()
+    fun getWeekRation(dates: List<LocalDate>): List<Mealtime> {
+        return generateMealtime().filter {
+            it.dateTime.dayOfYear >= dates[0].dayOfYear &&
+                    it.dateTime.dayOfYear <= dates[dates.size - 1].dayOfYear
+        }
     }
 
     // Получение расписания рациона на день
-    fun getDayRation(): List<Mealtime> {
-        return getWeekRation().filter { it.dateTime.dayOfWeek == LocalDate.now().dayOfWeek }
+    fun getDayRation(day: LocalDate): List<Mealtime> {
+        return generateMealtime().filter { it.dateTime.dayOfWeek == day.dayOfWeek }
     }
 
     // Перевод номера дня недели в его название
-    fun getDayOfWeekName(dayOfWeek: Int) : Int {
+    fun getDayOfWeekName(dayOfWeek: Int): Int {
         return when (dayOfWeek) {
             1 -> R.string.monday_lowercase
             2 -> R.string.tuesday_lowercase
