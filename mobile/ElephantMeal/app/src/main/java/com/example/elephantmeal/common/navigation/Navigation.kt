@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.elephantmeal.cheat_meal_screen.CheatMealScreen
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
+import com.example.elephantmeal.menu_screen.MenuScreen
 import com.example.elephantmeal.plan_choose_screen.presentation.PlanChooseScreen
 import com.example.elephantmeal.planning_screen.PlanningScreen
 import com.example.elephantmeal.products_ban_screen.presentation.ProductsBanScreen
@@ -190,7 +191,30 @@ fun ElephantMealNavigation(
 
         // Экран расписания рациона на день
         composable(Screen.TodayScreen.name) {
-            TodayScreen()
+            TodayScreen(
+                onHomeClick = {
+
+                },
+
+                onDayClick = {
+
+                },
+
+                onWeekClick = {
+
+                },
+
+                onMenuClick = {
+                    navController.navigate(Screen.MenuScreen.name) {
+                        popUpTo(Screen.TodayScreen.name)
+                    }
+                }
+            )
+        }
+
+        // Экран меню
+        composable(Screen.MenuScreen.name) {
+            MenuScreen()
         }
     }
 }

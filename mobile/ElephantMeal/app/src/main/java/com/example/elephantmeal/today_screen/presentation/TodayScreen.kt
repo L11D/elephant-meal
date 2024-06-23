@@ -1,10 +1,8 @@
 package com.example.elephantmeal.today_screen.presentation
 
-import android.graphics.LinearGradient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,7 +24,12 @@ import com.example.elephantmeal.common.presentation.ElephantMealLogo
 
 // Экран просмотра расписания приёма пищи на день
 @Composable
-fun TodayScreen() {
+fun TodayScreen(
+    onHomeClick: () -> Unit,
+    onDayClick: () -> Unit,
+    onMenuClick: () -> Unit,
+    onWeekClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -88,7 +91,8 @@ fun TodayScreen() {
 
         // Нижняя навигационная панель
         BottomNavBar(
-            isWeekModeSelected = false
+            isWeekModeSelected = false,
+            onMenuClick = onMenuClick
         )
     }
 }
