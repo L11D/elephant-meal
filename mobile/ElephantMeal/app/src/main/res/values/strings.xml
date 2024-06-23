@@ -83,4 +83,6 @@
     <string name="week">Неделя</string>
     <string name="menu_icon_description">Кнопка перехода на экран меню</string>
     <string name="menu">Меню</string>
+    <string name="caloric_icon_description">Изображение калорийности пищи</string>
+    <string name="paper_icon_description">Изображение состава пищи</string>
 </resources>

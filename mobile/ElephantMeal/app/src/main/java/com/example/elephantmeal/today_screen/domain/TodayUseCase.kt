@@ -1,8 +1,20 @@
 package com.example.elephantmeal.today_screen.domain
 
 import com.example.elephantmeal.R
+import java.time.LocalDate
 
 class TodayUseCase {
+
+    // Получение расписания рациона на неделю
+    fun getWeekRation(): List<Mealtime> {
+        return generateMealtime()
+    }
+
+    // Получение расписания рациона на день
+    fun getDayRation(): List<Mealtime> {
+        return getWeekRation().filter { it.dateTime.dayOfWeek == LocalDate.now().dayOfWeek }
+    }
+
     // Перевод номера дня недели в его название
     fun getDayOfWeekName(dayOfWeek: Int) : Int {
         return when (dayOfWeek) {
@@ -16,4 +28,48 @@ class TodayUseCase {
             else -> R.string.empty
         }
     }
+
+    private fun generateMealtime(): List<Mealtime> =
+        listOf(
+            Mealtime(
+                name = "Завтрак",
+                caloric = 1500,
+                receipt = "яичница, банан, чай",
+                startTime = "10:00",
+                endTime = "10:20",
+                dateTime = LocalDate.now()
+            ),
+            Mealtime(
+                name = "Обед",
+                caloric = 1500,
+                receipt = "яичница, банан, чай",
+                startTime = "16:00",
+                endTime = "16:20",
+                dateTime = LocalDate.now()
+            ),
+            Mealtime(
+                name = "Ужин",
+                caloric = 1500,
+                receipt = "яичница, банан, чай",
+                startTime = "21:00",
+                endTime = "21:20",
+                dateTime = LocalDate.now()
+            ),
+            Mealtime(
+                name = "Завтрак",
+                caloric = 1500,
+                receipt = "яичница, банан, чай",
+                startTime = "10:00",
+                endTime = "10:20",
+                dateTime = LocalDate.now().plusDays(1)
+            ),
+            Mealtime(
+                name = "Ужин",
+                caloric = 1500,
+                receipt = "яичница, банан, чай",
+                startTime = "21:00",
+                endTime = "21:20",
+                dateTime = LocalDate.now().minusDays(1)
+            )
+        )
 }

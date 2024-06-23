@@ -22,7 +22,9 @@ class TodayViewModel @Inject constructor(
     init {
         _state.update { currentState ->
             currentState.copy(
-                selectedDate = LocalDate.now()
+                selectedDate = LocalDate.now(),
+                weekRation = _todayUseCase.getWeekRation(),
+                dayRation = _todayUseCase.getDayRation()
             )
         }
 
@@ -38,7 +40,6 @@ class TodayViewModel @Inject constructor(
         }
 
         selectWeek()
-        //updateDayRequest()
     }
 
     // Получение недели, содержащей выбранную дату

@@ -53,6 +53,8 @@ fun TodayScreen() {
             modifier = Modifier
                 .weight(1f)
         ) {
+            // Расписание рациона на день
+            DayTimetable()
 
             // Тень от нижней навигационной панели
             Box(
@@ -65,6 +67,20 @@ fun TodayScreen() {
                             colors = listOf(Color.Black.copy(alpha = 0.04f), Color.Transparent),
                             start = Offset(0.0f, Float.POSITIVE_INFINITY),
                             end = Offset(0.0f, 0.0f)
+                        )
+                    )
+            )
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
+                    .height(6.dp)
+                    .background(
+                        brush = Brush.linearGradient(
+                            colors = listOf(Color.White, Color.Transparent),
+                            start = Offset(0.0f, 0.0f),
+                            end = Offset(0.0f, Float.POSITIVE_INFINITY)
                         )
                     )
             )
