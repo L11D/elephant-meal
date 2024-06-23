@@ -25,3 +25,6 @@ val DarkBlueColor = Color(0XFF3F414E)
 
 val LightBlueColor = Color(0XFF8E97FD)
 val DeselectedCategoryColor = Color(0XFF586894)
+
+val DayOfWeekGrayColor = Color(0XFF94A3B8)
+val SelectedDayBackgroundColor = Color(0XFFF0F0FF)

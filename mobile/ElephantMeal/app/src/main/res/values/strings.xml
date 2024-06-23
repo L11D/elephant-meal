@@ -64,4 +64,13 @@
     <string name="select_all_products">Выбрать все продукты</string>
     <string name="select_all">Выбрать все</string>
     <string name="cross_icon_description">Кнопка очистки поиска</string>
+    <string name="daily_meal_plan">Узнайте свой план питания на день</string>
+    <string name="monday_lowercase">Пн</string>
+    <string name="tuesday_lowercase">Вт</string>
+    <string name="wednesday_lowercase">Ср</string>
+    <string name="thursday_lowercase">Чт</string>
+    <string name="friday_lowercase">Пт</string>
+    <string name="saturday_lowercase">Сб</string>
+    <string name="sunday_lowercase">Вс</string>
+    <string name="empty"> </string>
 </resources>

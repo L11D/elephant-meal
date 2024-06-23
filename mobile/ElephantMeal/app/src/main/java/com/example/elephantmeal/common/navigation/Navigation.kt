@@ -24,7 +24,7 @@ fun ElephantMealNavigation(
     NavHost(
         navController = navController,
        // startDestination = Screen.WelcomeScreen.name
-        startDestination = Screen.ProductsBanScreen.name
+        startDestination = Screen.TodayScreen.name
     ) {
         // Приветственный экран
         composable(Screen.WelcomeScreen.name) {
@@ -188,6 +188,7 @@ fun ElephantMealNavigation(
             )
         }
 
+        // Экран расписания рациона на день
         composable(Screen.TodayScreen.name) {
             TodayScreen()
         }
