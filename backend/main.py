@@ -26,8 +26,10 @@ async def read_root():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
     with engine.connect() as connection:
         result = connection.execute("SELECT 1")
         print(result.fetchone())
+    print('exit')
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+    
