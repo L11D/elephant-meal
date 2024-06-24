@@ -7,7 +7,7 @@ from backend.Domain.models.enum.sex import Sex
 
 
 class IngredientInRecipe(Base):
-    __tablename__ = "ingredient_in_recipe"
+    __tablename__ = "ingredients_in_recipes"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     recipe_id = Column(UUID(as_uuid=True), ForeignKey('recipes.id'), default=uuid.uuid4, nullable=False)
