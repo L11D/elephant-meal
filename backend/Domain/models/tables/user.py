@@ -13,6 +13,7 @@ class User(Base):
     surname = Column(String, nullable=False)
     name = Column(String, nullable=False)
     patronymic = Column(String, nullable=True)
+    email = Column(String, nullable=False)
     sex = Column(SQLEnum(Sex), nullable=True)
     weight = Column(Float, nullable=True)
     height = Column(Float, nullable=True)
