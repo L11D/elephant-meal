@@ -10,13 +10,13 @@ services:
       - "8000:8000"
 
   db:
-  image: postgres:latest
-  hostname: database_host
-  environment:
-    POSTGRES_DB: elephant-meal-db
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: 1111
-  ports:
-    - "5432:5432"
-  volumes:
-    - /var/elephant-meal/postgres-data:/var/lib/postgresql/data
+    image: postgres:latest
+    hostname: database_host
+    environment:
+      POSTGRES_DB: elephant-meal-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1111
+    ports:
+      - "5432:5432"
+    volumes:
+      - /var/elephant-meal/postgres-data:/var/lib/postgresql/data
