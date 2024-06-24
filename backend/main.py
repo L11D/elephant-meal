@@ -30,6 +30,6 @@ if __name__ == "__main__":
         result = connection.execute(text("SELECT 1"))
         print(result.fetchone())
     print('exit')
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # uvicorn.run(app, host="0.0.0.0", port=8000)
 
     
