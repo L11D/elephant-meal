@@ -20,3 +20,11 @@ services:
       - "5432:5432"
     volumes:
       - /var/elephant-meal/postgres-data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: database_host
+    ports:
+      - "8080:8080"
