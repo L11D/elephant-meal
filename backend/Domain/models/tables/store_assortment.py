@@ -7,8 +7,8 @@ from backend.Domain.models.enum.sex import Sex
 from backend.Domain.models.enum.value_type import ValueType
 
 
-class User(Base):
-    __tablename__ = "users"
+class StoreAssortment(Base):
+    __tablename__ = "store_assortment"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     shop_id = Column(UUID(as_uuid=True), ForeignKey('shops.id'), default=uuid.uuid4, nullable=False)
@@ -22,13 +22,6 @@ class User(Base):
     carb = Column(Float, nullable=True)
     fats = Column(Float, nullable=True)
     brand = Column(String, nullable=True)
-    brand = Column(String, nullable=True)
-    brand = Column(String, nullable=True)
-
-
-    patronymic = Column(String, nullable=True)
-    weight = Column(Float, nullable=True)
-    height = Column(Float, nullable=True)
-    birth_date = Column(Time, nullable=True)
-    registration_date = Column(Time, nullable=False)
-    password = Column(String, nullable=False)
+    description = Column(String, nullable=True)
+    composition = Column(String, nullable=True)
+    image_id = Column(UUID(as_uuid=True), default=uuid.uuid4, nullable=True)
