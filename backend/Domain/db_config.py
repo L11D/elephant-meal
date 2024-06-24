@@ -4,9 +4,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from backend.config import DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME
+
 Base = declarative_base()
-DATABASE_URL = f'postgresql+psycopg2://{os.environ["DB_USER"]}:{os.environ["DB_PASSWORD"]}@' \
-               f'{os.environ["DB_HOST"]}:{os.environ["DB_PORT"]}/{os.environ["DB_NAME"]}'
+DATABASE_URL = f'postgresql://{DB_USER}:{DB_PASSWORD}@' \
+               f'{DB_HOST}:{DB_PORT}/{DB_NAME}'
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
