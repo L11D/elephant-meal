@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 username = 'postgres'
 password = '1111'
