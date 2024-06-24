@@ -12,5 +12,6 @@ enum class Screen {
     ProductsBanScreen,
     ProductsPreferencesScreen,
     TodayScreen,
-    MenuScreen
+    MenuScreen,
+    CameraScreen
 }

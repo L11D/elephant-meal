@@ -88,4 +88,7 @@
     <string name="person_icon_description">Плэйсхолдер аватарки пользователя</string>
     <string name="choose_photo">Выбрать фото</string>
     <string name="save">Сохранить</string>
+    <string name="camera_switch_description">Кнопка разворота камеры</string>
+    <string name="take_photo_description">Кнопка фотографирования</string>
+    <string name="camera_back_arrow">Кнопка закрытия камеры</string>
 </resources>

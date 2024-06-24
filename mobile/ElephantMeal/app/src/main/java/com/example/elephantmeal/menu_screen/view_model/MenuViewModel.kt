@@ -1,24 +1,33 @@
 package com.example.elephantmeal.menu_screen.view_model
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.elephantmeal.menu_screen.domain.MenuUseCase
 import com.example.elephantmeal.registration_second_screen.view_model.Gender
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class MenuViewModel @Inject constructor(
-
+    private val _menuUseCase: MenuUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(MenuUiState())
     val state = _state.asStateFlow()
+
+    private val _events = MutableSharedFlow<MenuEvent>()
+    val events = _events.asSharedFlow()
 
     var birthDate by mutableStateOf("")
         private set
@@ -39,9 +48,30 @@ class MenuViewModel @Inject constructor(
         private set
 
     // Выбор фото
-    fun choosePhoto() {
+    fun choosePhoto(context: Context) {
+        _menuUseCase.requirePermissions(context)
 
+        _state.update { currentState ->
+            currentState.copy(
+                isCameraEnabled = true
+            )
+        }
+
+        /*viewModelScope.launch {
+            _events.emit(MenuEvent.LaunchCamera)
+        }*/
     }
+
+    // Закрытие камеры
+    fun onCameraClosed() {
+        _state.update { currentState ->
+            currentState.copy(
+                isCameraEnabled = false
+            )
+        }
+    }
+
+
 
     // Изменение фамилии
     fun onSurnameChange(newSurname: String) {

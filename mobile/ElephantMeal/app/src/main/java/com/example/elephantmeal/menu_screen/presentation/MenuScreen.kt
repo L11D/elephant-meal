@@ -1,4 +1,4 @@
-package com.example.elephantmeal.menu_screen
+package com.example.elephantmeal.menu_screen.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -20,14 +21,26 @@ import com.example.elephantmeal.common.presentation.InputField
 import com.example.elephantmeal.common.presentation.NumberInputField
 import com.example.elephantmeal.common.presentation.PrimaryButton
 import com.example.elephantmeal.common.presentation.SelectBirthday
+import com.example.elephantmeal.menu_screen.view_model.MenuEvent
 import com.example.elephantmeal.menu_screen.view_model.MenuViewModel
 
 // Экран меню
 @Composable
 fun MenuScreen(
+   // onCameraLaunched: () -> Unit,
     viewModel: MenuViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+
+    /*LaunchedEffect(Unit) {
+        viewModel.events.collect {
+            when (it) {
+                is MenuEvent.LaunchCamera -> {
+                    onCameraLaunched()
+                }
+            }
+        }
+    }*/
 
     Column(
         modifier = Modifier
