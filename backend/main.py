@@ -7,15 +7,15 @@ import uvicorn
 from sqlalchemy import create_engine, text, Table, Column, Integer, String, MetaData
 
 from backend.Domain.domain_init import init_db
-#from backend.UserService.routers.user_router import user_router
-from backend.UserService.services.email_service import EmailService
+# from backend.UserService.routers.user_router import user_router
+# from backend.UserService.services.email_service import EmailService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1")
 
-#router.include_router(user_router)
+# router.include_router(user_router)
 
 app = FastAPI()
 app.include_router(router)
