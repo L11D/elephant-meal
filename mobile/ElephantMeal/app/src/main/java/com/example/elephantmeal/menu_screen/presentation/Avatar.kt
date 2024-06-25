@@ -78,23 +78,43 @@ fun Avatar(
 
         val context = LocalContext.current
 
-        Text(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(24.dp, 24.dp, 0.dp, 0.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = interactionSource
-                ) {
-                    viewModel.choosePhoto(context)
-                },
-            text = stringResource(id = R.string.choose_photo),
-            style = TextStyle(
-                fontSize = 16.sp,
-                color = PrimaryColor,
-                fontWeight = FontWeight.Bold
+        if (cameraState.photoUri == null) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(24.dp, 24.dp, 0.dp, 0.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = interactionSource
+                    ) {
+                        viewModel.onSetAvatar()
+                    },
+                text = stringResource(id = R.string.choose_photo),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = PrimaryColor,
+                    fontWeight = FontWeight.Bold
+                )
             )
-        )
+        }
+        else {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(24.dp, 24.dp, 0.dp, 0.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = interactionSource
+                    ) {
+                        cameraViewModel.removePhoto()
+                    },
+                text = stringResource(id = R.string.remove_photo),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    color = PrimaryColor,
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
     }
-    
 }

@@ -91,4 +91,8 @@
     <string name="camera_switch_description">Кнопка разворота камеры</string>
     <string name="take_photo_description">Кнопка фотографирования</string>
     <string name="camera_back_arrow">Кнопка закрытия камеры</string>
+    <string name="remove_photo">Удалить фото</string>
+    <string name="choose_photo_text">Выберите изображение из галереи или сделайте фотографию</string>
+    <string name="choose">Выбрать</string>
+    <string name="take">Сделать</string>
 </resources>

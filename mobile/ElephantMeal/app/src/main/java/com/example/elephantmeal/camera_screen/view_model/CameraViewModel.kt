@@ -84,7 +84,28 @@ class CameraViewModel @Inject constructor(
     private fun setProfilePicture(uri: Uri) {
         _state.update { currentState ->
             currentState.copy(
-                photoUri = uri
+                photoUri = uri,
+                isSaveActive = true
+            )
+        }
+    }
+
+    // Удаление фото
+    fun removePhoto() {
+        _state.update { currentState ->
+            currentState.copy(
+                photoUri = null,
+                isSaveActive = false
+            )
+        }
+    }
+
+    // Выбор фото из галереи
+    fun onPhotoChosen(uri: Uri) {
+        _state.update { currentState ->
+            currentState.copy(
+                photoUri = uri,
+                isSaveActive = true
             )
         }
     }

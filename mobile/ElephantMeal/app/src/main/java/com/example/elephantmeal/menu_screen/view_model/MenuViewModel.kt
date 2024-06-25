@@ -47,19 +47,16 @@ class MenuViewModel @Inject constructor(
     var weight by mutableStateOf("")
         private set
 
-    // Выбор фото
-    fun choosePhoto(context: Context) {
+    // Сделать фото
+    fun takePhoto(context: Context) {
         _menuUseCase.requirePermissions(context)
 
         _state.update { currentState ->
             currentState.copy(
-                isCameraEnabled = true
+                isCameraEnabled = true,
+                isPhotoChoosing = false
             )
         }
-
-        /*viewModelScope.launch {
-            _events.emit(MenuEvent.LaunchCamera)
-        }*/
     }
 
     // Закрытие камеры
@@ -71,7 +68,36 @@ class MenuViewModel @Inject constructor(
         }
     }
 
+    // Выбор фото
+    fun onSetAvatar() {
+        _state.update { currentState ->
+            currentState.copy(
+                isPhotoChoosing = true
+            )
+        }
+    }
 
+    // Выбор фото из галлереи
+    fun onPhotoChoose() {
+        _state.update { currentState ->
+            currentState.copy(
+                isPhotoChoosing = false
+            )
+        }
+
+        viewModelScope.launch {
+            _events.emit(MenuEvent.ChoosePhotoFromGallery)
+        }
+    }
+
+    // Закрытие диалогового окна выбора фото
+    fun onPhotoChooseDismiss() {
+        _state.update { currentState ->
+            currentState.copy(
+                isPhotoChoosing = false
+            )
+        }
+    }
 
     // Изменение фамилии
     fun onSurnameChange(newSurname: String) {

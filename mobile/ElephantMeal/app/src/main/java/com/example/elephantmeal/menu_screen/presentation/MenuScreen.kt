@@ -1,5 +1,7 @@
 package com.example.elephantmeal.menu_screen.presentation
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +13,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
+import com.example.elephantmeal.camera_screen.view_model.CameraViewModel
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
 import com.example.elephantmeal.common.presentation.GenderSelection
 import com.example.elephantmeal.common.presentation.InputField
@@ -23,24 +27,51 @@ import com.example.elephantmeal.common.presentation.PrimaryButton
 import com.example.elephantmeal.common.presentation.SelectBirthday
 import com.example.elephantmeal.menu_screen.view_model.MenuEvent
 import com.example.elephantmeal.menu_screen.view_model.MenuViewModel
+import kotlinx.coroutines.flow.collect
 
 // Экран меню
 @Composable
 fun MenuScreen(
-   // onCameraLaunched: () -> Unit,
-    viewModel: MenuViewModel = hiltViewModel()
+    viewModel: MenuViewModel = hiltViewModel(),
+    cameraViewModel: CameraViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val cameraState by cameraViewModel.state.collectAsState()
 
-    /*LaunchedEffect(Unit) {
+    val context = LocalContext.current
+
+    // Диалоговое окно выбора фото
+    if (state.isPhotoChoosing){
+        ChoosePhotoDialog(
+            onDismissRequest = viewModel::onPhotoChooseDismiss,
+            onTakePhoto = {
+                viewModel.takePhoto(context)
+            },
+            onChoosePhoto = {
+                viewModel.onPhotoChoose()
+            }
+        )
+    }
+
+    // Выбор фото из галереи
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            uri?.let {
+                cameraViewModel.onPhotoChosen(uri)
+            }
+        }
+    )
+
+    LaunchedEffect(Unit) {
         viewModel.events.collect {
             when (it) {
-                is MenuEvent.LaunchCamera -> {
-                    onCameraLaunched()
+                is MenuEvent.ChoosePhotoFromGallery -> {
+                    galleryLauncher.launch("image/*")
                 }
             }
         }
-    }*/
+    }
 
     Column(
         modifier = Modifier
@@ -134,7 +165,7 @@ fun MenuScreen(
             topPadding = 32.dp,
             bottomPadding = 32.dp,
             text = stringResource(id = R.string.save),
-            isEnabled = state.isSaveActive,
+            isEnabled = state.isSaveActive || cameraState.isSaveActive,
             onClick = {
                 viewModel.onSave()
             }
