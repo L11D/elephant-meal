@@ -2,12 +2,13 @@ package com.example.elephantmeal.common.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.elephantmeal.cheat_meal_screen.CheatMealScreen
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
-import com.example.elephantmeal.camera_screen.presentation.CameraScreen
 import com.example.elephantmeal.menu_screen.presentation.MenuWithCamera
 import com.example.elephantmeal.plan_choose_screen.presentation.PlanChooseScreen
 import com.example.elephantmeal.planning_screen.PlanningScreen
@@ -16,7 +17,7 @@ import com.example.elephantmeal.products_preferences_screen.presentation.Product
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
 import com.example.elephantmeal.registration_third_screen.presentation.RegistrationThirdScreen
-import com.example.elephantmeal.today_screen.presentation.TodayScreen
+import com.example.elephantmeal.today_screen.TodayScreen
 import com.example.elephantmeal.welcome_screen.WelcomeScreen
 
 @Composable
@@ -26,7 +27,7 @@ fun ElephantMealNavigation(
     NavHost(
         navController = navController,
        // startDestination = Screen.WelcomeScreen.name
-        startDestination = Screen.MenuScreen.name
+        startDestination = "${Screen.TodayScreen.name}/false"
     ) {
         // Приветственный экран
         composable(Screen.WelcomeScreen.name) {
@@ -185,13 +186,18 @@ fun ElephantMealNavigation(
                 },
 
                 onContinue = {
-                    navController.navigate(Screen.TodayScreen.name)
+                    navController.navigate("${Screen.TodayScreen.name}/true")
                 }
             )
         }
 
-        // Экран расписания рациона на день
-        composable(Screen.TodayScreen.name) {
+        // Экран расписания рациона
+        composable(
+            route = "${Screen.TodayScreen.name}/{${NavParams.IS_WEEK_MODE_SELECTED}}",
+            arguments = listOf(navArgument(NavParams.IS_WEEK_MODE_SELECTED) { type = NavType.BoolType})
+        ) { backStackEntry ->
+            val isWeekModeSelected = backStackEntry.arguments?.getBoolean(NavParams.IS_WEEK_MODE_SELECTED)
+
             TodayScreen(
                 onHomeClick = {
 
@@ -202,33 +208,54 @@ fun ElephantMealNavigation(
                 },
 
                 onWeekClick = {
-
+                    navController.navigate("${Screen.TodayScreen.name}/true") {
+                        popUpTo("${Screen.TodayScreen.name}/{${NavParams.IS_WEEK_MODE_SELECTED}}") {
+                            inclusive = true
+                        }
+                    }
                 },
 
-                onMenuClick = {
-                    navController.navigate(Screen.MenuScreen.name) {
-                        popUpTo(Screen.TodayScreen.name)
-                    }
-                }
+                onMenuClick = { weekMode ->
+                    navController.navigate("${Screen.MenuScreen.name}/${weekMode}")
+                },
+
+                isWeekModeSelected = isWeekModeSelected ?: false
             )
         }
 
         // Экран меню
-        composable(Screen.MenuScreen.name) {
-            /*MenuScreen(
-                onCameraLaunched =  {
-                    navController.navigate(Screen.CameraScreen.name)
-                }
-            )*/
-            MenuWithCamera()
-        }
+        composable(
+            route = "${Screen.MenuScreen.name}/{${NavParams.IS_WEEK_MODE_SELECTED}}",
+            arguments = listOf(navArgument(NavParams.IS_WEEK_MODE_SELECTED) {type = NavType.BoolType})
+        ) { backStackEntry ->
+            val isWeekModeSelected = backStackEntry.arguments?.getBoolean(NavParams.IS_WEEK_MODE_SELECTED)
 
-        // Экран камеры
-        composable(Screen.CameraScreen.name) {
-            CameraScreen(
-                onCameraClosed = {
-                    navController.popBackStack()
-                }
+            MenuWithCamera(
+                onHomeClick = {
+
+                },
+
+                onTodayClick = { weekMode ->
+                    navController.navigate("${Screen.TodayScreen.name}/$weekMode") {
+                        popUpTo("${Screen.TodayScreen.name}/{${NavParams.IS_WEEK_MODE_SELECTED}}") {
+                            inclusive = true
+                        }
+                    }
+                },
+
+                onDayClick = {
+
+                },
+
+                onWeekClick = {
+                    navController.navigate("${Screen.TodayScreen.name}/true") {
+                        popUpTo("${Screen.TodayScreen.name}/{${NavParams.IS_WEEK_MODE_SELECTED}}") {
+                            inclusive = true
+                        }
+                    }
+                },
+
+                isWeekSelected = isWeekModeSelected ?: false
             )
         }
     }

@@ -1,9 +1,9 @@
-package com.example.elephantmeal.today_screen.domain
+package com.example.elephantmeal.day_screen.domain
 
 import com.example.elephantmeal.R
 import java.time.LocalDate
 
-class TodayUseCase {
+class DayUseCase {
 
     // Получение расписания рациона на неделю
     fun getWeekRation(dates: List<LocalDate>): List<Mealtime> {

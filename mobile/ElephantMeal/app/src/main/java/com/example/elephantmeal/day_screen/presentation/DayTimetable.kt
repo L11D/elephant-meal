@@ -1,4 +1,4 @@
-package com.example.elephantmeal.today_screen.presentation
+package com.example.elephantmeal.day_screen.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -28,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
-import com.example.elephantmeal.today_screen.domain.Mealtime
-import com.example.elephantmeal.today_screen.view_model.TodayViewModel
+import com.example.elephantmeal.day_screen.domain.Mealtime
+import com.example.elephantmeal.day_screen.view_model.DayViewModel
 import com.example.elephantmeal.ui.theme.DarkGrayColor
 import com.example.elephantmeal.ui.theme.LightBlueColor
 import com.example.elephantmeal.ui.theme.LightGrayColor
@@ -37,7 +36,7 @@ import com.example.elephantmeal.ui.theme.LightGrayColor
 // Расписание рациона на день
 @Composable
 fun DayTimetable(
-    viewModel: TodayViewModel = hiltViewModel()
+    viewModel: DayViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 

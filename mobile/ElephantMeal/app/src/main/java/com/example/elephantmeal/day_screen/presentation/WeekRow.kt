@@ -1,4 +1,4 @@
-package com.example.elephantmeal.today_screen.presentation
+package com.example.elephantmeal.day_screen.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
-import com.example.elephantmeal.today_screen.view_model.TodayViewModel
+import com.example.elephantmeal.day_screen.view_model.DayViewModel
 import com.example.elephantmeal.ui.theme.DayOfWeekGrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
 import com.example.elephantmeal.ui.theme.SelectedDayBackgroundColor
@@ -43,7 +43,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeekRow(
-    viewModel: TodayViewModel = hiltViewModel()
+    viewModel: DayViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val calendarState = rememberSheetState()
@@ -106,7 +106,7 @@ fun WeekRow(
 @Composable
 fun DayOfWeek(
     date: LocalDate,
-    viewModel: TodayViewModel = hiltViewModel()
+    viewModel: DayViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.collectAsState().value
     val dateTimeFormatter = DateTimeFormatter.ofPattern("dd")

@@ -1,4 +1,4 @@
-package com.example.elephantmeal.today_screen.presentation
+package com.example.elephantmeal.day_screen.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.elephantmeal.R
+import com.example.elephantmeal.common.navigation.Screen
 import com.example.elephantmeal.ui.theme.DarkGrayColor
 import com.example.elephantmeal.ui.theme.LightBlueColor
 
@@ -35,16 +36,18 @@ import com.example.elephantmeal.ui.theme.LightBlueColor
 @Composable
 fun BottomNavBar(
     isWeekModeSelected: Boolean,
-    onHomeClick: () -> Unit = { },
-    onTodayClick: () -> Unit = { },
+    onHomeClick: (Boolean) -> Unit = { },
+    onTodayClick: (Boolean) -> Unit = { },
     onDayClick: () -> Unit = { },
     onWeekClick: () -> Unit = { },
-    onMenuClick: () -> Unit = { }
+    onMenuClick: (Boolean) -> Unit = { },
+    currentScreen: Screen
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp),
+            .height(100.dp)
+            .background(Color.White),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
@@ -55,7 +58,9 @@ fun BottomNavBar(
             iconDescription = stringResource(id = R.string.home_icon_description),
             elementName = stringResource(id = R.string.homepage),
             isSelected = false,
-            onClick = onHomeClick
+            onClick = {
+                onHomeClick(isWeekModeSelected)
+            }
         )
 
         // Кнопка перехода на экран расписания рациона
@@ -64,8 +69,10 @@ fun BottomNavBar(
             selectedIcon = ImageVector.vectorResource(id = R.drawable.today_icon_selected),
             iconDescription = stringResource(id = R.string.today_icon_description),
             elementName = stringResource(id = R.string.today),
-            isSelected = true,
-            onClick = onTodayClick
+            isSelected = currentScreen == Screen.TodayScreen,
+            onClick = {
+                onTodayClick(isWeekModeSelected)
+            }
         )
 
         // Кнопка переключения в режим просмотра расписания на день
@@ -76,7 +83,7 @@ fun BottomNavBar(
                 iconDescription = stringResource(id = R.string.day_icon_description),
                 elementName = stringResource(id = R.string.day),
                 isSelected = false,
-                onClick = onWeekClick
+                onClick = onDayClick
             )
         }
         // Кнопка переключения в режим просмотра расписания на неделю
@@ -87,7 +94,7 @@ fun BottomNavBar(
                 iconDescription = stringResource(id = R.string.week_icon_description),
                 elementName = stringResource(id = R.string.week),
                 isSelected = false,
-                onClick = onDayClick
+                onClick = onWeekClick
             )
         }
 
@@ -97,8 +104,10 @@ fun BottomNavBar(
             selectedIcon = ImageVector.vectorResource(id = R.drawable.menu_icon_selected),
             iconDescription = stringResource(id = R.string.menu_icon_description),
             elementName = stringResource(id = R.string.menu),
-            isSelected = false,
-            onClick = onMenuClick
+            isSelected = currentScreen == Screen.MenuScreen,
+            onClick = {
+                onMenuClick(isWeekModeSelected)
+            }
         )
     }
 }

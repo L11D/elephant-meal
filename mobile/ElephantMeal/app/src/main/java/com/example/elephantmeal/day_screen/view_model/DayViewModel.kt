@@ -1,22 +1,19 @@
-package com.example.elephantmeal.today_screen.view_model
+package com.example.elephantmeal.day_screen.view_model
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.elephantmeal.today_screen.domain.TodayUseCase
+import com.example.elephantmeal.day_screen.domain.DayUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class TodayViewModel @Inject constructor(
-    private val _todayUseCase: TodayUseCase
+class DayViewModel @Inject constructor(
+    private val _todayUseCase: DayUseCase
 ) : ViewModel() {
-    private val _state = MutableStateFlow(TodayUiState())
+    private val _state = MutableStateFlow(DayUiState())
     val state = _state.asStateFlow()
 
     init {

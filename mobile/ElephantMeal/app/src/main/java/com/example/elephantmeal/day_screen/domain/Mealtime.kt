@@ -1,4 +1,4 @@
-package com.example.elephantmeal.today_screen.domain
+package com.example.elephantmeal.day_screen.domain
 
 import java.time.LocalDate
 

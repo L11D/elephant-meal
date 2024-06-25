@@ -1,4 +1,4 @@
-package com.example.elephantmeal.today_screen.presentation
+package com.example.elephantmeal.day_screen.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,14 +20,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.elephantmeal.R
+import com.example.elephantmeal.common.navigation.Screen
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
 
 // Экран просмотра расписания приёма пищи на день
 @Composable
-fun TodayScreen(
+fun DayScreen(
     onHomeClick: () -> Unit,
     onDayClick: () -> Unit,
-    onMenuClick: () -> Unit,
+    onMenuClick: (isWeekModeSelected: Boolean) -> Unit,
     onWeekClick: () -> Unit
 ) {
     Column(
@@ -92,7 +93,11 @@ fun TodayScreen(
         // Нижняя навигационная панель
         BottomNavBar(
             isWeekModeSelected = false,
-            onMenuClick = onMenuClick
+            onMenuClick = {
+                onMenuClick(false)
+            },
+            onWeekClick = onWeekClick,
+            currentScreen = Screen.TodayScreen
         )
     }
 }

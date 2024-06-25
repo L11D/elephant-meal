@@ -12,7 +12,12 @@ import com.example.elephantmeal.menu_screen.view_model.MenuViewModel
 
 @Composable
 fun MenuWithCamera(
-    menuViewModel: MenuViewModel = hiltViewModel()
+    menuViewModel: MenuViewModel = hiltViewModel(),
+    onHomeClick: () -> Unit,
+    onTodayClick: (Boolean) -> Unit,
+    onDayClick: () -> Unit,
+    onWeekClick: () -> Unit,
+    isWeekSelected: Boolean
 ) {
     val state by menuViewModel.state.collectAsState()
 
@@ -28,7 +33,13 @@ fun MenuWithCamera(
             )
         }
         else {
-            MenuScreen()
+            MenuScreen(
+                onHomeClick = onHomeClick,
+                onTodayClick = onTodayClick,
+                onDayClick = onDayClick,
+                onWeekClick = onWeekClick,
+                isWeekSelected = isWeekSelected
+            )
         }
     }
 }
