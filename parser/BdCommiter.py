@@ -5,6 +5,7 @@ import re
 import numpy as np
 
 from backend.Domain.models.tables.ingredient import Ingredient
+from backend.Domain.models.tables.recipe import Recipe
 
 
 def commit_ingredients(db):
@@ -76,14 +77,21 @@ def commit_recipes(db):
 
             if value_type != 'notmetric':
                 value = get_value(y)
-            if value_type is 'GLASS':
+            if value_type == 'GLASS':
                 value *= 200
                 value_type = 'ml'
 
         return value, value_type, displayed_name
 
     for index, data in recipes_df.iterrows():
+        recipe = Recipe(
+            name=data['name'],
+            instruction=data['instruction'],
+            link=data['url']
+        )
+        db.add(recipe)
         value, value_type, displayed_name = get_values(data['ingredients'])
+
 
 
 def commit():
@@ -92,8 +100,17 @@ def commit():
     db_gen = get_db()
     db = next(db_gen)
     with db:
-        commit_ingredients(db)
-        # db.add(ing)
+        recipe = Recipe(
+            name='dffdf',
+            instruction='dfdf',
+            link='sss'
+        )
+        a = db.add(recipe)
+        db.commit()
+
+        print(a)
+        print(recipe.id)
+        # commit_ingredients(db)
         db.commit()
         # fetched_ing = db.query(Ingredient).filter_by(name=ing_test['name']).first()
         #
