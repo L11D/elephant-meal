@@ -6,3 +6,5 @@ class ValueType(Enum):
     G = 2
     Ml = 3
     L = 4
+    Piece = 5
+    NotMetric = 6

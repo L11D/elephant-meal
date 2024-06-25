@@ -1,8 +1,9 @@
 import uuid
 
-from sqlalchemy import Column, UUID, Time, Float, String, Enum as SQLEnum
+from sqlalchemy import Column, UUID, Time, Boolean, Float, String, Enum as SQLEnum
 
 from backend.Domain.db_config import Base
+from backend.Domain.models.enum.roles import Role
 from backend.Domain.models.enum.sex import Sex
 
 
@@ -20,3 +21,6 @@ class User(Base):
     birth_date = Column(Time, nullable=True)
     registration_date = Column(Time, nullable=False)
     password = Column(String, nullable=False)
+    role = Column(SQLEnum(Role), nullable=False)
+    is_verified = Column(Boolean, nullable=True, default=False)
+    secret_key = Column(String, nullable=True)
