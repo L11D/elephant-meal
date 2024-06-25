@@ -9,8 +9,8 @@ import java.time.Month
 
 class WeekUseCase {
     // Получение дней текущей недели
-    fun getCurrentWeek(): List<LocalDate> {
-        val currentDate = LocalDate.now()
+    fun getWeek(date: LocalDate): List<LocalDate> {
+        val currentDate = date
         val startOfWeek = currentDate.minusDays(currentDate.dayOfWeek.value.toLong() - 1)
         val week: MutableList<LocalDate> = mutableListOf()
 
@@ -18,6 +18,8 @@ class WeekUseCase {
 
         return week
     }
+
+
 
     // Получение расписания рациона на неделю
     fun getWeekRation(dates: List<LocalDate>): List<Mealtime> {

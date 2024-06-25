@@ -5,6 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,10 +29,11 @@ class TodayViewModel @Inject constructor() : ViewModel() {
     }
 
     // Переход в режим расписания на неделю
-    fun onWeekModeSelected() {
+    fun onWeekModeSelected(selectedDate: LocalDate) {
         _state.update { currentState ->
             currentState.copy(
-                isWeekModeSelected = true
+                isWeekModeSelected = true,
+                selectedDate = selectedDate
             )
         }
     }

@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,9 +16,10 @@ class WeekViewModel @Inject constructor(
     private val _state = MutableStateFlow(WeekUiState())
     val state = _state.asStateFlow()
 
-    init {
+    // Получение расписания рациона на неделю
+    fun getWeekTimetable(date: LocalDate) {
         _state.update { currentState ->
-            val week = _weekUseCase.getCurrentWeek()
+            val week = _weekUseCase.getWeek(date)
 
             currentState.copy(
                 weekRation = _weekUseCase.getWeekRation(week),

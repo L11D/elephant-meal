@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -19,17 +21,23 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
 import com.example.elephantmeal.common.navigation.Screen
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
+import com.example.elephantmeal.day_screen.view_model.DayViewModel
+import java.time.LocalDate
 
 // Экран просмотра расписания приёма пищи на день
 @Composable
 fun DayScreen(
     onHomeClick: () -> Unit,
     onMenuClick: (isWeekModeSelected: Boolean) -> Unit,
-    onWeekClick: () -> Unit
+    onWeekClick: (LocalDate) -> Unit,
+    viewModel: DayViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -95,7 +103,9 @@ fun DayScreen(
             onMenuClick = {
                 onMenuClick(false)
             },
-            onWeekClick = onWeekClick,
+            onWeekClick = {
+                onWeekClick(state.selectedDate)
+            },
             currentScreen = Screen.TodayScreen
         )
     }

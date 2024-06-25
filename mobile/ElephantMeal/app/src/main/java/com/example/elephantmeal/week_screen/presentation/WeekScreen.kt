@@ -7,23 +7,33 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.common.navigation.Screen
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
 import com.example.elephantmeal.day_screen.presentation.BottomNavBar
+import com.example.elephantmeal.week_screen.view_model.WeekViewModel
+import java.time.LocalDate
 
 // Экран просмотра расписания рациона на неделю
 @Composable
 fun WeekScreen(
     onHomeClick: () -> Unit,
     onDayClick: () -> Unit,
-    onMenuClick: (isWeekModeSelected: Boolean) -> Unit
+    onMenuClick: (isWeekModeSelected: Boolean) -> Unit,
+    selectedDate: LocalDate,
+    viewModel: WeekViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(Unit) {
+        viewModel.getWeekTimetable(selectedDate)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

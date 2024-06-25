@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.example.elephantmeal.day_screen.presentation.DayScreen
 import com.example.elephantmeal.today_screen.view_model.TodayViewModel
 import com.example.elephantmeal.week_screen.presentation.WeekScreen
+import java.time.LocalDate
 
 // Экран просмотра расписания рациона
 @Composable
@@ -31,7 +32,8 @@ fun TodayScreen(
             onMenuClick = onMenuClick,
             onDayClick = {
                 viewModel.onDayModeSelected()
-            }
+            },
+            selectedDate = state.selectedDate
         )
     }
     // Экран просмотра расписания рациона на день
@@ -39,8 +41,8 @@ fun TodayScreen(
         DayScreen(
             onHomeClick = onHomeClick,
             onMenuClick = onMenuClick,
-            onWeekClick = {
-                viewModel.onWeekModeSelected()
+            onWeekClick = { selectedDate ->
+                viewModel.onWeekModeSelected(selectedDate)
             }
         )
     }
