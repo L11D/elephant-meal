@@ -17,7 +17,7 @@ import com.example.elephantmeal.products_preferences_screen.presentation.Product
 import com.example.elephantmeal.registration_first_screen.presentation.RegistrationFirstScreen
 import com.example.elephantmeal.registration_second_screen.presentation.RegistrationSecondScreen
 import com.example.elephantmeal.registration_third_screen.presentation.RegistrationThirdScreen
-import com.example.elephantmeal.today_screen.TodayScreen
+import com.example.elephantmeal.today_screen.presentation.TodayScreen
 import com.example.elephantmeal.welcome_screen.WelcomeScreen
 
 @Composable
@@ -203,18 +203,6 @@ fun ElephantMealNavigation(
 
                 },
 
-                onDayClick = {
-
-                },
-
-                onWeekClick = {
-                    navController.navigate("${Screen.TodayScreen.name}/true") {
-                        popUpTo("${Screen.TodayScreen.name}/{${NavParams.IS_WEEK_MODE_SELECTED}}") {
-                            inclusive = true
-                        }
-                    }
-                },
-
                 onMenuClick = { weekMode ->
                     navController.navigate("${Screen.MenuScreen.name}/${weekMode}")
                 },
@@ -244,7 +232,11 @@ fun ElephantMealNavigation(
                 },
 
                 onDayClick = {
-
+                    navController.navigate("${Screen.TodayScreen.name}/false") {
+                        popUpTo("${Screen.TodayScreen.name}/{${NavParams.IS_WEEK_MODE_SELECTED}}") {
+                            inclusive = true
+                        }
+                    }
                 },
 
                 onWeekClick = {

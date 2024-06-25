@@ -95,4 +95,18 @@
     <string name="choose_photo_text">Выберите изображение из галереи или сделайте фотографию</string>
     <string name="choose">Выбрать</string>
     <string name="take">Сделать</string>
+    <string name="previous_week_description">Кнопка перехода на расписание предыдущей недели</string>
+    <string name="nextx_week_description">Кнопка перехода на расписание следующей недели</string>
+    <string name="of_january">января</string>
+    <string name="of_february">февраля</string>
+    <string name="of_march">марта</string>
+    <string name="of_april">апреля</string>
+    <string name="of_may">мая</string>
+    <string name="of_june">июня</string>
+    <string name="of_july">июля</string>
+    <string name="of_august">августа</string>
+    <string name="of_september">сентября</string>
+    <string name="of_october">октября</string>
+    <string name="of_november">ноября</string>
+    <string name="of_december">декабря</string>
 </resources>

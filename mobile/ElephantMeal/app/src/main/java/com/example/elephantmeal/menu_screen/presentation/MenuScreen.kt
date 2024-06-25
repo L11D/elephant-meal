@@ -86,7 +86,8 @@ fun MenuScreen(
                 isWeekModeSelected = isWeekSelected,
                 currentScreen = Screen.MenuScreen,
                 onTodayClick = onTodayClick,
-                onWeekClick = onWeekClick
+                onWeekClick = onWeekClick,
+                onDayClick = onDayClick
             )
         },
         topBar = {

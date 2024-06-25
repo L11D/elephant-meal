@@ -1,4 +1,4 @@
-package com.example.elephantmeal.day_screen.presentation
+package com.example.elephantmeal.week_screen.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -6,29 +6,23 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.elephantmeal.R
 import com.example.elephantmeal.common.navigation.Screen
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
+import com.example.elephantmeal.day_screen.presentation.BottomNavBar
 
-// Экран просмотра расписания приёма пищи на день
+// Экран просмотра расписания рациона на неделю
 @Composable
-fun DayScreen(
+fun WeekScreen(
     onHomeClick: () -> Unit,
-    onMenuClick: (isWeekModeSelected: Boolean) -> Unit,
-    onWeekClick: () -> Unit
+    onDayClick: () -> Unit,
+    onMenuClick: (isWeekModeSelected: Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -38,27 +32,14 @@ fun DayScreen(
         // Логотип приложения
         ElephantMealLogo()
 
-        // Заголовок экрана
-        Text(
-            modifier = Modifier
-                .padding(24.dp, 24.dp, 24.dp, 0.dp),
-            text = stringResource(id = R.string.daily_meal_plan),
-            style = TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        )
+        // Переключение недели
+        WeeksSwitcher()
 
-        // Выбор дня просмотра расписания рациона
-        WeekRow()
-
+        // Расписание рациона на неделю
         Box(
             modifier = Modifier
                 .weight(1f)
         ) {
-            // Расписание рациона на день
-            DayTimetable()
-
             // Тень от нижней навигационной панели
             Box(
                 modifier = Modifier
@@ -74,14 +55,14 @@ fun DayScreen(
                     )
             )
 
+            // Тень от выбора недели
             Box(
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
                     .fillMaxWidth()
                     .height(6.dp)
                     .background(
                         brush = Brush.linearGradient(
-                            colors = listOf(Color.White, Color.Transparent),
+                            colors = listOf(Color.Black.copy(alpha = 0.06f), Color.Transparent),
                             start = Offset(0.0f, 0.0f),
                             end = Offset(0.0f, Float.POSITIVE_INFINITY)
                         )
@@ -89,14 +70,12 @@ fun DayScreen(
             )
         }
 
-        // Нижняя навигационная панель
+        // Нижняя навигационная пеналь
         BottomNavBar(
-            isWeekModeSelected = false,
-            onMenuClick = {
-                onMenuClick(false)
-            },
-            onWeekClick = onWeekClick,
-            currentScreen = Screen.TodayScreen
+            isWeekModeSelected = true,
+            currentScreen = Screen.TodayScreen,
+            onDayClick = onDayClick,
+            onMenuClick = onMenuClick
         )
     }
 }
