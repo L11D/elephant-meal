@@ -96,7 +96,7 @@ async def register(user_reg_dto: UserRegDTO,
             logger.warning(f"(Reg) User already registered: {user_reg_dto.email}")
             raise HTTPException(status_code=400, detail="User already exists")
 
-        user = await user_service.create_user(db, user_reg_dto.email, user_reg_dto.password, user_reg_dto.full_name)
+        user = await user_service.create_user(db, user_reg_dto)
 
         email_service.send_link(user.secret_key, user.email)
 
@@ -266,7 +266,6 @@ async def logout(access_token: str = Depends(oauth2_scheme),
     }
 )
 async def get_users(
-                    roles: list[int] = Query(),
                     access_token: str = Depends(oauth2_scheme),
                     db: Session = Depends(get_db),
                     user_service: UserService = Depends(UserService),
@@ -277,9 +276,7 @@ async def get_users(
             logger.warning(f"(Get user profile) Token is revoked: {access_token}")
             raise HTTPException(status_code=403, detail="Token revoked")
 
-        users = await user_service.get_users(db, roles)
-
-        logger.info(f"(Get users profiles) Successful get profiles with roles: {roles}")
+        users = await user_service.get_users(db)
 
         users_dto = []
 

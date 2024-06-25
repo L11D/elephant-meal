@@ -3,6 +3,7 @@ from email.mime.text import MIMEText
 
 from fastapi.security import OAuth2PasswordBearer
 
+from backend.env_variables import EMAIL_LOGIN, EMAIL_TEST
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/test/login/")
 
@@ -196,16 +197,11 @@ p, ul, ol {
         font-weight: bold; }
 </style>
 ''', 'html')
-TEST_MESSAGE['From'] = os.environ['EMAIL_LOGIN']
-TEST_MESSAGE['To'] = os.environ['EMAIL_TEST']
+TEST_MESSAGE['From'] = EMAIL_LOGIN
+TEST_MESSAGE['To'] = EMAIL_TEST
 TEST_MESSAGE['Subject'] = 'Test message'
 
 SWAGGER_GROUPS = {
-    "classroom": "Classroom",
     "test": "Test",
-    "application": "Application",
-    "building": "Building",
-    "user": "User",
-    "status": "Status",
-    "role": "Role"
+    "user": "User"
 }

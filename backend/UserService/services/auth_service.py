@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 
 from datetime import datetime, timedelta
 
-from models.tables.crl import CRL
+from backend.Domain.models.tables.crl import CRL
+from backend.env_variables import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ACCESS_TOKEN_ALGORITHM
 
 
 class AuthService:
@@ -14,9 +15,9 @@ class AuthService:
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
-        self.TOKEN_LIFETIME = int(os.environ["ACCESS_TOKEN_EXPIRE_MINUTES"])
-        self.SECRET_KEY = str(os.environ["SECRET_KEY"])
-        self.ALGORITHM = str(os.environ["ACCESS_TOKEN_ALGORITHM"])
+        self.TOKEN_LIFETIME = int(ACCESS_TOKEN_EXPIRE_MINUTES)
+        self.SECRET_KEY = str(SECRET_KEY)
+        self.ALGORITHM = str(ACCESS_TOKEN_ALGORITHM)
 
     async def create_access_token(self, data: dict) -> str:
         try:
