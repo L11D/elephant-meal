@@ -36,7 +36,6 @@ import com.example.elephantmeal.ui.theme.LightBlueColor
 @Composable
 fun BottomNavBar(
     isWeekModeSelected: Boolean,
-    onHomeClick: (Boolean) -> Unit = { },
     onTodayClick: (Boolean) -> Unit = { },
     onDayClick: () -> Unit = { },
     onWeekClick: () -> Unit = { },
@@ -52,7 +51,7 @@ fun BottomNavBar(
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         // Кнопка перехода на главный экран
-        NavBarElement(
+        /*NavBarElement(
             deselectedIcon = ImageVector.vectorResource(id = R.drawable.home_icon_deselected),
             selectedIcon = ImageVector.vectorResource(id = R.drawable.home_icon_selected),
             iconDescription = stringResource(id = R.string.home_icon_description),
@@ -61,7 +60,7 @@ fun BottomNavBar(
             onClick = {
                 onHomeClick(isWeekModeSelected)
             }
-        )
+        )*/
 
         // Кнопка перехода на экран расписания рациона
         NavBarElement(
