@@ -110,7 +110,7 @@ def run_migrations_online():
             # except Exception as e:
             #     print(f"Error nothing to change: {e}")
             print(f"FFFFFFFFFFFFFFF {flag}")
-            #context.run_migrations()
+            context.run_migrations()
 
 if context.is_offline_mode():
     run_migrations_offline()
