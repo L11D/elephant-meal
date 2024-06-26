@@ -1,7 +1,6 @@
 FROM python:3.10-slim
 LABEL maintainer="Mr. Liid"
 
-WORKDIR /
 COPY alembic.ini .
 COPY alembic .
 
