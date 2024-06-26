@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 import os
 import re
+from multiprocessing import Pool, Queue, Process, cpu_count
 
 import pandas as pd
 from selenium import webdriver
@@ -17,6 +18,7 @@ from utils.PictureParser import parse_picture
 
 save_path = 'data//products//'
 save_pictures_path = 'data//products//pictures//'
+
 
 def create_options():
     options = ChromeOptions()
@@ -36,7 +38,7 @@ def create_options():
 def get_product(product_name, url, category_chain):
     split_name = product_name.split(',')
     name = ''.join(split_name[0:-2])
-    cost = re.findall( r'\d+', split_name[-2].replace(' ', ''))
+    cost = re.findall(r'\d+', split_name[-2].replace(' ', ''))
     cost = ''.join(cost)
     cost = float(cost)
 
@@ -155,13 +157,15 @@ def add_embeddings(products_df):
     products_df['embedding'] = products_embeddings
     return products_df
 
+
 def parse_energy_value(driver, product):
     energy_value_elements = []
     try:
         energy_value_elements = WebDriverWait(driver, 5).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.UiKitProductCardEnergyValues_item'))
         )
-    except NoSuchElementException: pass
+    except TimeoutException:
+        pass
 
     calories = None
     proteins = None
@@ -173,8 +177,10 @@ def parse_energy_value(driver, product):
         element_value_tag = None
         try:
             element_name_tag = energy_value_element.find_element(By.CSS_SELECTOR, '.UiKitProductCardEnergyValues_name')
-            element_value_tag = energy_value_element.find_element(By.CSS_SELECTOR, '.UiKitProductCardEnergyValues_value')
-        except NoSuchElementException: pass
+            element_value_tag = energy_value_element.find_element(By.CSS_SELECTOR,
+                                                                  '.UiKitProductCardEnergyValues_value')
+        except NoSuchElementException:
+            pass
 
         element_name = None
         element_value = None
@@ -206,13 +212,15 @@ def parse_details_data(driver, products):
         parse_composition_and_brand(driver, product)
         parse_energy_value(driver, product)
 
+
 def parse_composition_and_brand(driver, product):
     description_elements = []
     try:
         description_elements = WebDriverWait(driver, 5).until(
             EC.presence_of_all_elements_located((By.CSS_SELECTOR, '.UiKitProductCardDescriptions_collapseItem'))
         )
-    except TimeoutException: pass
+    except TimeoutException:
+        pass
 
     composition = None
     brand = None
@@ -236,48 +244,75 @@ def parse_composition_and_brand(driver, product):
     product['brand'] = brand
 
 
+def create_driver():
+    driver_options = create_options()
+    driver = webdriver.Chrome(options=driver_options)
+    driver.maximize_window()
+    return driver
 
 
 catalog_pages = {
-    'Молоко и яйца': 'https://eda.yandex.ru/retail/lenta/catalog/36892?placeSlug=lenta_hnpmw',
-    # 'Овощи и зелень': 'https://eda.yandex.ru/retail/lenta/catalog/1034?placeSlug=giper_gwhxm',
-    # 'Фрукты и ягоды': 'https://eda.yandex.ru/retail/lenta/catalog/1033?placeSlug=giper_gwhxm',
-    # 'Сладости': 'https://eda.yandex.ru/retail/lenta/catalog/139?placeSlug=giper_gwhxm',
-    # 'Мясо и птица': 'https://eda.yandex.ru/retail/lenta/catalog/1029?placeSlug=giper_gwhxm',
-    # 'Рыба и морепродукты': 'https://eda.yandex.ru/retail/lenta/catalog/178?placeSlug=giper_gwhxm',
-    # 'Заморозка': 'https://eda.yandex.ru/retail/lenta/catalog/147?placeSlug=giper_gwhxm',
-    # 'Вода и напитки': 'https://eda.yandex.ru/retail/lenta/catalog/12881?placeSlug=giper_gwhxm',
-    # 'Колбасы и сосиски': 'https://eda.yandex.ru/retail/lenta/catalog/148?placeSlug=giper_gwhxm',
-    # 'Хлеб и выпечка': 'https://eda.yandex.ru/retail/lenta/catalog/182?placeSlug=giper_gwhxm',
-    # 'Сыры': 'https://eda.yandex.ru/retail/lenta/catalog/167?placeSlug=giper_gwhxm',
-    # 'Макароны и крупы': 'https://eda.yandex.ru/retail/lenta/catalog/19288?placeSlug=giper_gwhxm',
-    # 'Кофе и чай': 'https://eda.yandex.ru/retail/lenta/catalog/19289?placeSlug=giper_gwhxm',
-    # 'Все для выпечки и десертов': 'https://eda.yandex.ru/retail/lenta/catalog/38776?placeSlug=giper_gwhxm',
-    # 'Масло, соусы и специи': 'https://eda.yandex.ru/retail/lenta/catalog/19283?placeSlug=giper_gwhxm',
-    # 'Консервы и соления': 'https://eda.yandex.ru/retail/lenta/catalog/19291?placeSlug=giper_gwhxm',
-    # 'Орехи, снеки и чипсы': 'https://eda.yandex.ru/retail/lenta/catalog/30191?placeSlug=giper_gwhxm',
+    'Молоко и яйца': 'https://eda.yandex.ru/retail/lenta/catalog/19280?placeSlug=lenta_quwrh',
+    'Овощи и зелень': 'https://eda.yandex.ru/retail/lenta/catalog/1034?placeSlug=giper_gwhxm',
+    # 'овощи': 'https://eda.yandex.ru/retail/lenta/catalog/8047?placeSlug=lenta_quwrh',
+    'Фрукты и ягоды': 'https://eda.yandex.ru/retail/lenta/catalog/1033?placeSlug=giper_gwhxm',
+    'Сладости': 'https://eda.yandex.ru/retail/lenta/catalog/139?placeSlug=giper_gwhxm',
+    'Мясо и птица': 'https://eda.yandex.ru/retail/lenta/catalog/1029?placeSlug=giper_gwhxm',
+    'Рыба и морепродукты': 'https://eda.yandex.ru/retail/lenta/catalog/178?placeSlug=giper_gwhxm',
+    'Заморозка': 'https://eda.yandex.ru/retail/lenta/catalog/147?placeSlug=giper_gwhxm',
+    'Вода и напитки': 'https://eda.yandex.ru/retail/lenta/catalog/12881?placeSlug=giper_gwhxm',
+    'Колбасы и сосиски': 'https://eda.yandex.ru/retail/lenta/catalog/148?placeSlug=giper_gwhxm',
+    'Хлеб и выпечка': 'https://eda.yandex.ru/retail/lenta/catalog/182?placeSlug=giper_gwhxm',
+    'Сыры': 'https://eda.yandex.ru/retail/lenta/catalog/167?placeSlug=giper_gwhxm',
+    'Макароны и крупы': 'https://eda.yandex.ru/retail/lenta/catalog/19288?placeSlug=giper_gwhxm',
+    'Кофе и чай': 'https://eda.yandex.ru/retail/lenta/catalog/19289?placeSlug=giper_gwhxm',
+    'Все для выпечки и десертов': 'https://eda.yandex.ru/retail/lenta/catalog/38776?placeSlug=giper_gwhxm',
+    'Масло, соусы и специи': 'https://eda.yandex.ru/retail/lenta/catalog/19283?placeSlug=giper_gwhxm',
+    'Консервы и соления': 'https://eda.yandex.ru/retail/lenta/catalog/19291?placeSlug=giper_gwhxm',
+    'Орехи, снеки и чипсы': 'https://eda.yandex.ru/retail/lenta/catalog/30191?placeSlug=giper_gwhxm',
 }
 
 
-
-current_datetime = datetime.today().strftime('%Y_%m_%d')
-os.makedirs(os.path.dirname(save_path), exist_ok=True)
-os.makedirs(os.path.dirname(save_pictures_path), exist_ok=True)
-
-driver_options = create_options()
-driver = webdriver.Chrome(options=driver_options)
-driver.maximize_window()
-products = []
-try:
-    for key, value in catalog_pages.items():
-        parse_page(driver, value, products)
-    parse_details_data(driver, products)
-finally:
-    driver.quit()
+def split_list(lst, n):
+    k, m = divmod(len(lst), n)
+    return [lst[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
 
 
+if __name__ == '__main__':
+    products = []
 
-products_data = pd.DataFrame(products)
-# products_data = add_embeddings(products_data)
+    current_datetime = datetime.today().strftime('%Y_%m_%d')
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    os.makedirs(os.path.dirname(save_pictures_path), exist_ok=True)
+    #
+    driver_options = create_options()
+    driver = webdriver.Chrome(options=driver_options)
+    driver.maximize_window()
 
-products_data.to_csv(f'{save_path}yeda_lenta_products{current_datetime}.csv', index=False)
+    try:
+        for key, value in catalog_pages.items():
+            parse_page(driver, value, products)
+        parse_details_data(driver, products)
+    finally:
+        driver.quit()
+
+    # drivers_count = 3
+    # drivers = []
+    # for i in range(drivers_count):
+    #     drivers.append(create_driver())
+    #
+    # catalogs_splited = split_list(catalog_pages.items(), drivers_count)
+    #
+    # with Pool(3) as pool:
+    #     all_products = pool.map(parse_catalog_page_parallel, catalogs_splited)
+    #
+    # all_products = [product for sublist in all_products for product in sublist]
+    # all_products_splited = split_list(all_products, drivers_count)
+    #
+    # with Pool(3) as pool:
+    #     all_products = pool.map(parse_details_data_parallel, all_products)
+
+    products_data = pd.DataFrame(products)
+    # products_data = add_embeddings(products_data)
+
+    products_data.to_csv(f'{save_path}yeda_lenta_products{current_datetime}.csv', index=False)
