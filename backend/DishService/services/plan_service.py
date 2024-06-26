@@ -1,5 +1,6 @@
 import logging
 from datetime import date
+import uuid
 
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
@@ -87,25 +88,70 @@ class PlanService:
 
     async def make_plan(self, db: Session, physic_data: PhysicData, plan_dto: PlanDTO, elements: NecessaryElementsDTO):
         try:
-            liked_products = (db\
-                                .query(StoreAssortment, FoodPreference)\
-                                .join(FoodPreference, or_(FoodPreference.product_id == StoreAssortment.id, FoodPreference.category_id == StoreAssortment.category_id))
-                                .filter_by(and_(FoodPreference.liked, FoodPreference.user_id == physic_data.id))\
-                                .all())
-
-            normal_products = (db\
-                                .query(StoreAssortment, FoodPreference)\
-                                .join(FoodPreference, or_(FoodPreference.product_id != StoreAssortment.id, FoodPreference.category_id != StoreAssortment.category_id))
-                                .filter_by(and_(FoodPreference.liked, FoodPreference.user_id == physic_data.id))\
-                                .all())
-
             liked_products = (
                 f"""
-                SELECT store_assortment.id, store_assortment.name FROM store_assortment
+                SELECT store_assortment.id, store_assortment.name, store_assortment.category_id, store_assortment.cost, store_assortment.calories, store_assortment.proteins, store_assortment.carb, store_assortment.fats
+                FROM store_assortment
                 JOIN food_preferences ON ((food_preferences.product_id = store_assortment.id) OR (food_preferences.category_id = store_assortment.category_id))
-                WHERE food_preferences.liked IS TRUE AND food_preferences.user_id IS {physic_data.id}
+                WHERE food_preferences.liked IS TRUE AND food_preferences.user_id = {physic_data.id}
                 """
             )
+
+            products_in_preferenses = (
+                f"""
+                SELECT id FROM food_preferences
+                WHERE user_id = {physic_data.id}
+                """
+            )
+
+            normal_products = (
+                f"""
+                SELECT store_assortment.id, store_assortment.name, store_assortment.category_id, store_assortment.cost, store_assortment.calories, store_assortment.proteins, store_assortment.carb, store_assortment.fats
+                FROM store_assortment
+                WHERE store_assortment.id NOT IN {products_in_preferenses}
+                """
+            )
+
+            count_categories_liked_products = (
+                f"""
+                SELECT DISTINCT COUNT(store_assortment.category_id)
+                FROM {liked_products}
+                """
+            )
+
+            count_categories_normal_products = (
+                f"""
+                SELECT DISTINCT COUNT(store_assortment.category_id)
+                FROM {normal_products}
+                """
+            )
+
+            ingredients_liked: list[uuid]
+            ingredients_normal: list[uuid]
+
+            recipes_liked = (
+                f"""
+                SELECT DISTINCT recipes.id 
+                FROM recipes
+                JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
+                WHERE ingredients_in_recipes.ingredient_id IN {ingredients_liked}
+                """
+            )
+
+            recipes_normal = (
+                f"""
+                            SELECT DISTINCT recipes.id 
+                            FROM recipes
+                            JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
+                            WHERE ingredients_in_recipes.ingredient_id IN {ingredients_normal}
+                            """
+            )
+
+            calories_total = elements.calories * 30
+            proteins_total = elements.proteins * 30
+            proteins_total = elements.fats * 30
+            proteins_total = elements.proteins * 30
+
 
         except Exception as e:
             self.logger.error(f"(Physic data getting) Error: {e}")
