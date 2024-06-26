@@ -1,11 +1,17 @@
 package com.example.elephantmeal.week_screen.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -34,22 +40,50 @@ fun WeekScreen(
         viewModel.getWeekTimetable(selectedDate)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        // Логотип приложения
-        ElephantMealLogo()
+    Scaffold(
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .background(Color.White)
+            ) {
+                // Логотип приложения
+                ElephantMealLogo()
 
-        // Переключение недели
-        WeeksSwitcher()
-
+                // Переключение недели
+                WeeksSwitcher()
+            }
+        },
+        bottomBar = {
+            // Нижняя навигационная пеналь
+            BottomNavBar(
+                isWeekModeSelected = true,
+                currentScreen = Screen.TodayScreen,
+                onDayClick = onDayClick,
+                onMenuClick = onMenuClick
+            )
+        }
+    ) { paddingValues ->
         // Расписание рациона на неделю
         Box(
             modifier = Modifier
-                .weight(1f)
+                .padding(paddingValues)
+                .fillMaxSize()
+                .background(Color.White)
         ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(
+                        rememberScrollState()
+                    )
+                    .horizontalScroll(
+                        rememberScrollState()
+                    )
+            ) {
+                WeekTable()
+            }
+
+
             // Тень от нижней навигационной панели
             Box(
                 modifier = Modifier
@@ -79,13 +113,12 @@ fun WeekScreen(
                     )
             )
         }
+    }/*
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
 
-        // Нижняя навигационная пеналь
-        BottomNavBar(
-            isWeekModeSelected = true,
-            currentScreen = Screen.TodayScreen,
-            onDayClick = onDayClick,
-            onMenuClick = onMenuClick
-        )
-    }
+    }*/
 }

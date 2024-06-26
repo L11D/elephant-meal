@@ -32,7 +32,7 @@ import com.example.elephantmeal.R
 import com.example.elephantmeal.day_screen.view_model.DayViewModel
 import com.example.elephantmeal.ui.theme.DayOfWeekGrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
-import com.example.elephantmeal.ui.theme.SelectedDayBackgroundColor
+import com.example.elephantmeal.ui.theme.PaleBlueColor
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
@@ -72,7 +72,7 @@ fun WeekRow(
                 .weight(1f)
                 .clip(shape = RoundedCornerShape(16.dp))
                 .background(
-                    color = if (isSelected) SelectedDayBackgroundColor else Color.Transparent
+                    color = if (isSelected) PaleBlueColor else Color.Transparent
                 )
                 .clickable(
                     enabled = !isSelected,
@@ -116,7 +116,7 @@ fun DayOfWeek(
     Column(
         modifier = Modifier
             .background(
-                color = if (isSelected) SelectedDayBackgroundColor else Color.Transparent
+                color = if (isSelected) PaleBlueColor else Color.Transparent
             )
     ) {
         // Дата

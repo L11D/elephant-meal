@@ -14,7 +14,10 @@ class DayUseCase {
 
     // Получение расписания рациона на день
     fun getDayRation(day: LocalDate): List<Mealtime> {
-        return generateMealtime().filter { it.dateTime.dayOfWeek == day.dayOfWeek }
+        return generateMealtime().filter {
+            it.dateTime.dayOfYear == day.dayOfYear &&
+                    it.dateTime.year == day.year
+        }
     }
 
     // Перевод номера дня недели в его название

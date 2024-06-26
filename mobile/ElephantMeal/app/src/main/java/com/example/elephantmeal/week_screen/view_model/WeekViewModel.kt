@@ -18,13 +18,14 @@ class WeekViewModel @Inject constructor(
 
     // Получение расписания рациона на неделю
     fun getWeekTimetable(date: LocalDate) {
-        _state.update { currentState ->
-            val week = _weekUseCase.getWeek(date)
+        val week = _weekUseCase.getWeek(date)
+        val weekRation =  _weekUseCase.getWeekRation(week)
 
+        _state.update { currentState ->
             currentState.copy(
-                weekRation = _weekUseCase.getWeekRation(week),
-                weekStart = _weekUseCase.formatDate(week.first()),
-                weekEnd = _weekUseCase.formatDate(week.last())
+                weekRation = weekRation,
+                week = week.map { _weekUseCase.formatDate(it) },
+                maxMealtimes = _weekUseCase.getMealtimeAmount(weekRation)
             )
         }
     }

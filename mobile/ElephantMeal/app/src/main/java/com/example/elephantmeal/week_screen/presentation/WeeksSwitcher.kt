@@ -48,10 +48,10 @@ fun WeeksSwitcher(
                 .weight(1f)
                 .align(Alignment.CenterVertically),
             textAlign = TextAlign.Center,
-            text = "${state.weekStart.day} " +
-                    stringResource(id = state.weekStart.monthStringResource) +
-                    " - ${state.weekEnd.day} " +
-                    stringResource(id = state.weekEnd.monthStringResource),
+            text = "${state.week.first().day} " +
+                    stringResource(id = state.week.first().monthStringResource) +
+                    " - ${state.week.last().day} " +
+                    stringResource(id = state.week.last().monthStringResource),
             style = TextStyle(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold

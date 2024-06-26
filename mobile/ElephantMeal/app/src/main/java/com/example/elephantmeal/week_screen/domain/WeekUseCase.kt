@@ -8,6 +8,8 @@ import java.time.LocalDate
 import java.time.Month
 
 class WeekUseCase {
+    private val minMealtimeAmount = 3
+
     // Получение дней текущей недели
     fun getWeek(date: LocalDate): List<LocalDate> {
         val currentDate = date
@@ -19,14 +21,20 @@ class WeekUseCase {
         return week
     }
 
-
-
     // Получение расписания рациона на неделю
     fun getWeekRation(dates: List<LocalDate>): List<Mealtime> {
         return generateMealtime().filter {
             it.dateTime.dayOfYear >= dates[0].dayOfYear &&
                     it.dateTime.dayOfYear <= dates[dates.size - 1].dayOfYear
         }
+    }
+
+    // Получение кол-ва приёмов пищи
+    fun getMealtimeAmount(weekRation: List<Mealtime>): Int {
+        return if (weekRation.isEmpty())
+            minMealtimeAmount
+        else
+            weekRation.groupBy { it.dateTime.dayOfWeek }.map { it.value }.maxOf { it.size }
     }
 
     // Форматирование даты
@@ -49,8 +57,23 @@ class WeekUseCase {
 
         return WeekDate(
             day = day,
-            monthStringResource = month
+            monthStringResource = month,
+            dayOfWeek = getDayOfWeekName(date.dayOfWeek.value)
         )
+    }
+
+    // Перевод номера дня недели в его название
+    private fun getDayOfWeekName(dayOfWeek: Int): Int {
+        return when (dayOfWeek) {
+            1 -> R.string.monday
+            2 -> R.string.tuesday
+            3 -> R.string.wednesday
+            4 -> R.string.thursday
+            5 -> R.string.friday
+            6 -> R.string.saturday
+            7 -> R.string.sunday
+            else -> R.string.empty
+        }
     }
 
     private fun generateMealtime(): List<Mealtime> =
