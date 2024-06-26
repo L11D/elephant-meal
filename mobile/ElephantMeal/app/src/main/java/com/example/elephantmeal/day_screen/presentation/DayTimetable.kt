@@ -95,7 +95,7 @@ fun DayTimetableElement(
             Text(
                 modifier = Modifier
                     .padding(12.dp, 0.dp),
-                text = mealtime.caloric.toString(),
+                text = mealtime.caloric.toString() + " " + stringResource(id = R.string.kcal),
                 style = TextStyle(
                     fontSize = 16.sp,
                     color = DarkGrayColor

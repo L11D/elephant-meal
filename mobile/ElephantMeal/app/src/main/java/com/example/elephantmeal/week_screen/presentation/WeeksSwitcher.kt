@@ -1,6 +1,8 @@
 package com.example.elephantmeal.week_screen.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -8,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,10 +37,20 @@ fun WeeksSwitcher(
             .padding(24.dp, 14.dp, 24.dp, 0.dp)
             .height(48.dp)
     ) {
+        val interactionSource = remember {
+            MutableInteractionSource()
+        }
+
         // Кнопка переключения на расписание предыдущей недели
         Image(
             modifier = Modifier
-                .align(Alignment.CenterVertically),
+                .align(Alignment.CenterVertically)
+                .clickable(
+                    indication = null,
+                    interactionSource = interactionSource
+                ) {
+                    viewModel.getPreviousWeekRation()
+                },
             imageVector = ImageVector.vectorResource(id = R.drawable.previous_week),
             contentDescription = stringResource(id = R.string.previous_week_description)
         )
@@ -61,7 +74,13 @@ fun WeeksSwitcher(
         // Кнопка переключения на расписание следующей недели
         Image(
             modifier = Modifier
-                .align(Alignment.CenterVertically),
+                .align(Alignment.CenterVertically)
+                .clickable(
+                    indication = null,
+                    interactionSource = interactionSource
+                ) {
+                    viewModel.getNextWeekRation()
+                },
             imageVector = ImageVector.vectorResource(id = R.drawable.next_week),
             contentDescription = stringResource(id = R.string.nextx_week_description)
         )

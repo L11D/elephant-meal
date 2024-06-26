@@ -16,10 +16,29 @@ class WeekViewModel @Inject constructor(
     private val _state = MutableStateFlow(WeekUiState())
     val state = _state.asStateFlow()
 
+    private var currentDate = LocalDate.now()
+
     // Получение расписания рациона на неделю
     fun getWeekTimetable(date: LocalDate) {
-        val week = _weekUseCase.getWeek(date)
-        val weekRation =  _weekUseCase.getWeekRation(week)
+        currentDate = date
+        updateWeekRation()
+    }
+
+    // Получение расписания рациона на предыдущей неделе
+    fun getPreviousWeekRation() {
+        currentDate = currentDate.minusDays(7)
+        updateWeekRation()
+    }
+
+    // Получение расписания рациона на следующей неделе
+    fun getNextWeekRation() {
+        currentDate = currentDate.plusDays(7)
+        updateWeekRation()
+    }
+
+    private fun updateWeekRation() {
+        val week = _weekUseCase.getWeek(currentDate)
+        val weekRation = _weekUseCase.getWeekRation(week)
 
         _state.update { currentState ->
             currentState.copy(
