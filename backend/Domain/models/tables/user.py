@@ -25,4 +25,3 @@ class User(Base):
     role = Column(SQLEnum(Role), nullable=False)
     is_verified = Column(Boolean, nullable=True, default=False)
     secret_key = Column(String, nullable=True)
-    activity_type = Column(SQLEnum(ActivityType), nullable=False)

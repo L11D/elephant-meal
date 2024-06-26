@@ -2,12 +2,16 @@ import logging
 from datetime import date
 
 from sqlalchemy.orm import Session
+from sqlalchemy import or_, and_
+
 
 from backend.DishService.models.dto.necessary_elements_dto import NecessaryElementsDTO
 from backend.DishService.models.dto.physic_data_dto import PhysicData
 from backend.DishService.models.dto.plan_dto import PlanDTO
 from backend.Domain.models.enum.sex import Sex
 from backend.Domain.models.enum.type_plan import TypePlan
+from backend.Domain.models.tables.food_preference import FoodPreference
+from backend.Domain.models.tables.store_assortment import StoreAssortment
 from backend.Domain.models.tables.user import User
 from backend.UserService.models.dto.user_reg_dto import UserRegDTO
 from backend.UserService.models.dto.user_update_dto import UserUpdateDTO
@@ -77,6 +81,32 @@ class PlanService:
             result.carb = (result.calories * k_carb) / 4
 
             return result
+        except Exception as e:
+            self.logger.error(f"(Physic data getting) Error: {e}")
+            raise
+
+    async def make_plan(self, db: Session, physic_data: PhysicData, plan_dto: PlanDTO, elements: NecessaryElementsDTO):
+        try:
+            liked_products = (db\
+                                .query(StoreAssortment, FoodPreference)\
+                                .join(FoodPreference, or_(FoodPreference.product_id == StoreAssortment.id, FoodPreference.category_id == StoreAssortment.category_id))
+                                .filter_by(and_(FoodPreference.liked, FoodPreference.user_id == physic_data.id))\
+                                .all())
+
+            normal_products = (db\
+                                .query(StoreAssortment, FoodPreference)\
+                                .join(FoodPreference, or_(FoodPreference.product_id != StoreAssortment.id, FoodPreference.category_id != StoreAssortment.category_id))
+                                .filter_by(and_(FoodPreference.liked, FoodPreference.user_id == physic_data.id))\
+                                .all())
+
+            liked_products = (
+                f"""
+                SELECT store_assortment.id, store_assortment.name FROM store_assortment
+                JOIN food_preferences ON ((food_preferences.product_id = store_assortment.id) OR (food_preferences.category_id = store_assortment.category_id))
+                WHERE food_preferences.liked IS TRUE AND food_preferences.user_id IS {physic_data.id}
+                """
+            )
+
         except Exception as e:
             self.logger.error(f"(Physic data getting) Error: {e}")
             raise
