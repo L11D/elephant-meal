@@ -1,7 +1,7 @@
 import logging
 import random
 import string
-from datetime import date
+from datetime import date, time, datetime
 from sqlalchemy.orm import Session
 
 from backend.Domain.models.enum.roles import Role
@@ -13,6 +13,7 @@ from backend.Domain.models.enum.roles import Role
 
 from backend.Domain.models.tables.user import User
 from backend.UserService.models.dto.user_reg_dto import UserRegDTO
+from backend.UserService.models.dto.user_update_dto import UserUpdateDTO
 
 
 class UserService:
@@ -45,12 +46,34 @@ class UserService:
                 weight=user_data.weight,
                 height=user_data.height,
                 birth_date=user_data.birthdate,
-                registration_date=date.today(),
+                registration_date=datetime.now(),
                 password=user_data.password,
                 role=Role.User,
                 secret_key=''.join(''.join(random.choices(string.ascii_letters + string.digits, k=33)))
             )
             db.add(user)
+            db.commit()
+
+            self.logger.error(f"(Creating user) Success: {user}")
+
+            return user
+        except Exception as e:
+            self.logger.error(f"(Creating user) Error: {e}")
+            raise
+
+    async def update_user(self, db: Session, user_data: UserUpdateDTO, user_id: str) -> User:
+        try:
+            user = db.query(User).filter(User.id == user_id).first()
+
+            user.surname = user.surname if user_data.surname == None else user_data.surname
+            user.name = user.name if user_data.name == None else user_data.name
+            user.patronymic = user.patronymic if user_data.patronymic == None else user_data.patronymic
+            user.email = user.email if user_data.email == None else user_data.email
+            user.sex = user.sex if user_data.sex == None else user_data.sex
+            user.weight = user.weight if user_data.weight == None else user_data.weight
+            user.height = user.height if user_data.height == None else user_data.height
+            user.birth_date = user.birth_date if user_data.birth_date == None else user_data.birth_date
+
             db.commit()
 
             self.logger.error(f"(Creating user) Success: {user}")

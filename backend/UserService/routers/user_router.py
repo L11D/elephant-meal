@@ -12,6 +12,7 @@ from backend.UserService.models.dto.user_access_token_dto import UserAccessToken
 from backend.UserService.models.dto.user_login_dto import UserLoginDTO
 from backend.UserService.models.dto.user_profile_dto import UserProfileDTO
 from backend.UserService.models.dto.user_reg_dto import UserRegDTO
+from backend.UserService.models.dto.user_update_dto import UserUpdateDTO
 from backend.UserService.services.auth_service import AuthService
 from backend.UserService.services.email_service import EmailService
 from backend.UserService.services.user_service import UserService
@@ -66,6 +67,53 @@ async def login(user_login_dto: UserLoginDTO,
         logger.error(f"(Login) Error: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+
+@user_router.put(
+    "/update/",
+    tags=[user_config.SWAGGER_GROUPS["user"]],
+    response_model=MessageDTO,
+    responses={
+        200: {
+            "model": MessageDTO
+
+        },
+        400: {
+            "model": ErrorDTO
+        },
+        500: {
+            "model": ErrorDTO
+        }
+    }
+)
+async def update(
+                    user_update_dto: UserUpdateDTO,
+                    access_token: str = Depends(user_config.oauth2_scheme),
+                    auth_service: AuthService = Depends(AuthService),
+                    db: Session = Depends(get_db),
+                    user_service: UserService = Depends(UserService),
+                   ):
+    try:
+        print(f"OIGOIRJIGJERJPGOJ")
+        logger.warning(f"OIGOIRJIGJERJPGOJ")
+        if await auth_service.check_revoked(db, access_token):
+            logger.warning(f"(Get user profile) Token is revoked: {access_token}")
+            raise HTTPException(status_code=403, detail="Token revoked")
+
+        token_data = auth_service.get_data_from_access_token(access_token)
+
+        user = await user_service.get_user_by_id(db, (await token_data)["sub"])
+
+        logger.info(f"(Get user profile) Successful get profile with id: {user.id}")
+
+        user = await user_service.update_user(db, user_update_dto, user.id)
+
+        logger.info(f"(Reg) User successful updated: {user.id}")
+        return MessageDTO(message=str(user))
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"(Reg) Error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @user_router.post(
     "/register/",
@@ -169,12 +217,14 @@ async def verify(key: str,
         }
     }
 )
-async def get_profile(access_token: str = Depends(oauth2_scheme),
+async def get_profile(access_token: str = Depends(user_config.oauth2_scheme),
                       db: Session = Depends(get_db),
                       user_service: UserService = Depends(UserService),
                       auth_service: AuthService = Depends(AuthService)
                       ):
     try:
+        print(f"OIGOIRJIGJERJPGOJ")
+        logger.warning(f"OIGOIRJIGJERJPGOJ")
         if await auth_service.check_revoked(db, access_token):
             logger.warning(f"(Get user profile) Token is revoked: {access_token}")
             raise HTTPException(status_code=403, detail="Token revoked")
@@ -183,14 +233,36 @@ async def get_profile(access_token: str = Depends(oauth2_scheme),
 
         user = await user_service.get_user_by_id(db, (await token_data)["sub"])
 
-        logger.info(f"(Get user profile) Successful get profile with id: {user.id}")
 
-        return UserProfileDTO(
+        logger.warning(f"OIGOIRJIGJERJPGOJ  {user}")
+        logger.warning(f"OIGOIRJIGJERJPGOJ  {user.birth_date}")
+        logger.warning(f"OIGOIRJIGJERJPGOJ  {user.registration_date}")
+        logger.warning(f"OIGOIRJIGJERJPGOJ  {user.weight}")
+        logger.warning(f"OIGOIRJIGJERJPGOJ  {user.height}")
+        logger.warning(f"                          ")
+
+        birthdate = user.birth_date.date() if user.birth_date else None
+        registration_date = user.registration_date
+        logger.info(f"(Get user profile) Successful get profile with id: {user.id}")
+        print(f"DDDDDDDDDDDDDDDDDDDD    {user}")
+        logger.info(f"DDDDDDDDDDDDDDDDDDDD    {user}")
+        logger.warning(f"DDDDDDDDDDDDDDDDDDDD")
+
+        returned_data = UserProfileDTO(
             id=user.id,
             email=user.email,
-            full_name=user.full_name,
-            role=(await user_service.get_role_by_id(db, user.role_id)).name
+            name=user.name,
+            surname=user.surname,
+            registration_date=user.registration_date
         )
+
+        returned_data.weight = user.weight if user.weight is not None else returned_data.weight
+        returned_data.height = user.height if user.height is not None else returned_data.height
+        returned_data.sex = user.sex if user.sex is not None else returned_data.sex
+        returned_data.patronymic = user.patronymic if user.patronymic is not None else returned_data.patronymic
+        returned_data.birthdate = user.birthdate if user.birth_date is not None else returned_data.birthdate
+
+        return returned_data
     except jwt.PyJWTError as e:
         logger.warning(f"(Get user profile) Bad token: {e}")
         raise HTTPException(status_code=403, detail="Bad token")
@@ -245,58 +317,58 @@ async def logout(access_token: str = Depends(oauth2_scheme),
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@user_router.get(
-    "/users",
-    tags=[user_config.SWAGGER_GROUPS["user"]],
-    response_model=list[UserProfileDTO],
-    responses={
-        200: {
-            "model": list[UserProfileDTO]
-
-        },
-        401: {
-            "model": ErrorDTO
-        },
-        403: {
-            "model": ErrorDTO
-        },
-        500: {
-            "model": ErrorDTO
-        }
-    }
-)
-async def get_users(
-                    access_token: str = Depends(oauth2_scheme),
-                    db: Session = Depends(get_db),
-                    user_service: UserService = Depends(UserService),
-                    auth_service: AuthService = Depends(AuthService)
-                    ):
-    try:
-        if await auth_service.check_revoked(db, access_token):
-            logger.warning(f"(Get user profile) Token is revoked: {access_token}")
-            raise HTTPException(status_code=403, detail="Token revoked")
-
-        users = await user_service.get_users(db)
-
-        users_dto = []
-
-        for user in users:
-            users_dto.append(
-                UserProfileDTO(
-                    id=user.id,
-                    email=user.email,
-                    full_name=user.full_name,
-                    role=(await user_service.get_role_by_id(db, user.role_id)).name
-                )
-            )
-
-        return users_dto
-    except jwt.PyJWTError as e:
-        logger.warning(f"(Get users profiles) Bad token: {e}")
-        raise HTTPException(status_code=403, detail="Bad token")
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"(Get user profile) Error: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+# @user_router.get(
+#     "/users",
+#     tags=[user_config.SWAGGER_GROUPS["user"]],
+#     response_model=list[UserProfileDTO],
+#     responses={
+#         200: {
+#             "model": list[UserProfileDTO]
+#
+#         },
+#         401: {
+#             "model": ErrorDTO
+#         },
+#         403: {
+#             "model": ErrorDTO
+#         },
+#         500: {
+#             "model": ErrorDTO
+#         }
+#     }
+# )
+# async def get_users(
+#                     access_token: str = Depends(user_config.oauth2_scheme),
+#                     db: Session = Depends(get_db),
+#                     user_service: UserService = Depends(UserService),
+#                     auth_service: AuthService = Depends(AuthService)
+#                     ):
+#     try:
+#         if await auth_service.check_revoked(db, access_token):
+#             logger.warning(f"(Get user profile) Token is revoked: {access_token}")
+#             raise HTTPException(status_code=403, detail="Token revoked")
+#
+#         users = await user_service.get_users(db)
+#
+#         users_dto = []
+#
+#         for user in users:
+#             users_dto.append(
+#                 UserProfileDTO(
+#                     id=user.id,
+#                     email=user.email,
+#                     full_name=user.full_name,
+#                     role=(await user_service.get_role_by_id(db, user.role_id)).name
+#                 )
+#             )
+#
+#         return users_dto
+#     except jwt.PyJWTError as e:
+#         logger.warning(f"(Get users profiles) Bad token: {e}")
+#         raise HTTPException(status_code=403, detail="Bad token")
+#     except HTTPException:
+#         raise
+#     except Exception as e:
+#         logger.error(f"(Get user profile) Error: {e}")
+#         raise HTTPException(status_code=500, detail="Internal server error")
 

@@ -105,28 +105,12 @@ def run_migrations_online():
         )
 
         with context.begin_transaction():
-            try:
-                process_enums(connection)
-            except Exception as e:
-                print(f"Error nothing to change: {e}")
+            # try:
+            #     process_enums(connection)
+            # except Exception as e:
+            #     print(f"Error nothing to change: {e}")
             print(f"FFFFFFFFFFFFFFF {flag}")
-            try:
-                if context.is_offline_mode() or flag:
-                    context.run_migrations()
-                else:
-                    # Получаем текущую метадату
-                    current_metadata = MetaData(bind=connection)
-                    current_metadata.reflect()
-
-                    # Сравниваем текущую метадату с целевой
-                    diff = context.compare_metadata(current_metadata, target_metadata)
-                    if diff:
-                        print("Detected changes, running migrations.")
-                        context.run_migrations()
-                    else:
-                        print("No changes detected, skipping migrations.")
-            except Exception as e:
-                print(f"Error during migration: {e}")
+            #context.run_migrations()
 
 if context.is_offline_mode():
     run_migrations_offline()

@@ -4,7 +4,7 @@ import smtplib
 from email.mime.text import MIMEText
 
 from backend.UserService.user_config import TEST_MESSAGE
-from backend.env_variables import EMAIL_LOGIN, EMAIL_PASSWORD, EMAIL_TEST
+from backend.env_variables import EMAIL_LOGIN, EMAIL_PASSWORD, EMAIL_TEST, DB_HOST
 
 
 class EmailService:
@@ -32,8 +32,9 @@ class EmailService:
         try:
             self.smtpObj.starttls()
             self.smtpObj.login(EMAIL_LOGIN, EMAIL_PASSWORD)
-
-            msg = MIMEText(f'<a href={os.environ["VERIFY_LINK"] + code}>Click to verify</a>', 'html')
+            S = f"http://{DB_HOST}/api/v1/user/verify/"
+            S = f"http://localhost:8000/api/v1/user/verify/"
+            msg = MIMEText(f'<a href={S + code}>Click to verify</a>', 'html')
             msg['From'] = EMAIL_LOGIN
             msg['To'] = to_email
             msg['Subject'] = 'PmC pYtHoN VeRiFy'
