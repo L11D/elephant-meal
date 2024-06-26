@@ -3,9 +3,9 @@ LABEL maintainer="Mr. Liid"
 
 WORKDIR /app
 
-COPY requirements.txt ./
+COPY backend/requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY . .
+COPY backend .
 
 ENTRYPOINT [ "python3", "main.py" ]
