@@ -60,8 +60,10 @@ def parse_energy_value(driver, product):
             element_name = element_name_tag.text
         if element_value_tag:
             element_value = element_value_tag.text
-
-        element_value = float(element_value.split(' ')[0])
+        try:
+            element_value = float(element_value.split(' ')[0])
+        except ValueError:
+            pass
 
         if element_name == 'белки':
             proteins = element_value
@@ -119,8 +121,6 @@ def parse_details_data(driver, url):
     parse_energy_value(driver, product)
     return product
 
-
-
 def worker(url_queue, result_queue, driver_queue):
     while not url_queue.empty():
         url = url_queue.get()
@@ -136,7 +136,7 @@ def worker(url_queue, result_queue, driver_queue):
         url_queue.task_done()
 
 def main(urls):
-    num_drivers = 2
+    num_drivers = 6
     url_queue = Queue()
     result_queue = Queue()
     driver_queue = Queue()
@@ -165,19 +165,14 @@ def main(urls):
 
 dataset_path = 'data/products/yeda_lenta_products2024_06_26.csv'
 
-products_df = pd.read_csv(dataset_path).head(5)
+products_df = pd.read_csv(dataset_path).head(10)
 urls = products_df['url'].tolist()
 
 results = main(urls)
-# results = [
-#     {
-#         'url': products_df['url'].loc[0],
-#         'title': 'lol'
-#     }
-# ]
 
 
-# products_df.join(other=pd.DataFrame(results), on='url', how='inner')
+results = [result for result in results if result is not None]
+
 results_df = pd.DataFrame(results)
 merged_df = products_df.merge(results_df, on='url', how='inner')
 
