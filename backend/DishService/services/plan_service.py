@@ -140,12 +140,14 @@ class PlanService:
 
             recipes_normal = (
                 f"""
-                            SELECT DISTINCT recipes.id 
-                            FROM recipes
-                            JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
-                            WHERE ingredients_in_recipes.ingredient_id IN {ingredients_normal}
-                            """
+                SELECT DISTINCT recipes.id 
+                FROM recipes
+                JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
+                WHERE ingredients_in_recipes.ingredient_id IN {ingredients_normal}
+                """
             )
+            
+
 
             calories_total = elements.calories * 30
             proteins_total = elements.proteins * 30
