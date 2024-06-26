@@ -131,7 +131,7 @@ class PlanService:
 
             recipes_liked = (
                 f"""
-                SELECT DISTINCT recipes.id 
+                SELECT DISTINCT recipes.id, ingredients_in_recipes.ingredient_id 
                 FROM recipes
                 JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
                 WHERE ingredients_in_recipes.ingredient_id IN {ingredients_liked}
@@ -140,17 +140,33 @@ class PlanService:
 
             recipes_normal = (
                 f"""
-                            SELECT DISTINCT recipes.id 
-                            FROM recipes
-                            JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
-                            WHERE ingredients_in_recipes.ingredient_id IN {ingredients_normal}
-                            """
+                SELECT DISTINCT recipes.id, ingredients_in_recipes.ingredient_id 
+                FROM recipes
+                JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
+                WHERE ingredients_in_recipes.ingredient_id IN {ingredients_normal}
+                """
             )
-
+            good_categories = list["яйца", "овощи"]
+            """
+            
+            """
             calories_total = elements.calories * 30
             proteins_total = elements.proteins * 30
-            proteins_total = elements.fats * 30
-            proteins_total = elements.proteins * 30
+            fats_total = elements.fats * 30
+            carb_total = elements.carb * 30
+
+            #cheat_calories = итоговая калорийность чит мила * 4
+            #ВЫЧИСЛЕНИЯ!!!!
+
+
+            #calories_total -= cheat_calories
+            #МИКРОЭЛЕМЕНТЫ ТОЖЕ МЕНЯЮТСЯ
+
+
+            calories_total -= calories_total * 0.1
+
+
+
 
 
         except Exception as e:
