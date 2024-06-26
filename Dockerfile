@@ -4,7 +4,7 @@ LABEL maintainer="Mr. Liid"
 WORKDIR /app
 
 COPY alembic.ini .
-COPY alembic alimbic
+COPY alembic alembic
 
 WORKDIR /app/backend
 
