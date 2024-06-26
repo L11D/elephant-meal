@@ -6,6 +6,6 @@ WORKDIR /app
 COPY backend/requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY backend .
+COPY backend backend
 
 ENTRYPOINT [ "python3", "main.py" ]
