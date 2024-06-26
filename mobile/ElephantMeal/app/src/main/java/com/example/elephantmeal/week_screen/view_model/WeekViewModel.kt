@@ -1,6 +1,7 @@
 package com.example.elephantmeal.week_screen.view_model
 
 import androidx.lifecycle.ViewModel
+import com.example.elephantmeal.day_screen.domain.Mealtime
 import com.example.elephantmeal.week_screen.domain.WeekUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +37,7 @@ class WeekViewModel @Inject constructor(
         updateWeekRation()
     }
 
+    // Получение рациона на неделю
     private fun updateWeekRation() {
         val week = _weekUseCase.getWeek(currentDate)
         val weekRation = _weekUseCase.getWeekRation(week)
@@ -45,6 +47,25 @@ class WeekViewModel @Inject constructor(
                 weekRation = weekRation,
                 week = week.map { _weekUseCase.formatDate(it) },
                 maxMealtimes = _weekUseCase.getMealtimeAmount(weekRation)
+            )
+        }
+    }
+
+    // Открытие диалога просмотра приёма пищи
+    fun showMealtimeDialog(mealtime: Mealtime) {
+        _state.update { currentState ->
+            currentState.copy(
+                isMealtimeDialogVisible = true,
+                dialogMealtime = mealtime
+            )
+        }
+    }
+
+    // Закрытие диалога просмотра приёма пищи
+    fun dismissMealtimeDialog() {
+        _state.update { currentState ->
+            currentState.copy(
+                isMealtimeDialogVisible = false
             )
         }
     }

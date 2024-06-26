@@ -1,8 +1,8 @@
 package com.example.elephantmeal.week_screen.presentation
 
-import androidx.compose.foundation.OverscrollEffect
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,13 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.overscroll
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -153,7 +152,7 @@ fun DayOfWeekColumn(
         var filledCount = 0
 
         state.weekRation.filter { it.dateTime.dayOfMonth == day.day }.forEach {
-            DisplayMealtime(it)
+            MealtimeElement(it)
             filledCount++
         }
 
@@ -210,9 +209,21 @@ fun DateTableHeader(
 
 // Отображение приёма пищи
 @Composable
-fun DisplayMealtime(
-    mealtime: Mealtime
+fun MealtimeElement(
+    mealtime: Mealtime,
+    viewModel: WeekViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsState()
+
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
+
+    // Диалог просмотра приёма пищи
+    if (state.isMealtimeDialogVisible)
+        MealtimeDialog()
+
+    // Ячейка таблицы с приёмом пищи
     Box(
         modifier = Modifier
             .height(96.dp)
@@ -223,6 +234,12 @@ fun DisplayMealtime(
                 .fillMaxSize()
                 .clip(RoundedCornerShape(4.dp))
                 .background(PaleBlueColor)
+                .clickable(
+                    indication = null,
+                    interactionSource = interactionSource
+                ) {
+                    viewModel.showMealtimeDialog(mealtime)
+                }
         ) {
             Text(
                 modifier = Modifier
