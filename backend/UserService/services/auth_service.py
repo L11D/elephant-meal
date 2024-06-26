@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 
 from datetime import datetime, timedelta
 
-from Domain.models.tables.crl import CRL
-from env_variables import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ACCESS_TOKEN_ALGORITHM
+from backend.Domain.models.tables.crl import CRL
+from backend.env_variables import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ACCESS_TOKEN_ALGORITHM
 
 
 class AuthService:

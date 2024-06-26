@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr, constr
 
 
 
-from UserService import user_config
+from backend.UserService import user_config
 
 
 class UserLoginDTO(BaseModel):

@@ -4,16 +4,16 @@ import string
 from datetime import date, time, datetime
 from sqlalchemy.orm import Session
 
-from Domain.models.enum.roles import Role
+from backend.Domain.models.enum.roles import Role
 # from models.enum.applicationstatuses import ApplicationStatuses
 #
 # from models.tables.role import Role
 #
 # from models.enum.userroles import UserRoles
 
-from Domain.models.tables.user import User
-from UserService.models.dto.user_reg_dto import UserRegDTO
-from UserService.models.dto.user_update_dto import UserUpdateDTO
+from backend.Domain.models.tables.user import User
+from backend.UserService.models.dto.user_reg_dto import UserRegDTO
+from backend.UserService.models.dto.user_update_dto import UserUpdateDTO
 
 
 class UserService:

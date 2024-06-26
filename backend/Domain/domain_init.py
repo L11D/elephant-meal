@@ -1,32 +1,32 @@
 import logging
 import os
 
-from Domain.db_config import SessionLocal, Base, engine
+from backend.Domain.db_config import SessionLocal, Base, engine
 
 import logging
 from alembic import command
 from alembic.config import Config
 
-from Domain.models.tables.category import Category
-from Domain.models.tables.crl import CRL
-from Domain.models.tables.dish import Dish
-from Domain.models.tables.dish_in_plan import DishInPlan
-from Domain.models.tables.dish_product import DishProduct
-from Domain.models.tables.dish_review import DishReview
-from Domain.models.tables.ingredient import Ingredient
-from Domain.models.tables.ingredient_in_recipe import IngredientInRecipe
-from Domain.models.tables.plan import Plan
-from Domain.models.tables.recipe import Recipe
-from Domain.models.tables.shop import Shop
-from Domain.models.tables.store_assortment import StoreAssortment
-from Domain.models.tables.user import User
+from backend.Domain.models.tables.category import Category
+from backend.Domain.models.tables.crl import CRL
+from backend.Domain.models.tables.dish import Dish
+from backend.Domain.models.tables.dish_in_plan import DishInPlan
+from backend.Domain.models.tables.dish_product import DishProduct
+from backend.Domain.models.tables.dish_review import DishReview
+from backend.Domain.models.tables.ingredient import Ingredient
+from backend.Domain.models.tables.ingredient_in_recipe import IngredientInRecipe
+from backend.Domain.models.tables.plan import Plan
+from backend.Domain.models.tables.recipe import Recipe
+from backend.Domain.models.tables.shop import Shop
+from backend.Domain.models.tables.store_assortment import StoreAssortment
+from backend.Domain.models.tables.user import User
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def init_db():
-    from Domain.db_config import Base, engine
+    from backend.Domain.db_config import Base, engine
 
     # Automatically generate migrations
     # Абсолютный путь к alembic.ini

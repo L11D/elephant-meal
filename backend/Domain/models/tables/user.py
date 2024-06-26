@@ -2,9 +2,9 @@ import uuid
 
 from sqlalchemy import Column, UUID, Time, Boolean, Float, String, Enum as SQLEnum, DateTime, Date
 
-from Domain.db_config import Base
-from Domain.models.enum.roles import Role
-from Domain.models.enum.sex import Sex
+from backend.Domain.db_config import Base
+from backend.Domain.models.enum.roles import Role
+from backend.Domain.models.enum.sex import Sex
 
 
 class User(Base):

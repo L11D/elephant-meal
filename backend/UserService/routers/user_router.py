@@ -5,20 +5,20 @@ from fastapi import HTTPException, Depends, APIRouter, Query
 import jwt
 from uuid import UUID
 
-from Domain.db_config import get_db
+from backend.Domain.db_config import get_db
 from sqlalchemy.orm import Session
-from UserService import user_config
-from UserService.models.dto.user_access_token_dto import UserAccessTokenDTO
-from UserService.models.dto.user_login_dto import UserLoginDTO
-from UserService.models.dto.user_profile_dto import UserProfileDTO
-from UserService.models.dto.user_reg_dto import UserRegDTO
-from UserService.models.dto.user_update_dto import UserUpdateDTO
-from UserService.services.auth_service import AuthService
-from UserService.services.email_service import EmailService
-from UserService.services.user_service import UserService
-from UserService.user_config import oauth2_scheme
-from basic_models.dto.error_dto import ErrorDTO
-from basic_models.dto.message_dto import MessageDTO
+from backend.UserService import user_config
+from backend.UserService.models.dto.user_access_token_dto import UserAccessTokenDTO
+from backend.UserService.models.dto.user_login_dto import UserLoginDTO
+from backend.UserService.models.dto.user_profile_dto import UserProfileDTO
+from backend.UserService.models.dto.user_reg_dto import UserRegDTO
+from backend.UserService.models.dto.user_update_dto import UserUpdateDTO
+from backend.UserService.services.auth_service import AuthService
+from backend.UserService.services.email_service import EmailService
+from backend.UserService.services.user_service import UserService
+from backend.UserService.user_config import oauth2_scheme
+from backend.basic_models.dto.error_dto import ErrorDTO
+from backend.basic_models.dto.message_dto import MessageDTO
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
