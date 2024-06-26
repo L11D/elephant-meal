@@ -1,15 +1,9 @@
 import os
-import sys
-
-original_sys_path = sys.path.copy()
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import os
 from email.mime.text import MIMEText
 
 from fastapi.security import OAuth2PasswordBearer
 
-from backend.env_variables import EMAIL_LOGIN, EMAIL_TEST
-sys.path = original_sys_path
+from env_variables import EMAIL_LOGIN, EMAIL_TEST
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/test/login/")
 

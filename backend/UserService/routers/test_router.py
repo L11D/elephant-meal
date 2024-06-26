@@ -1,8 +1,3 @@
-import os
-import sys
-
-original_sys_path = sys.path.copy()
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
 from typing import Annotated
 
@@ -10,13 +5,12 @@ from fastapi import HTTPException, Depends, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 from requests import Session
 
-from backend.Domain.db_config import get_db
-from backend.UserService import user_config
-from backend.UserService.models.dto.user_access_token_dto import UserAccessTokenDTO
-from backend.UserService.services.auth_service import AuthService
-from backend.UserService.services.user_service import UserService
-from backend.basic_models.dto.error_dto import ErrorDTO
-sys.path = original_sys_path
+from Domain.db_config import get_db
+from UserService import user_config
+from UserService.models.dto.user_access_token_dto import UserAccessTokenDTO
+from UserService.services.auth_service import AuthService
+from UserService.services.user_service import UserService
+from basic_models.dto.error_dto import ErrorDTO
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

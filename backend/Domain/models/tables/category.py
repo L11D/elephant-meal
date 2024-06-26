@@ -1,17 +1,10 @@
-import os
-import sys
-
-original_sys_path = sys.path.copy()
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 import uuid
 
 from sqlalchemy import Column, UUID, Time, Float, String, ForeignKey, LargeBinary
 
-from backend.Domain.db_config import Base
-from backend.Domain.models.enum.sex import Sex
+from Domain.db_config import Base
+from Domain.models.enum.sex import Sex
 
-sys.path = original_sys_path
 
 class Category(Base):
     __tablename__ = "categories"
