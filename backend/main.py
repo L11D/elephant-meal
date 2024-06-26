@@ -11,11 +11,11 @@ import uvicorn
 
 from sqlalchemy import create_engine, text, Table, Column, Integer, String, MetaData
 
-from backend.Domain.domain_init import init_db
-from backend.UserService.routers.test_router import test_router
+from Domain.domain_init import init_db
+from UserService.routers.test_router import test_router
 
-from backend.UserService.routers.user_router import user_router
-from backend.UserService.services.email_service import EmailService
+from UserService.routers.user_router import user_router
+from UserService.services.email_service import EmailService
 
 # sys.path = original_sys_path
 
