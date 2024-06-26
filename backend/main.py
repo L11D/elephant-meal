@@ -1,8 +1,8 @@
-import os
-import sys
-
-original_sys_path = sys.path.copy()
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# import os
+# import sys
+#
+# original_sys_path = sys.path.copy()
+# sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
 
 from fastapi import FastAPI, APIRouter
@@ -16,7 +16,9 @@ from backend.UserService.routers.test_router import test_router
 
 from backend.UserService.routers.user_router import user_router
 from backend.UserService.services.email_service import EmailService
-sys.path = original_sys_path
+
+# sys.path = original_sys_path
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
