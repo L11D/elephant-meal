@@ -165,6 +165,8 @@ def commit_ing_in_recipes(db, recipes_df=None, recipes=None):
     print('fetched ingredients')
 
     for index, data in recipes_df.iterrows():
+        if index % 1000 == 0:
+            print(index)
         recipe_id = 1
         recipe = None
         if recipes_from_db:
@@ -196,6 +198,7 @@ def commit_ing_in_recipes(db, recipes_df=None, recipes=None):
                 )
             )
     print('IngredientInRecipe commiting')
+    user_input = input("Commiting?")
     db.commit()
 
 def commit():
@@ -205,9 +208,9 @@ def commit():
     db = next(db_gen)
     with db:
         # commit_ingredients(db)
-        commit_recipes(db)
+        # commit_recipes(db)
 
-        # commit_ing_in_recipes(db)
+        commit_ing_in_recipes(db)
 
         db.commit()
         # fetched_ing = db.query(Ingredient).filter_by(name=ing_test['name']).first()

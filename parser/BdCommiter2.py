@@ -151,6 +151,7 @@ def commit_recipes(db):
     # db.commit()
 
 def commit_ing_in_recipes(db, recipes_df=None, recipes=None):
+    commit_data = []
     if recipes_df is None:
         recipes_df = pd.read_csv(recipes_df_path)
         recipes_df['ingredients'] = recipes_df['ingredients'].apply(ast.literal_eval)
@@ -165,6 +166,8 @@ def commit_ing_in_recipes(db, recipes_df=None, recipes=None):
     print('fetched ingredients')
 
     for index, data in recipes_df.iterrows():
+        if index % 1000 == 0:
+            print(index)
         recipe_id = 1
         recipe = None
         if recipes_from_db:
@@ -186,17 +189,31 @@ def commit_ing_in_recipes(db, recipes_df=None, recipes=None):
                 value, value_type, displayed_value = get_values(x, y)
             except TypeError:
                 print(data)
-            db.add(
-                IngredientInRecipe(
-                    recipe_id=recipe_id,
-                    ingredient_id=ing_id,
-                    value=value,
-                    value_type=value_type,
-                    displayed_value=displayed_value
-                )
+            commit_data.append(
+                {
+                    'id': uuid.uuid1(),
+                    'recipe_id': recipe_id,
+                    'ingredient_id': ing_id,
+                    'value': value,
+                    'value_type': value_type,
+                    'displayed_value': displayed_value
+                }
             )
+            # db.add(
+            #     IngredientInRecipe(
+            #         recipe_id=recipe_id,
+            #         ingredient_id=ing_id,
+            #         value=value,
+            #         value_type=value_type,
+            #         displayed_value=displayed_value
+            #     )
+            # )
     print('IngredientInRecipe commiting')
-    db.commit()
+
+    c = pd.DataFrame(commit_data)
+    c.to_csv('data/recipes/recipe_commit.csv', index=False)
+    # user_input = input("Commiting?")
+    # db.commit()
 
 def commit():
     init_db()
@@ -205,11 +222,11 @@ def commit():
     db = next(db_gen)
     with db:
         # commit_ingredients(db)
-        commit_recipes(db)
+        # commit_recipes(db)
 
-        # commit_ing_in_recipes(db)
+        commit_ing_in_recipes(db)
 
-        db.commit()
+        # db.commit()
         # fetched_ing = db.query(Ingredient).filter_by(name=ing_test['name']).first()
         #
         # embedding_array = np.frombuffer(fetched_ing.embedding, dtype=ing_test['embedding'].dtype)
