@@ -1,3 +1,8 @@
+import os
+import sys
+
+original_sys_path = sys.path.copy()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import uuid
 
 from sqlalchemy import Column, UUID, Time, Boolean, Float, String, Enum as SQLEnum, DateTime, Date
@@ -5,6 +10,7 @@ from sqlalchemy import Column, UUID, Time, Boolean, Float, String, Enum as SQLEn
 from backend.Domain.db_config import Base
 from backend.Domain.models.enum.roles import Role
 from backend.Domain.models.enum.sex import Sex
+sys.path = original_sys_path
 
 
 class User(Base):

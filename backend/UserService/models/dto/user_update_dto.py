@@ -1,8 +1,14 @@
+import os
+import sys
+
+original_sys_path = sys.path.copy()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from pydantic import BaseModel, EmailStr, constr, field_validator
 from datetime import date, timedelta
 from backend.Domain.models.enum.sex import Sex
 from backend.UserService import user_config
 from uuid import UUID
+sys.path = original_sys_path
 
 
 class UserUpdateDTO(BaseModel):

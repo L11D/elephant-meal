@@ -1,3 +1,8 @@
+import os
+import sys
+
+original_sys_path = sys.path.copy()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import uuid
 
 from sqlalchemy import Column, UUID, Time, Float, String, Enum as SQLEnum, ForeignKey, LargeBinary
@@ -7,6 +12,7 @@ from backend.Domain.models.enum.mark import Mark
 from backend.Domain.models.enum.sex import Sex
 from backend.Domain.models.enum.value_type import ValueType
 
+sys.path = original_sys_path
 
 class DishReview(Base):
     __tablename__ = "dish_reviews"

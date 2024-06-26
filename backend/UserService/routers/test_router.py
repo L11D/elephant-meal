@@ -1,3 +1,8 @@
+import os
+import sys
+
+original_sys_path = sys.path.copy()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
 from typing import Annotated
 
@@ -11,6 +16,7 @@ from backend.UserService.models.dto.user_access_token_dto import UserAccessToken
 from backend.UserService.services.auth_service import AuthService
 from backend.UserService.services.user_service import UserService
 from backend.basic_models.dto.error_dto import ErrorDTO
+sys.path = original_sys_path
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

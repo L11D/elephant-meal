@@ -1,3 +1,8 @@
+import os
+import sys
+
+original_sys_path = sys.path.copy()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
 
 from fastapi import HTTPException, Depends, APIRouter, Query
@@ -19,6 +24,7 @@ from backend.UserService.services.user_service import UserService
 from backend.UserService.user_config import oauth2_scheme
 from backend.basic_models.dto.error_dto import ErrorDTO
 from backend.basic_models.dto.message_dto import MessageDTO
+sys.path = original_sys_path
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

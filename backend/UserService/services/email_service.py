@@ -1,3 +1,8 @@
+import os
+import sys
+
+original_sys_path = sys.path.copy()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
 import os
 import smtplib
@@ -5,6 +10,7 @@ from email.mime.text import MIMEText
 
 from backend.UserService.user_config import TEST_MESSAGE
 from backend.env_variables import EMAIL_LOGIN, EMAIL_PASSWORD, EMAIL_TEST, DB_HOST
+sys.path = original_sys_path
 
 
 class EmailService:

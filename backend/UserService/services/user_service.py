@@ -1,3 +1,8 @@
+import os
+import sys
+
+original_sys_path = sys.path.copy()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import logging
 import random
 import string
@@ -14,6 +19,7 @@ from backend.Domain.models.enum.roles import Role
 from backend.Domain.models.tables.user import User
 from backend.UserService.models.dto.user_reg_dto import UserRegDTO
 from backend.UserService.models.dto.user_update_dto import UserUpdateDTO
+sys.path = original_sys_path
 
 
 class UserService:

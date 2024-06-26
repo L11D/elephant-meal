@@ -1,6 +1,10 @@
 import logging
 import os
+import os
+import sys
 
+original_sys_path = sys.path.copy()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from backend.Domain.db_config import SessionLocal, Base, engine
 
 import logging
@@ -20,6 +24,7 @@ from backend.Domain.models.tables.recipe import Recipe
 from backend.Domain.models.tables.shop import Shop
 from backend.Domain.models.tables.store_assortment import StoreAssortment
 from backend.Domain.models.tables.user import User
+sys.path = original_sys_path
 
 
 logging.basicConfig(level=logging.INFO)

@@ -1,13 +1,18 @@
 import logging
 import os
 import jwt
+import os
+import sys
 
+original_sys_path = sys.path.copy()
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from sqlalchemy.orm import Session
 
 from datetime import datetime, timedelta
 
 from backend.Domain.models.tables.crl import CRL
 from backend.env_variables import ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ACCESS_TOKEN_ALGORITHM
+sys.path = original_sys_path
 
 
 class AuthService:
