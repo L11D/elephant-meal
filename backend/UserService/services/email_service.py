@@ -3,7 +3,8 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 
-import config
+from backend.UserService.user_config import TEST_MESSAGE
+from backend.env_variables import EMAIL_LOGIN, EMAIL_PASSWORD, EMAIL_TEST, DB_HOST
 
 
 class EmailService:
@@ -16,13 +17,13 @@ class EmailService:
     def test_send(self) -> None:
         try:
             self.smtpObj.starttls()
-            self.smtpObj.login(os.environ['EMAIL_LOGIN'], os.environ['EMAIL_PASSWORD'])
+            self.smtpObj.login(EMAIL_LOGIN, EMAIL_PASSWORD)
 
-            self.smtpObj.sendmail(os.environ['EMAIL_LOGIN'], os.environ['EMAIL_TEST'], config.TEST_MESSAGE.as_string())
+            self.smtpObj.sendmail(EMAIL_LOGIN, EMAIL_TEST, TEST_MESSAGE.as_string())
 
             self.smtpObj.quit()
 
-            self.logger.info(f"(Send test mail) Successful sent test message to {os.environ['EMAIL_TEST']}")
+            self.logger.info(f"(Send test mail) Successful sent test message to {EMAIL_TEST}")
         except Exception as e:
             self.logger.error(f"(Send test mail) Error: {e}")
             raise
@@ -30,14 +31,15 @@ class EmailService:
     def send_link(self, code: str, to_email: str):
         try:
             self.smtpObj.starttls()
-            self.smtpObj.login(os.environ['EMAIL_LOGIN'], os.environ['EMAIL_PASSWORD'])
-
-            msg = MIMEText(f'<a href={os.environ["VERIFY_LINK"] + code}>Click to verify</a>', 'html')
-            msg['From'] = os.environ['EMAIL_LOGIN']
+            self.smtpObj.login(EMAIL_LOGIN, EMAIL_PASSWORD)
+            S = f"http://{DB_HOST}/api/v1/user/verify/"
+            #S = f"http://localhost:8000/api/v1/user/verify/"
+            msg = MIMEText(f'<a href={S + code}>Click to verify</a>', 'html')
+            msg['From'] = EMAIL_LOGIN
             msg['To'] = to_email
             msg['Subject'] = 'PmC pYtHoN VeRiFy'
 
-            self.smtpObj.sendmail(os.environ['EMAIL_LOGIN'], to_email, msg.as_string())
+            self.smtpObj.sendmail(EMAIL_LOGIN, to_email, msg.as_string())
 
             self.smtpObj.quit()
 

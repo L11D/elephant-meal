@@ -1,14 +1,19 @@
 import logging
 import random
 import string
-
+from datetime import date, time, datetime
 from sqlalchemy.orm import Session
 
-from models.enum.applicationstatuses import ApplicationStatuses
-from models.tables.user import User
-from models.tables.role import Role
+from backend.Domain.models.enum.roles import Role
+# from models.enum.applicationstatuses import ApplicationStatuses
+#
+# from models.tables.role import Role
+#
+# from models.enum.userroles import UserRoles
 
-from models.enum.userroles import UserRoles
+from backend.Domain.models.tables.user import User
+from backend.UserService.models.dto.user_reg_dto import UserRegDTO
+from backend.UserService.models.dto.user_update_dto import UserUpdateDTO
 
 
 class UserService:
@@ -30,16 +35,45 @@ class UserService:
             self.logger.error(f"(Email user getting) Error: {e}")
             raise
 
-    async def create_user(self, db: Session, email: str, password: str, full_name: str) -> User:
+    async def create_user(self, db: Session, user_data: UserRegDTO) -> User:
         try:
             user = User(
-                role_id=UserRoles.Student.value,
-                email=email,
-                password=password,
-                full_name=full_name,
+                surname=user_data.surname,
+                name=user_data.name,
+                patronymic=user_data.patronymic,
+                email=user_data.email,
+                sex=user_data.sex,
+                weight=user_data.weight,
+                height=user_data.height,
+                birth_date=user_data.birthdate,
+                registration_date=datetime.now(),
+                password=user_data.password,
+                role=Role.User,
                 secret_key=''.join(''.join(random.choices(string.ascii_letters + string.digits, k=33)))
             )
             db.add(user)
+            db.commit()
+
+            self.logger.error(f"(Creating user) Success: {user}")
+
+            return user
+        except Exception as e:
+            self.logger.error(f"(Creating user) Error: {e}")
+            raise
+
+    async def update_user(self, db: Session, user_data: UserUpdateDTO, user_id: str) -> User:
+        try:
+            user = db.query(User).filter(User.id == user_id).first()
+
+            user.surname = user.surname if user_data.surname == None else user_data.surname
+            user.name = user.name if user_data.name == None else user_data.name
+            user.patronymic = user.patronymic if user_data.patronymic == None else user_data.patronymic
+            user.email = user.email if user_data.email == None else user_data.email
+            user.sex = user.sex if user_data.sex == None else user_data.sex
+            user.weight = user.weight if user_data.weight == None else user_data.weight
+            user.height = user.height if user_data.height == None else user_data.height
+            user.birth_date = user.birth_date if user_data.birth_date == None else user_data.birth_date
+
             db.commit()
 
             self.logger.error(f"(Creating user) Success: {user}")
@@ -63,12 +97,11 @@ class UserService:
             self.logger.error(f"(User id getting) Error: {e}")
             raise
 
-    async def get_users(self, db: Session, roles: list[ApplicationStatuses]) -> list[User]:
+    async def get_users(self, db: Session) -> list[User]:
         try:
             users = db \
                 .query(User) \
                 .filter(
-                        User.role_id.in_([role for role in roles]),
                         User.is_verified == True
                         ) \
                 .all()
@@ -103,17 +136,6 @@ class UserService:
             return user
         except Exception as e:
             self.logger.error(f"(User verify) Error: {e}")
-            raise
-
-    async def get_role_by_id(self, db: Session, _id: str) -> Role:
-        try:
-            role = db.query(Role).filter(Role.id == _id).first()
-
-            self.logger.info(f"(Role id getting) Got role with ID: {role.id}")
-
-            return role
-        except Exception as e:
-            self.logger.error(f"(Role id getting) Error: {e}")
             raise
 
     async def verify_password(self, db: Session, email: str, password: str) -> bool:

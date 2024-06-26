@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, constr
 
-import config
+
 
 from backend.UserService import user_config
 
