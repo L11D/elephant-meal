@@ -8,6 +8,8 @@ on:
       - deploy-test
     paths:
       - 'backend/**'
+      - Dockerfile
+      - docker-compose.yml
 jobs:
   deploy:
     runs-on: self-hosted
