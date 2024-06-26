@@ -26,7 +26,7 @@ fun ElephantMealNavigation(
 ) {
     NavHost(
         navController = navController,
-       // startDestination = Screen.WelcomeScreen.name
+       // startDestination = Screen.ProductsBanScreen.name
         startDestination = "${Screen.TodayScreen.name}/false"
     ) {
         // Приветственный экран

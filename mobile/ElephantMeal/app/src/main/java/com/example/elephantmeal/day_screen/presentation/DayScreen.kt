@@ -65,7 +65,10 @@ fun DayScreen(
                 .weight(1f)
         ) {
             // Расписание рациона на день
-            DayTimetable()
+            if (state.dayRation.isNotEmpty())
+                DayTimetable()
+            else
+                EmptyDayPlaceholder()
 
             // Тень от нижней навигационной панели
             Box(
