@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 
 from fastapi.security import OAuth2PasswordBearer
 
-from backend.env_variables import EMAIL_LOGIN, EMAIL_TEST
+from env_variables import EMAIL_LOGIN, EMAIL_TEST
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/test/login/")
 

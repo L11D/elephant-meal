@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, constr, field_validator
 from datetime import date, timedelta
-from backend.Domain.models.enum.sex import Sex
-from backend.UserService import user_config
+from Domain.models.enum.sex import Sex
+from UserService import user_config
 
 
 class UserRegDTO(BaseModel):

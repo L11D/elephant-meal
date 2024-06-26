@@ -1,8 +1,7 @@
 import os
 import sys
 
-original_sys_path = sys.path.copy()
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import logging
 
 from fastapi import FastAPI, APIRouter
@@ -11,12 +10,12 @@ import uvicorn
 
 from sqlalchemy import create_engine, text, Table, Column, Integer, String, MetaData
 
-from backend.Domain.domain_init import init_db
-from backend.UserService.routers.test_router import test_router
+from Domain.domain_init import init_db
+from UserService.routers.test_router import test_router
 
-from backend.UserService.routers.user_router import user_router
-from backend.UserService.services.email_service import EmailService
-sys.path = original_sys_path
+from UserService.routers.user_router import user_router
+from UserService.services.email_service import EmailService
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

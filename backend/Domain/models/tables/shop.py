@@ -2,7 +2,7 @@ import uuid
 
 from sqlalchemy import Column, UUID, Integer, String
 
-from backend.Domain.db_config import Base
+from Domain.db_config import Base
 
 
 class Shop(Base):

@@ -2,8 +2,8 @@ import uuid
 
 from sqlalchemy import Column, UUID, Time, Float, String, ForeignKey, LargeBinary
 
-from backend.Domain.db_config import Base
-from backend.Domain.models.enum.sex import Sex
+from Domain.db_config import Base
+from Domain.models.enum.sex import Sex
 
 
 class Dish(Base):

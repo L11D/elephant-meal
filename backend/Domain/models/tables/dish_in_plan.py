@@ -2,9 +2,9 @@ import uuid
 
 from sqlalchemy import Column, UUID, Time, Float, String, Enum as SQLEnum, ForeignKey, LargeBinary
 
-from backend.Domain.db_config import Base
-from backend.Domain.models.enum.sex import Sex
-from backend.Domain.models.enum.value_type import ValueType
+from Domain.db_config import Base
+from Domain.models.enum.sex import Sex
+from Domain.models.enum.value_type import ValueType
 
 
 class DishInPlan(Base):

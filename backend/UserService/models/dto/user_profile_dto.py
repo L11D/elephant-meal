@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from uuid import UUID
 
-from backend.Domain.models.enum.sex import Sex
+from Domain.models.enum.sex import Sex
 from datetime import date, datetime
 
 

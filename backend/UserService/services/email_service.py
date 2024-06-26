@@ -3,8 +3,8 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 
-from backend.UserService.user_config import TEST_MESSAGE
-from backend.env_variables import EMAIL_LOGIN, EMAIL_PASSWORD, EMAIL_TEST, DB_HOST
+from UserService.user_config import TEST_MESSAGE
+from env_variables import EMAIL_LOGIN, EMAIL_PASSWORD, EMAIL_TEST, DB_HOST
 
 
 class EmailService:
