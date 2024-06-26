@@ -14,6 +14,4 @@ RUN pip install --cache-dir=$PIP_CACHE_DIR -r requirements.txt
 
 COPY backend .
 
-RUN ls
-
-ENTRYPOINT [ "python3", "main.py" ]
+ENTRYPOINT [ "python", "main.py" ]
