@@ -27,6 +27,8 @@ class MenuViewModel @Inject constructor(
     private val _state = MutableStateFlow(MenuUiState())
     val state = _state.asStateFlow()
 
+    private var email = ""
+
     private val _events = MutableSharedFlow<MenuEvent>()
     val events = _events.asSharedFlow()
 
@@ -66,6 +68,7 @@ class MenuViewModel @Inject constructor(
             val dateStr = profile.birthdate ?: "2000-01-01"
             val date = LocalDate.parse(dateStr, DateTimeFormatter.ISO_DATE)
             val formattedDateStr = date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+            email = profile.email
 
             birthDate = formattedDateStr
         }
@@ -236,7 +239,18 @@ class MenuViewModel @Inject constructor(
 
     // Сохранение профиля
     fun onSave() {
-        _menuUseCase
+        viewModelScope.launch(Dispatchers.IO) {
+            _menuUseCase.updateProfile(
+                surname = surname,
+                name = name,
+                lastName = lastName,
+                email = email,
+                gender = if (_state.value.gender == Gender.Female) 2 else 1,
+                birthDate = birthDate,
+                height = height.toFloat(),
+                weight = weight.toFloat()
+            )
+        }
     }
 
     // Выход из аккаунта

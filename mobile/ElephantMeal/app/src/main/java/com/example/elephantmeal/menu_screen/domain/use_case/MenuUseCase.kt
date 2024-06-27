@@ -6,7 +6,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.elephantmeal.menu_screen.domain.models.UpdateProfile
 import com.example.elephantmeal.menu_screen.domain.models.UserProfile
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class MenuUseCase @Inject constructor(
@@ -23,13 +26,29 @@ class MenuUseCase @Inject constructor(
     suspend fun updateProfile(
         surname: String,
         name: String,
+        email: String,
         lastName: String,
         gender: Int,
         birthDate: String,
         height: Float,
         weight: Float
     ) {
-        _menuRepository
+        val inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val date = LocalDate.parse(birthDate, inputFormatter)
+
+        _menuRepository.updateProfile(
+            UpdateProfile(
+                surname = surname,
+                name = name,
+                patronymic = lastName,
+                sex = gender,
+                birth_date = date.format(outputFormatter),
+                height = height,
+                weight = weight,
+                email = email
+            )
+        )
     }
 
     // Получение профиля пользователя
