@@ -20,6 +20,18 @@ class MenuUseCase @Inject constructor(
         )
     }
 
+    suspend fun updateProfile(
+        surname: String,
+        name: String,
+        lastName: String,
+        gender: Int,
+        birthDate: String,
+        height: Float,
+        weight: Float
+    ) {
+        _menuRepository
+    }
+
     // Получение профиля пользователя
     suspend fun getUserProfile(): UserProfile {
         return _menuRepository.getUserProfile()

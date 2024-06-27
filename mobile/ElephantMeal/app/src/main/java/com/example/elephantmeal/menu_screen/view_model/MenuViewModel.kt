@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -188,12 +187,13 @@ class MenuViewModel @Inject constructor(
             .replace(",", ".")
             .trim()
 
-        height = if (formattedNewHeight.toDoubleOrNull() != null && formattedNewHeight.toDouble() < 300.0
-            || formattedNewHeight.isEmpty()) {
-            formattedNewHeight
-        }
-        else
-            height
+        height =
+            if (formattedNewHeight.toDoubleOrNull() != null && formattedNewHeight.toDouble() < 300.0
+                || formattedNewHeight.isEmpty()
+            ) {
+                formattedNewHeight
+            } else
+                height
 
         updateSaveButton()
     }
@@ -205,12 +205,13 @@ class MenuViewModel @Inject constructor(
             .replace(",", ".")
             .trim()
 
-        weight = if (formattedNewWeight.toDoubleOrNull() != null && formattedNewWeight.toDouble() < 300.0
-            || formattedNewWeight.isEmpty()) {
-            formattedNewWeight
-        }
-        else
-            weight
+        weight =
+            if (formattedNewWeight.toDoubleOrNull() != null && formattedNewWeight.toDouble() < 300.0
+                || formattedNewWeight.isEmpty()
+            ) {
+                formattedNewWeight
+            } else
+                weight
 
         updateSaveButton()
     }
@@ -219,7 +220,10 @@ class MenuViewModel @Inject constructor(
     private fun updateSaveButton() {
         _state.update { currentState ->
             currentState.copy(
-                isSaveActive = true //surname.isNotEmpty() //||
+                isSaveActive = surname.isNotEmpty() &&
+                        name.isNotEmpty() &&
+                        lastName.isNotEmpty()
+                //true //surname.isNotEmpty() //||
                 /*name.isNotEmpty() ||
                 lastName.isNotEmpty() ||
                 currentState.gender != null ||
@@ -232,7 +236,7 @@ class MenuViewModel @Inject constructor(
 
     // Сохранение профиля
     fun onSave() {
-
+        _menuUseCase
     }
 
     // Выход из аккаунта
