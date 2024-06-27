@@ -12,7 +12,7 @@ class DishReview(Base):
     __tablename__ = "dish_reviews"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    dish_id = Column(UUID(as_uuid=True), ForeignKey('dishes.id'), default=uuid.uuid4, nullable=False)
-    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), default=uuid.uuid4, nullable=False)
+    dish_id = Column(UUID(as_uuid=True), ForeignKey('dishes.id'), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), nullable=False)
     mark = Column(SQLEnum(Mark), nullable=True)
     discription = Column(String, nullable=True)
