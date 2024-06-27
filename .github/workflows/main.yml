@@ -7,6 +7,7 @@ on:
       - develop
       - deploy-test
     paths:
+      - 'alembic/**'
       - 'backend/**'
       - Dockerfile
       - docker-compose.yml
