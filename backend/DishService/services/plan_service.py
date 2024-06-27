@@ -3,7 +3,7 @@ from datetime import date
 import uuid
 
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, text
 
 
 from backend.DishService.models.dto.necessary_elements_dto import NecessaryElementsDTO
@@ -198,12 +198,117 @@ class PlanService:
                  LP.category_id AS category_id, ingredients_and_products.chance AS chance,
                  ingredients_in_recipes.recipe_id AS recipe_id,
                  LP.cost  AS cost, LP.calories AS calories, 
-                 LP.proteins AS proteins, LP.carb AS carb, LP.fats AS fats
+                 LP.proteins AS proteins, LP.carb AS carb, LP.fats AS fats, recipes.id as
                 FROM {ingredients_liked_with_rep} AS LP
                 JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
                 WHERE ingredients_in_recipes.ingredient_id IN {ingredients_liked};
                 """
             )
+
+            new_rp1 = (
+                f"""
+                SELECT recipe_id, category_id
+                FROM {recipes_liked}
+                WHERE recipe_id IN (SELECT DISTINCT recipe_id FROM {recipes_liked})
+                GROUP BY category_id;
+                """
+            )
+            а = (
+                f"""
+                SELECT recipe_id, category_id
+                FROM {recipes_liked}
+                WHERE recipe_id IN (SELECT DISTINCT recipe_id FROM {recipes_liked})
+                GROUP BY category_id;
+                """
+            )
+            new_rp = (
+                f"""
+                SELECT category_id, array_agg(recipe_group) AS recipes
+                FROM (
+                        WITH ingredients_in_recipes AS (
+                        SELECT ir.recipe_id, ip.ingredient_id, array_agg(ip.product_id) AS products
+                        FROM ingredients_in_recipes ir
+                        JOIN ingredients_and_products ip ON ir.ingredient_id = ip.ingredient_id
+                        GROUP BY ir.recipe_id, ip.ingredient_id
+                        )
+                        SELECT r.id, array_agg(product_combinations) AS product_combinations
+                        FROM {new_rp1} r
+                        JOIN ingredients_in_recipes ri ON r.id = ri.recipe_id
+                        CROSS JOIN LATERAL (
+                            SELECT ARRAY(
+                                SELECT unnest(combination) AS product_id
+                                FROM (
+                                    SELECT array_agg(product_id) AS combination
+                                    FROM unnest(ri.products) AS product_id
+                                ) AS combinations
+                            ) AS product_combinations
+                        ) AS ip
+                        GROUP BY r.id
+                        ORDER BY r.id;
+                    ) AS recipe_group
+                    FROM {new_rp1}
+                    GROUP BY category_id, recipe_id
+                ) AS grouped_recipes
+                GROUP BY category_id;
+                """
+            )
+
+            new_rp_random_combinations_store_data = (
+                f"""
+                SELECT category_id, array_agg(recipe_group) AS recipes
+                FROM (
+                    WITH ingredients_in_recipes AS (
+                        SELECT ir.recipe_id, ip.ingredient_id, array_agg(ip.product_id) AS products
+                        FROM ingredients_in_recipes ir
+                        JOIN ingredients_and_products ip ON ir.ingredient_id = ip.ingredient_id
+                        GROUP BY ir.recipe_id, ip.ingredient_id
+                    )
+                    SELECT r.id, array_agg(product_store_data ORDER BY random() LIMIT 1) AS product_combinations
+                    FROM {new_rp1} r
+                    JOIN ingredients_in_recipes ri ON r.id = ri.recipe_id
+                    CROSS JOIN LATERAL (
+                        SELECT ARRAY(
+                            SELECT sa.*
+                            FROM unnest(ri.products) AS product_id
+                            JOIN store_assortment sa ON sa.product_id = product_id
+                        ) AS product_store_data
+                    ) AS ip
+                    GROUP BY r.id
+                    ORDER BY r.id
+                ) AS recipe_group
+                GROUP BY category_id;
+                """
+            )
+            query_result_random_combinations_store_data = db.execute(text(new_rp_random_combinations_store_data)).fetchall()
+            structured_data_store = {}
+
+            for row in query_result_random_combinations_store_data:
+                category_id = row[0]
+                recipes = row[1]
+                structured_recipes = []
+
+                for recipe_combinations in recipes:
+                    structured_combinations = []
+                    for product_data in recipe_combinations:
+                        # Создаем словарь с данными из store_assortment
+                        product_dict = {
+                            'id': product_data['id'],
+                            'product_name': product_data['product_name'],
+                            'price': product_data['price']
+                            # Добавить другие поля из store_assortment при необходимости
+                        }
+                        structured_combinations.append(product_dict)
+                    structured_recipes.append(structured_combinations)
+
+                structured_data_store[category_id] = structured_recipes
+
+            for category_id, recipes in structured_data_store.items():
+                print(f"Category ID: {category_id}")
+                for index, recipe in enumerate(recipes, start=1):
+                    print(f"  Recipe {index}:")
+                    for product_data in recipe:
+                        print(
+                            f"    Product ID: {product_data['id']}, Product Name: {product_data['product_name']}, Price: {product_data['price']}")
 
             recipes_normal = (
                 f"""
@@ -241,3 +346,37 @@ class PlanService:
         except Exception as e:
             self.logger.error(f"(Physic data getting) Error: {e}")
             raise
+
+    def weighted_sum_knapsack(items, W, MaxWeight, MaxVolume, MaxCost, w_v, w_w, w_x, w_c):
+        n = len(items)
+
+        # Создаем матрицу для хранения максимальных значений
+        dp = [[[[0 for _ in range(MaxCost + 1)]
+                for _ in range(MaxVolume + 1)]
+               for _ in range(MaxWeight + 1)]
+              for _ in range(W + 1)]
+
+        # Заполняем матрицу
+        for i in range(1, n + 1):
+            for j in range(W + 1):
+                for k in range(MaxWeight + 1):
+                    for l in range(MaxVolume + 1):
+                        if items[i - 1]['weight'] <= j and items[i - 1]['volume'] <= k and items[i - 1]['cost'] <= l:
+                            dp[i][j][k][l] = max(dp[i - 1][j][k][l],
+                                                 dp[i - 1][j - items[i - 1]['weight']][k - items[i - 1]['volume']][
+                                                     l - items[i - 1]['cost']] + items[i - 1]['value'])
+                        else:
+                            dp[i][j][k][l] = dp[i - 1][j][k][l]
+
+        # Восстановление решения
+        chosen_items = []
+        i, j, k, l = W, MaxWeight, MaxVolume, MaxCost
+        for idx in range(n, 0, -1):
+            if dp[idx][i][k][l] != dp[idx - 1][i][k][l]:
+                chosen_items.append(items[idx - 1])
+                i -= items[idx - 1]['weight']
+                k -= items[idx - 1]['volume']
+                l -= items[idx - 1]['cost']
+
+        return dp[n][W][MaxWeight][MaxVolume][MaxCost], chosen_items
+
