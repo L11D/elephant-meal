@@ -11,7 +11,7 @@ class DishInPlan(Base):
     __tablename__ = "dishes_in_plan"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    dish_id = Column(UUID(as_uuid=True), ForeignKey('dishes.id'), default=uuid.uuid4, nullable=False)
-    plan_id = Column(UUID(as_uuid=True), ForeignKey('plans.id'), default=uuid.uuid4, nullable=False)
+    dish_id = Column(UUID(as_uuid=True), ForeignKey('dishes.id'), nullable=False)
+    plan_id = Column(UUID(as_uuid=True), ForeignKey('plans.id'), nullable=False)
     part_of_dish = Column(Float, nullable=True)
     meal_time = Column(Time, nullable=True)

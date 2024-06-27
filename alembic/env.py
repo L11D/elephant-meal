@@ -17,9 +17,10 @@ section = config.config_ini_section
 config.set_section_option(section, "DATABASE_URL", DATABASE_URL)
 fileConfig(config.config_file_name)
 flag = False
-
+import sqlalchemy as sa
 # Define the metadata object for your database
 target_metadata = Base.metadata
+
 
 def get_all_enums(metadata):
     enums = {}
@@ -28,16 +29,28 @@ def get_all_enums(metadata):
             if isinstance(column.type, Enum):
                 enums[column.type.name] = [e.name for e in column.type.enum_class]
     return enums
-
 def create_or_upgrade_enum_type(connection, enum_name, new_values):
     inspector = inspect(connection)
     enums = inspector.get_enums()
+    # print("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+    # print(enums)
     existing_values = set()
+    enum_exists = False
 
     for enum in enums:
         if enum['name'] == enum_name:
             existing_values = set(enum['labels'])
+            enum_exists = True
             break
+
+    if not enum_exists:
+        try:
+            # Создаем ENUM только если его не существует
+            new_enum_values_str = ", ".join(f"'{v}'" for v in new_values)
+            connection.execute(text(f"CREATE TYPE {enum_name} AS ENUM ({new_enum_values_str})"))
+            print(f"Created enum '{enum_name}' with values: {new_values}")
+        except Exception as e:
+            print(f"Error creating enum '{enum_name}': {e}")
 
     for value in new_values:
         if value not in existing_values:
@@ -105,12 +118,12 @@ def run_migrations_online():
         )
 
         with context.begin_transaction():
-            # try:
-            #     process_enums(connection)
-            # except Exception as e:
-            #     print(f"Error nothing to change: {e}")
+            try:
+                process_enums(connection)
+            except Exception as e:
+                print(f"Error nothing to change: {e}")
             print(f"FFFFFFFFFFFFFFF {flag}")
-            #context.run_migrations()
+            # context.run_migrations()
 
 if context.is_offline_mode():
     run_migrations_offline()

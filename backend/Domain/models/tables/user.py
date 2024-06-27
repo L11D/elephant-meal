@@ -3,6 +3,7 @@ import uuid
 from sqlalchemy import Column, UUID, Time, Boolean, Float, String, Enum as SQLEnum, DateTime, Date
 
 from backend.Domain.db_config import Base
+from backend.Domain.models.enum.activity_type import ActivityType
 from backend.Domain.models.enum.roles import Role
 from backend.Domain.models.enum.sex import Sex
 

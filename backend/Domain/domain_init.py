@@ -13,8 +13,10 @@ from backend.Domain.models.tables.dish import Dish
 from backend.Domain.models.tables.dish_in_plan import DishInPlan
 from backend.Domain.models.tables.dish_product import DishProduct
 from backend.Domain.models.tables.dish_review import DishReview
+from backend.Domain.models.tables.food_preference import FoodPreference
 from backend.Domain.models.tables.ingredient import Ingredient
 from backend.Domain.models.tables.ingredient_in_recipe import IngredientInRecipe
+from backend.Domain.models.tables.ingredients_and_products import IngerdientAndProduct
 from backend.Domain.models.tables.plan import Plan
 from backend.Domain.models.tables.recipe import Recipe
 from backend.Domain.models.tables.shop import Shop
@@ -55,6 +57,8 @@ def init_db():
                                                       DishProduct.__table__,
                                                       DishReview.__table__,
                                                       CRL.__table__,
+                                                      FoodPreference.__table__,
+                                                      IngerdientAndProduct.__table__,
                                                       ]
                                  )
         db.commit()

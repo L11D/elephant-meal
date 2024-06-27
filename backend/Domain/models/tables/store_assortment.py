@@ -11,11 +11,12 @@ class StoreAssortment(Base):
     __tablename__ = "store_assortment"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
-    shop_id = Column(UUID(as_uuid=True), ForeignKey('shops.id'), default=uuid.uuid4, nullable=False)
-    category_id = Column(UUID(as_uuid=True), ForeignKey('categories.id'), default=uuid.uuid4, nullable=False)
+    shop_id = Column(UUID(as_uuid=True), ForeignKey('shops.id'), nullable=False)
+    category_id = Column(UUID(as_uuid=True), ForeignKey('categories.id'), nullable=False)
     name = Column(String, nullable=False)
     embedding = Column(LargeBinary, nullable=False)
     cost = Column(Float, nullable=True)
+    value = Column(Float, nullable=True)
     value_type = Column(SQLEnum(ValueType), nullable=True)
     calories = Column(Float, nullable=True)
     proteins = Column(Float, nullable=True)
@@ -24,4 +25,4 @@ class StoreAssortment(Base):
     brand = Column(String, nullable=True)
     description = Column(String, nullable=True)
     composition = Column(String, nullable=True)
-    image_id = Column(UUID(as_uuid=True), default=uuid.uuid4, nullable=True)
+    image_id = Column(UUID(as_uuid=True), nullable=True)
