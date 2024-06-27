@@ -2,6 +2,7 @@ import logging
 from datetime import date
 import uuid
 
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, text
 
@@ -11,7 +12,11 @@ from backend.DishService.models.dto.physic_data_dto import PhysicData
 from backend.DishService.models.dto.plan_dto import PlanDTO
 from backend.Domain.models.enum.sex import Sex
 from backend.Domain.models.enum.type_plan import TypePlan
+from backend.Domain.models.tables.dish import Dish
+from backend.Domain.models.tables.dish_in_plan import DishInPlan
+from backend.Domain.models.tables.dish_product import DishProduct
 from backend.Domain.models.tables.food_preference import FoodPreference
+from backend.Domain.models.tables.plan import Plan
 from backend.Domain.models.tables.store_assortment import StoreAssortment
 from backend.Domain.models.tables.user import User
 from backend.UserService.models.dto.user_reg_dto import UserRegDTO
@@ -326,6 +331,28 @@ class PlanService:
             proteins_total = elements.proteins * 30
             fats_total = elements.fats * 30
             carb_total = elements.carb * 30
+            optimal_recipes = self.choose_optimal_recipes(structured_data_store, calories_total, proteins_total, fats_total,
+                                                          carb_total)
+
+            today = datetime.now().date()
+            start_date = today + timedelta(days=1)
+            end_date = today + timedelta(days=29)
+            plan = Plan(user_id=physic_data.id, start=start_date, end=end_date, plan_type=plan_dto.plann_type, activity_type=plan_dto.activity_type)
+            db.add(plan)
+            db.flush()
+            dishes =[]
+
+            for recipe in optimal_recipes:
+                dish = Dish(recipe_id=recipe['recipe_index'])
+                db.add(dish)
+                db.flush()
+                #dish_in_plan = DishInPlan(dish_id=dish.id, plan_id=)
+                for product in recipe['recipe']:
+                    dishes.append(dish.id)
+                    dish_product = DishProduct(dish_id=dish.id, product_id={product['id']})
+                    db.add(dish_product)
+            db.commit()
+
 
             #cheat_calories = итоговая калорийность чит мила * 4
             #ВЫЧИСЛЕНИЯ!!!!
@@ -337,46 +364,48 @@ class PlanService:
 
             #calories_total -= calories_total * 0.1
 
-
-
-
-
-
-
         except Exception as e:
             self.logger.error(f"(Physic data getting) Error: {e}")
             raise
 
-    def weighted_sum_knapsack(items, W, MaxWeight, MaxVolume, MaxCost, w_v, w_w, w_x, w_c):
-        n = len(items)
+    def calculate_recipe_score(recipe):
+        total_calories = sum(product['calories'] for product in recipe)
+        total_proteins = sum(product['proteins'] for product in recipe)
+        total_fats = sum(product['fats'] for product in recipe)
+        total_carb = sum(product['carb'] for product in recipe)
 
-        # Создаем матрицу для хранения максимальных значений
-        dp = [[[[0 for _ in range(MaxCost + 1)]
-                for _ in range(MaxVolume + 1)]
-               for _ in range(MaxWeight + 1)]
-              for _ in range(W + 1)]
+        # Можно использовать метод взвешенной суммы для нахождения общей "ценности" рецепта
+        score = total_calories + total_proteins + total_fats + total_carb
+        return score
 
-        # Заполняем матрицу
-        for i in range(1, n + 1):
-            for j in range(W + 1):
-                for k in range(MaxWeight + 1):
-                    for l in range(MaxVolume + 1):
-                        if items[i - 1]['weight'] <= j and items[i - 1]['volume'] <= k and items[i - 1]['cost'] <= l:
-                            dp[i][j][k][l] = max(dp[i - 1][j][k][l],
-                                                 dp[i - 1][j - items[i - 1]['weight']][k - items[i - 1]['volume']][
-                                                     l - items[i - 1]['cost']] + items[i - 1]['value'])
-                        else:
-                            dp[i][j][k][l] = dp[i - 1][j][k][l]
+    # Функция для выбора наиболее оптимальных рецептов
+    def choose_optimal_recipes(structured_data_store, calories_total, proteins_total, fats_total, carb_total):
+        optimal_recipes = []
 
-        # Восстановление решения
-        chosen_items = []
-        i, j, k, l = W, MaxWeight, MaxVolume, MaxCost
-        for idx in range(n, 0, -1):
-            if dp[idx][i][k][l] != dp[idx - 1][i][k][l]:
-                chosen_items.append(items[idx - 1])
-                i -= items[idx - 1]['weight']
-                k -= items[idx - 1]['volume']
-                l -= items[idx - 1]['cost']
+        for category_id, recipes in structured_data_store.items():
+            for index, recipe in enumerate(recipes, start=1):
+                # Вычисляем "ценность" рецепта
+                recipe_score = structured_data_store.calculate_recipe_score(recipe)
 
-        return dp[n][W][MaxWeight][MaxVolume][MaxCost], chosen_items
+                # Проверяем, что рецепт удовлетворяет ограничениям по питательным параметрам
+                total_calories = sum(product['calories'] for product in recipe)
+                total_proteins = sum(product['proteins'] for product in recipe)
+                total_fats = sum(product['fats'] for product in recipe)
+                total_carb = sum(product['carb'] for product in recipe)
+
+                if (total_calories <= calories_total and
+                        total_proteins <= proteins_total and
+                        total_fats <= fats_total and
+                        total_carb <= carb_total):
+                    optimal_recipes.append({
+                        'category_id': category_id,
+                        'recipe_index': index,
+                        'recipe': recipe,
+                        'recipe_score': recipe_score
+                    })
+
+        # Сортировка рецептов по убыванию "ценности"
+        optimal_recipes.sort(key=lambda x: x['recipe_score'], reverse=True)
+
+        return optimal_recipes
 
