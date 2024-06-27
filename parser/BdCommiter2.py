@@ -1,12 +1,15 @@
 import sys
 import os
 import uuid
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
+
+from tqdm import tqdm
 
 original_sys_path = sys.path.copy()
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from backend.Domain.db_config import get_db
-from backend.Domain.domain_init import init_db
 import pandas as pd
 import re
 import ast
@@ -18,15 +21,6 @@ from backend.Domain.models.tables.ingredient_in_recipe import IngredientInRecipe
 from backend.Domain.models.tables.recipe import Recipe
 
 sys.path = original_sys_path
-
-recipes_df_path = 'data//recipes//recipes.csv'
-ingredients_df_path = 'data/recipes/ingredients_embedded.h5'
-def commit_ingredients(db):
-    ingredients_df = pd.read_hdf(ingredients_df_path, key='df')
-    for index, data in ingredients_df.iterrows():
-        ingredient = Ingredient(name=data['name'], embedding=data['embedding'])
-        db.add(ingredient)
-    db.commit()
 
 
 def get_value_type(value):
@@ -57,7 +51,10 @@ def get_value(value):
         ans = 0
 
         nums = re.findall(r'\d+', s)
-        nums = [float(n) for n in nums]
+        try:
+            nums = [float(n) for n in nums]
+        except ValueError:
+            return 0
 
         separators = re.findall(r'[^\d]', s)
 
@@ -76,7 +73,7 @@ def get_value(value):
                     ans += nums[i]
 
         return ans
-    return None
+    return 0
 
 
 def get_values(x, y):
@@ -91,7 +88,10 @@ def get_values(x, y):
     if value_type != 'notmetric':
         value = get_value(y)
     if value_type == 'GLASS':
-        value *= 200
+        try:
+            value *= 200
+        except Exception:
+            pass
         value_type = 'ml'
 
     match value_type:
@@ -107,129 +107,76 @@ def get_values(x, y):
             value_type = ValueType.Piece
         case 'notmetric':
             value_type = ValueType.NotMetric
+        case _:
+            value_type = ValueType.NotMetric
 
     return value, value_type, displayed_value
 
 
-def commit_recipes(db):
-    recipes_df = pd.read_csv(recipes_df_path)
-    recipes_df['ingredients'] = recipes_df['ingredients'].apply(ast.literal_eval)
+def compute(recipe, recipes_from_db, ingredients_from_db):
+    out = []
+    recipe_id = recipes_from_db.loc[recipes_from_db['ulr'] == recipe['url'], 'id']
+    if recipe_id.empty:
+        return None
+    else:
+        recipe_id = recipe_id.iat[0]
 
-    recipes = []
-    for index, data in recipes_df.iterrows():
-        recipes.append(
-            Recipe(
-                name=data['name'],
-                instruction=data['instruction'],
-                link=data['url']
-            )
-        )
-    db.add_all(recipes)
-    db.commit()
-    print('Recipes commiting')
-
-    commit_ing_in_recipes(db, recipes_df=recipes_df, recipes=recipes)
-
-    # ingredients = db.query(Ingredient).all()
-    #
-    # for index, data in recipes_df.iterrows():
-    #     recipes_id = recipes[index].id
-    #     for x, y in data['ingredients'].items():
-    #         ingredient = next((ing for ing in ingredients if ing.name == x), None)
-    #         ing_id = ingredient.id
-    #         value, value_type, displayed_value = get_values(x, y)
-    #         db.add(
-    #             IngredientInRecipe(
-    #                 recipe_id=recipes_id,
-    #                 ingredient_id=ing_id,
-    #                 value=value,
-    #                 value_type=value_type,
-    #                 displayed_value=displayed_value
-    #             )
-    #         )
-    #
-    # db.commit()
-
-def commit_ing_in_recipes(db, recipes_df=None, recipes=None):
-    commit_data = []
-    if recipes_df is None:
-        recipes_df = pd.read_csv(recipes_df_path)
-        recipes_df['ingredients'] = recipes_df['ingredients'].apply(ast.literal_eval)
-        print('recipes_df loaded')
-    recipes_from_db = False
-    if recipes is None:
-        recipes = db.query(Recipe.id, Recipe.link).all()
-        recipes_from_db = True
-        print('recipes fetched')
-
-    ingredients = db.query(Ingredient.id, Ingredient.name).all()
-    print('fetched ingredients')
-
-    for index, data in recipes_df.iterrows():
-        if index % 1000 == 0:
-            print(index)
-        recipe_id = 1
-        recipe = None
-        if recipes_from_db:
-            recipe = next((rec for rec in recipes if rec[1] == data['url']), None)
-            recipe_id = recipe[0]
+    for x, y in recipe['ingredients'].items():
+        ingredient_id = ingredients_from_db.loc[ingredients_from_db['name'] == x, 'id']
+        if ingredient_id.empty:
+            continue
         else:
-            recipe_id = recipes[index].id
-        for x, y in data['ingredients'].items():
-            ingredient = next((ing for ing in ingredients if ing[1] == x), None)
-            if ingredient is None:
-                if recipe:
-                    db.delete(recipe)
-                continue
-            ing_id = ingredient[0]
-            value = 0
-            value_type = ValueType.NotMetric
-            displayed_value = 'error'
-            try:
-                value, value_type, displayed_value = get_values(x, y)
-            except TypeError:
-                print(data)
-            commit_data.append(
-                {
-                    'id': uuid.uuid1(),
-                    'recipe_id': recipe_id,
-                    'ingredient_id': ing_id,
-                    'value': value,
-                    'value_type': value_type,
-                    'displayed_value': displayed_value
-                }
-            )
-            # db.add(
-            #     IngredientInRecipe(
-            #         recipe_id=recipe_id,
-            #         ingredient_id=ing_id,
-            #         value=value,
-            #         value_type=value_type,
-            #         displayed_value=displayed_value
-            #     )
-            # )
-    print('IngredientInRecipe commiting')
+            ingredient_id = ingredient_id.iat[0]
 
-    c = pd.DataFrame(commit_data)
-    c.to_csv('data/recipes/recipe_commit.csv', index=False)
-    # user_input = input("Commiting?")
-    # db.commit()
-
-def commit():
-    init_db()
-
-    db_gen = get_db()
-    db = next(db_gen)
-    with db:
-        # commit_ingredients(db)
-        # commit_recipes(db)
-
-        commit_ing_in_recipes(db)
-
-        # db.commit()
-        # fetched_ing = db.query(Ingredient).filter_by(name=ing_test['name']).first()
-        #
-        # embedding_array = np.frombuffer(fetched_ing.embedding, dtype=ing_test['embedding'].dtype)
+        value = 0
+        value_type = ValueType.NotMetric
+        displayed_value = 'error'
+        try:
+            value, value_type, displayed_value = get_values(x, y)
+        except TypeError:
+            print(recipe)
+        out.append(
+            {
+                'recipe_id': recipe_id,
+                'ingredient_id': ingredient_id,
+                'value': value,
+                'value_type': value_type,
+                'displayed_value': displayed_value
+            }
+        )
+    return out
 
 
-commit()
+ingredients_from_db_path = 'data/recipes/ingredients_from_db.csv'
+recipes_from_db_path = 'data/recipes/recipes_from_db.csv'
+recipes_df_path = 'data//recipes//recipes.csv'
+
+ingredients_from_db = pd.read_csv(ingredients_from_db_path)
+recipes_from_db = pd.read_csv(recipes_from_db_path)
+recipes_df = pd.read_csv(recipes_df_path)
+recipes_df['ingredients'] = recipes_df['ingredients'].apply(ast.literal_eval)
+
+recipes_dict = recipes_df.to_dict('records')
+
+result = []
+
+
+def parallel_compute(recipe, recipes_from_db, ingredients_from_db):
+    return compute(recipe, recipes_from_db, ingredients_from_db)
+
+partial_parallel_compute = partial(parallel_compute, recipes_from_db=recipes_from_db, ingredients_from_db=ingredients_from_db)
+
+max_workers = 12
+with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    result = []
+    progress_bar = tqdm(total=len(recipes_dict), desc="Processing recipes", unit="recipe")
+    for sublist in executor.map(partial_parallel_compute, recipes_dict):
+        if sublist is not None:
+            result.extend(sublist)
+        progress_bar.update(1)
+    progress_bar.close()
+
+out_df = pd.DataFrame(result)
+out_df.to_csv('data/recipes/ingredient_recipes_commit.csv', index=False)
+
+
