@@ -90,51 +90,113 @@ class PlanService:
         try:
             liked_products = (
                 f"""
-                SELECT store_assortment.id, store_assortment.name, store_assortment.category_id, store_assortment.cost, store_assortment.calories, store_assortment.proteins, store_assortment.carb, store_assortment.fats
+                SELECT
+                 store_assortment.id AS id, store_assortment.name AS name,
+                 store_assortment.category_id AS category_id,
+                 store_assortment.cost  AS cost, store_assortment.calories AS calories, 
+                 store_assortment.proteins AS proteins, store_assortment.carb AS carb, store_assortment.fats AS fats
                 FROM store_assortment
                 JOIN food_preferences ON ((food_preferences.product_id = store_assortment.id) OR (food_preferences.category_id = store_assortment.category_id))
-                WHERE food_preferences.liked IS TRUE AND food_preferences.user_id = {physic_data.id}
+                WHERE food_preferences.liked IS TRUE AND food_preferences.user_id = {physic_data.id};
                 """
             )
 
             products_in_preferenses = (
                 f"""
                 SELECT id FROM food_preferences
-                WHERE user_id = {physic_data.id}
+                WHERE user_id = {physic_data.id};
                 """
             )
 
             normal_products = (
                 f"""
-                SELECT store_assortment.id, store_assortment.name, store_assortment.category_id, store_assortment.cost, store_assortment.calories, store_assortment.proteins, store_assortment.carb, store_assortment.fats
+                SELECT
+                 store_assortment.id AS id, store_assortment.name AS name,
+                 store_assortment.category_id AS category_id,
+                 store_assortment.cost  AS cost, store_assortment.calories AS calories, 
+                 store_assortment.proteins AS proteins, store_assortment.carb AS carb, store_assortment.fats AS fats
                 FROM store_assortment
-                WHERE store_assortment.id NOT IN {products_in_preferenses}
+                WHERE store_assortment.id NOT IN {products_in_preferenses};
                 """
             )
 
             count_categories_liked_products = (
                 f"""
                 SELECT DISTINCT COUNT(store_assortment.category_id)
-                FROM {liked_products}
+                FROM {liked_products};
                 """
             )
 
             count_categories_normal_products = (
                 f"""
                 SELECT DISTINCT COUNT(store_assortment.category_id)
-                FROM {normal_products}
+                FROM {normal_products};
+                """
+            )
+
+            ingredients_liked1 = (
+                f"""
+                SELECT
+                 LP.id AS id, ingredients_and_products.ingredient_id AS ingredient_id, LP.name AS name,
+                 LP.category_id AS category_id, ingredients_and_products.chance AS chance,
+                 LP.cost  AS cost, LP.calories AS calories, 
+                 LP.proteins AS proteins, LP.carb AS carb, LP.fats AS fats
+                FROM {liked_products} AS LP
+                JOIN ingredients_and_products ON LP.id = ingredients_and_products.product_id
+                ORDER BY ingredients_and_products.chance DESC;
+                """
+            )
+
+            ingredients_normal1 = (
+                f"""
+                SELECT
+                 NP.id AS id, ingredients_and_products.ingredient_id AS ingredient_id, NP.name AS name,
+                 NP.category_id AS category_id, ingredients_and_products.chance AS chance,
+                 NP.cost  AS cost, NP.calories AS calories, 
+                 NP.proteins AS proteins, NP.carb AS carb, NP.fats AS fats
+                FROM {normal_products} AS NP
+                JOIN ingredients_and_products ON LP.id = ingredients_and_products.product_id
+                ORDER BY ingredients_and_products.chance DESC;
                 """
             )
 
             ingredients_liked: list[uuid]
             ingredients_normal: list[uuid]
 
+            ingredients_liked_with_rep = (
+                f"""
+                SELECT
+                 LP.id AS id, ingredients_and_products.ingredient_id AS ingredient_id, LP.name AS name,
+                 LP.category_id AS category_id, ingredients_and_products.chance AS chance,
+                 ingredients_in_recipes.recipe_id AS recipe_id,
+                 LP.cost  AS cost, LP.calories AS calories, 
+                 LP.proteins AS proteins, LP.carb AS carb, LP.fats AS fats
+                FROM {ingredients_liked1} AS LP
+                JOIN ingredients_in_recipes ON LP.ingredient_id = ingredients_in_recipes.ingredient_id
+                ORDER BY ingredients_and_products.chance DESC;
+                """
+            )
+
+            ingredients_normal_with_rep = (
+                f"""
+                SELECT
+                 NP.id AS id, ingredients_and_products.ingredient_id AS ingredient_id, NP.name AS name,
+                 NP.category_id AS category_id, ingredients_and_products.chance AS chance,
+                 ingredients_in_recipes.recipe_id AS recipe_id,
+                 NP.cost  AS cost, NP.calories AS calories, 
+                 NP.proteins AS proteins, NP.carb AS carb, NP.fats AS fats
+                FROM {ingredients_normal1} AS NP
+                JOIN ingredients_in_recipes ON LP.ingredient_id = ingredients_in_recipes.ingredient_id
+                ORDER BY ingredients_and_products.chance DESC;
+                """
+            )
+
             recipes_liked = (
                 f"""
                 SELECT DISTINCT recipes.id, ingredients_in_recipes.ingredient_id 
                 FROM recipes
                 JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
-                WHERE ingredients_in_recipes.ingredient_id IN {ingredients_liked}
+                WHERE ingredients_in_recipes.ingredient_id IN {ingredients_liked};
                 """
             )
 
@@ -143,10 +205,10 @@ class PlanService:
                 SELECT DISTINCT recipes.id, ingredients_in_recipes.ingredient_id 
                 FROM recipes
                 JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
-                WHERE ingredients_in_recipes.ingredient_id IN {ingredients_normal}
+                WHERE ingredients_in_recipes.ingredient_id IN {ingredients_normal};
                 """
             )
-            good_categories = list["яйца", "овощи"]
+            good_categories = list["яйца, яичные продукты", "овощи", "зелень", ]
             """
             
             """
@@ -163,7 +225,9 @@ class PlanService:
             #МИКРОЭЛЕМЕНТЫ ТОЖЕ МЕНЯЮТСЯ
 
 
-            calories_total -= calories_total * 0.1
+            #calories_total -= calories_total * 0.1
+
+
 
 
 
