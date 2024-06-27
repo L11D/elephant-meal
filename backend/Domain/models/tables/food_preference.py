@@ -12,6 +12,6 @@ class FoodPreference(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     user_id = Column(UUID(as_uuid=True), ForeignKey('users.id'), default=uuid.uuid4, nullable=False)
-    category_id = Column(UUID(as_uuid=True), ForeignKey('categories.id'), nullable=False)
-    product_id = Column(UUID(as_uuid=True), ForeignKey('store_assortment.id'), nullable=True)
+    category_id = Column(UUID(as_uuid=True), ForeignKey('categories.id'), nullable=True)
+    product_id = Column(UUID(as_uuid=True), ForeignKey('store_assortment.id'), nullable=False)
     liked = Column(Boolean, nullable=False)

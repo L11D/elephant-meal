@@ -30,13 +30,19 @@ class PlanService:
 
     async def get_physic_data(self, user: User) -> PhysicData:
         try:
-            physic_data = PhysicData(id=user.id)
+            physic_data = PhysicData(
+                id=str(user.id),
+                height=0,
+                weight=0,
+                sex=1,
+                age=0
+            )
 
-            physic_data.sex = Sex.Male if user.sex is not None else physic_data.sex = user.sex
+            physic_data.sex = Sex.Male if user.sex is not None else user.sex
 
             if user.height is not None:
                 physic_data.height = user.height
-                physic_data.weight = user.weight if user.weight is not None else physic_data.weight = 0.78*physic_data.height - 61.64
+                physic_data.weight = user.weight if user.weight is not None else 0.78*physic_data.height - 61.64
             else:
                 if user.weight is not None:
                     physic_data.weight = user.weight
@@ -48,7 +54,7 @@ class PlanService:
 
             today = date.today()
             physic_data.age = 20 if user.birth_date is None \
-                else physic_data.age = int(today.year - user.birth_date.year - ((today.month, today.day) < (user.birth_date.month, user.birth_date.day)))
+                else int(today.year - user.birth_date.year - ((today.month, today.day) < (user.birth_date.month, user.birth_date.day)))
 
             return physic_data
         except Exception as e:
@@ -93,6 +99,14 @@ class PlanService:
 
     async def make_plan(self, db: Session, physic_data: PhysicData, plan_dto: PlanDTO, elements: NecessaryElementsDTO):
         try:
+            for disliked in plan_dto.dislike_products:
+                new_field = FoodPreference(user_id=physic_data.id, product_id=disliked, liked=False)
+                db.add(new_field)
+            for liked in plan_dto.like_products:
+                new_field = FoodPreference(user_id=physic_data.id, product_id=liked, liked=True)
+                db.add(new_field)
+
+
             liked_products = (
                 f"""
                 SELECT
@@ -121,7 +135,16 @@ class PlanService:
                  store_assortment.cost  AS cost, store_assortment.calories AS calories, 
                  store_assortment.proteins AS proteins, store_assortment.carb AS carb, store_assortment.fats AS fats
                 FROM store_assortment
-                WHERE store_assortment.id NOT IN {products_in_preferenses};
+                WHERE store_assortment.id NOT IN {products_in_preferenses}
+                ORDER BY random() LIMIT 250;
+                """
+            )
+
+            combined_query = (
+                f"""
+                {liked_products}
+                UNION ALL
+                {normal_products}
                 """
             )
 
@@ -146,7 +169,7 @@ class PlanService:
                  LP.category_id AS category_id, ingredients_and_products.chance AS chance,
                  LP.cost  AS cost, LP.calories AS calories, 
                  LP.proteins AS proteins, LP.carb AS carb, LP.fats AS fats
-                FROM {liked_products} AS LP
+                FROM {combined_query} AS LP
                 JOIN ingredients_and_products ON LP.id = ingredients_and_products.product_id
                 ORDER BY ingredients_and_products.chance DESC;
                 """
