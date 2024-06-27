@@ -142,7 +142,7 @@ class PlanService:
                  LP.cost  AS cost, LP.calories AS calories, 
                  LP.proteins AS proteins, LP.carb AS carb, LP.fats AS fats
                 FROM {liked_products} AS LP
-                JOIN 
+                JOIN ingredients_and_products ON ingredients_and_products.
                 """
             )
 
