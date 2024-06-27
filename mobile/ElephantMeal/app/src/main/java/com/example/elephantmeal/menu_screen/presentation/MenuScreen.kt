@@ -35,7 +35,7 @@ import com.example.elephantmeal.day_screen.presentation.BottomNavBar
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MenuScreen(
-    onHomeClick: () -> Unit,
+    onLogout: () -> Unit,
     onTodayClick: (Boolean) -> Unit,
     onDayClick: () -> Unit,
     onWeekClick: () -> Unit,
@@ -75,6 +75,10 @@ fun MenuScreen(
             when (it) {
                 is MenuEvent.ChoosePhotoFromGallery -> {
                     galleryLauncher.launch("image/*")
+                }
+
+                is MenuEvent.Logout -> {
+                    onLogout()
                 }
             }
         }

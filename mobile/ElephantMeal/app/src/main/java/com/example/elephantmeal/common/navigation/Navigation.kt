@@ -27,7 +27,8 @@ fun ElephantMealNavigation(
     NavHost(
         navController = navController,
        // startDestination = Screen.ProductsBanScreen.name
-        startDestination = "${Screen.TodayScreen.name}/false"
+       // startDestination = "${Screen.TodayScreen.name}/false"
+        startDestination = Screen.WelcomeScreen.name
     ) {
         // Приветственный экран
         composable(Screen.WelcomeScreen.name) {
@@ -82,15 +83,40 @@ fun ElephantMealNavigation(
                     }
                 },
 
-                onContinueButtonClick = {
-                    navController.navigate(Screen.RegistrationSecondScreen.name)
+                onContinueButtonClick = { surname, name, lastName, email ->
+                    navController.navigate(
+                        "${Screen.RegistrationSecondScreen.name}/" +
+                                "$surname/$name/$lastName/$email"
+                    )
                 }
             )
         }
 
         // Второй экран регистрации
-        composable(Screen.RegistrationSecondScreen.name) {
+        composable(
+            route = "${Screen.RegistrationSecondScreen.name}/" +
+                    "{${NavParams.SURNAME}}/" +
+                    "{${NavParams.NAME}}/" +
+                    "{${NavParams.LAST_NAME}}/" +
+                    "{${NavParams.EMAIL}}",
+            arguments = listOf(
+                navArgument(NavParams.SURNAME) {type = NavType.StringType},
+                navArgument(NavParams.NAME) {type = NavType.StringType},
+                navArgument(NavParams.LAST_NAME) {type = NavType.StringType},
+                navArgument(NavParams.EMAIL) {type = NavType.StringType},
+            )
+        ) { backStackEntry ->
+            val surname = backStackEntry.arguments?.getString(NavParams.SURNAME)
+            val name = backStackEntry.arguments?.getString(NavParams.NAME)
+            val lastName = backStackEntry.arguments?.getString(NavParams.LAST_NAME)
+            val email = backStackEntry.arguments?.getString(NavParams.EMAIL)
+
             RegistrationSecondScreen(
+                surname = surname ?: "",
+                name = name ?: "",
+                lastName = lastName ?: "",
+                email = email ?: "",
+
                 onBackButtonClick = {
                     navController.popBackStack()
                 },
@@ -101,15 +127,57 @@ fun ElephantMealNavigation(
                     }
                 },
 
-                onContinueButtonClick = {
-                    navController.navigate(Screen.RegistrationThirdScreen.name)
+                onContinueButtonClick = { surname, name, lastName, email, gender, weight, height,
+                    birthDate ->
+                    navController.navigate(
+                        "${Screen.RegistrationThirdScreen.name}/" +
+                                "$surname/$name/$lastName/$email/$gender/$weight/$height/$birthDate"
+                    )
                 }
             )
         }
 
         // Третий экран регистрации
-        composable(Screen.RegistrationThirdScreen.name) {
+        composable(
+            route = "${Screen.RegistrationThirdScreen.name}/" +
+                    "{${NavParams.SURNAME}}/" +
+                    "{${NavParams.NAME}}/" +
+                    "{${NavParams.LAST_NAME}}/" +
+                    "{${NavParams.EMAIL}}/" +
+                    "{${NavParams.GENDER}}/" +
+                    "{${NavParams.WEIGHT}}/" +
+                    "{${NavParams.HEIGHT}}/" +
+                    "{${NavParams.BIRTH_DATE}}",
+            arguments = listOf(
+                navArgument(NavParams.SURNAME) { type = NavType.StringType },
+                navArgument(NavParams.NAME) { type = NavType.StringType },
+                navArgument(NavParams.LAST_NAME) { type = NavType.StringType },
+                navArgument(NavParams.EMAIL) { type = NavType.StringType },
+                navArgument(NavParams.GENDER) { type = NavType.IntType },
+                navArgument(NavParams.WEIGHT) { type = NavType.FloatType },
+                navArgument(NavParams.HEIGHT) { type = NavType.FloatType },
+                navArgument(NavParams.BIRTH_DATE) { type = NavType.StringType },
+            )
+        ) { backStackEntry ->
+            val surname = backStackEntry.arguments?.getString(NavParams.SURNAME) ?: ""
+            val name = backStackEntry.arguments?.getString(NavParams.NAME) ?: ""
+            val lastName = backStackEntry.arguments?.getString(NavParams.LAST_NAME) ?: ""
+            val email = backStackEntry.arguments?.getString(NavParams.EMAIL) ?: ""
+            val gender = backStackEntry.arguments?.getInt(NavParams.GENDER)
+            val weight = backStackEntry.arguments?.getFloat(NavParams.WEIGHT)
+            val height = backStackEntry.arguments?.getFloat(NavParams.HEIGHT)
+            val birthDate = backStackEntry.arguments?.getString(NavParams.BIRTH_DATE)
+
             RegistrationThirdScreen(
+                surname = surname,
+                name = name,
+                lastName = lastName,
+                email = email,
+                gender = gender,
+                weight = weight,
+                height = height,
+                birthDate = birthDate,
+
                 onBackButtonClick = {
                     navController.popBackStack()
                 },
@@ -219,8 +287,12 @@ fun ElephantMealNavigation(
             val isWeekModeSelected = backStackEntry.arguments?.getBoolean(NavParams.IS_WEEK_MODE_SELECTED)
 
             MenuWithCamera(
-                onHomeClick = {
-
+                onLogout = {
+                    navController.navigate(Screen.WelcomeScreen.name) {
+                        popUpTo("${Screen.TodayScreen.name}/{${NavParams.IS_WEEK_MODE_SELECTED}}") {
+                            inclusive = true
+                        }
+                    }
                 },
 
                 onTodayClick = { weekMode ->

@@ -1,5 +1,6 @@
 package com.example.elephantmeal.registration_third_screen.presentation
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,12 +31,29 @@ import com.example.elephantmeal.ui.theme.ErrorColor
 // Третий экран регистрации
 @Composable
 fun RegistrationThirdScreen(
+    surname: String,
+    name: String,
+    lastName: String,
+    email: String,
+    gender: Int?,
+    birthDate: String?,
+    height: Float?,
+    weight: Float?,
     onBackButtonClick: () -> Unit,
     onLoginButtonClick: () -> Unit,
     onRegistered: () -> Unit,
     viewModel: RegistrationThirdViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+
+    Log.d("idk", surname)
+    Log.d("idk", name)
+    Log.d("idk", lastName)
+    Log.d("idk", email)
+    Log.d("idk", gender.toString())
+    Log.d("idk", birthDate ?: "null")
+    Log.d("idk", height.toString())
+    Log.d("idk", weight.toString())
 
     LaunchedEffect(Unit) {
         viewModel.events.collect {
@@ -110,7 +128,16 @@ fun RegistrationThirdScreen(
             text = stringResource(id = R.string.register),
             isEnabled = state.isRegisterButtonEnabled,
             onClick = {
-                viewModel.onRegister()
+                viewModel.onRegister(
+                    surname,
+                    name,
+                    lastName,
+                    email,
+                    gender,
+                    weight,
+                    height,
+                    birthDate
+                )
             }
         )
 

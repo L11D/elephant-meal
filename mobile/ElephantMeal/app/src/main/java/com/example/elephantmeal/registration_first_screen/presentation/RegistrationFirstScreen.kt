@@ -45,7 +45,7 @@ import kotlinx.coroutines.flow.collect
 fun RegistrationFirstScreen(
     onBackButtonClick: () -> Unit,
     onLoginButtonClick: () -> Unit,
-    onContinueButtonClick: () -> Unit,
+    onContinueButtonClick: (String, String, String, String) -> Unit,
     viewModel: RegistrationFirstViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -54,7 +54,12 @@ fun RegistrationFirstScreen(
         viewModel.events.collect {
             when (it) {
                 is RegistrationFirstEvent.Login -> {
-                    onContinueButtonClick()
+                    onContinueButtonClick(
+                        viewModel.surname,
+                        viewModel.name,
+                        viewModel.lastName,
+                        viewModel.email
+                    )
                 }
             }
         }

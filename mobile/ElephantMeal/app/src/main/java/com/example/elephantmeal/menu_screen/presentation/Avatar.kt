@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -116,5 +117,21 @@ fun Avatar(
                 )
             )
         }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Image(
+            modifier = Modifier
+                .padding(0.dp, 24.dp, 24.dp, 0.dp)
+                .align(Alignment.CenterVertically)
+                .clickable(
+                    indication = null,
+                    interactionSource = interactionSource
+                ) {
+                    viewModel.onLogout()
+                },
+            imageVector = ImageVector.vectorResource(id = R.drawable.logout_icon),
+            contentDescription = null
+        )
     }
 }

@@ -5,8 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.elephantmeal.registration_third_screen.domain.RegistrationThirdUseCase
+import com.example.elephantmeal.registration_third_screen.domain.use_case.RegistrationThirdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -74,9 +75,29 @@ class RegistrationThirdViewModel @Inject constructor(
     }
 
     // Регистрация
-    fun onRegister() {
+    fun onRegister(
+        surname: String,
+        name: String,
+        lastName: String,
+        email: String,
+        gender: Int?,
+        weight: Float?,
+        height: Float?,
+        birthDate: String?
+    ) {
         if (_registrationThirdUseCase.doPasswordsMatch(password, passwordConfirmation)) {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
+                _registrationThirdUseCase.register(
+                    surname,
+                    name,
+                    lastName,
+                    email,
+                    gender,
+                    weight,
+                    height,
+                    birthDate,
+                    password
+                )
                 _events.emit(RegistrationThirdEvent.IsRegistered)
             }
         }

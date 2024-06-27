@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,28 +31,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.elephantmeal.R
-import com.example.elephantmeal.common.presentation.BirthDateInputField
 import com.example.elephantmeal.common.presentation.ElephantMealLogo
 import com.example.elephantmeal.common.presentation.GenderSelection
 import com.example.elephantmeal.common.presentation.NumberInputField
 import com.example.elephantmeal.common.presentation.PrimaryButton
 import com.example.elephantmeal.common.presentation.SelectBirthday
+import com.example.elephantmeal.registration_second_screen.view_model.Gender
 import com.example.elephantmeal.registration_second_screen.view_model.RegistrationSecondEvent
 import com.example.elephantmeal.registration_second_screen.view_model.RegistrationSecondViewModel
 import com.example.elephantmeal.ui.theme.DarkGrayColor
 import com.example.elephantmeal.ui.theme.GrayColor
 import com.example.elephantmeal.ui.theme.PrimaryColor
-import com.maxkeppeker.sheets.core.models.base.rememberSheetState
-import com.maxkeppeler.sheets.calendar.CalendarDialog
-import com.maxkeppeler.sheets.calendar.models.CalendarConfig
-import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import java.time.LocalDate
 
 @Composable
 fun RegistrationSecondScreen(
+    surname: String,
+    name: String,
+    lastName: String,
+    email: String,
     onBackButtonClick: () -> Unit,
     onLoginButtonClick: () -> Unit,
-    onContinueButtonClick: () -> Unit,
+    onContinueButtonClick: (String, String, String, String, Int?, Float?, Float?, String?) -> Unit,
     viewModel: RegistrationSecondViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -62,7 +60,18 @@ fun RegistrationSecondScreen(
         viewModel.events.collect {
             when (it) {
                 is RegistrationSecondEvent.Continue -> {
-                    onContinueButtonClick()
+                    onContinueButtonClick(
+                        surname,
+                        name,
+                        lastName,
+                        email,
+                        if (state.gender == Gender.Male) 1
+                        else if (state.gender == Gender.Female) 2
+                        else null,
+                        viewModel.weight.toFloatOrNull(),
+                        viewModel.height.toFloatOrNull(),
+                        viewModel.birthDate
+                    )
                 }
             }
         }
@@ -103,7 +112,7 @@ fun RegistrationSecondScreen(
 
         // Поле ввода роста
         NumberInputField(
-            label = stringResource(id = R.string.height), 
+            label = stringResource(id = R.string.height),
             topPadding = 16.dp,
             value = viewModel.height,
             unit = stringResource(id = R.string.cm),

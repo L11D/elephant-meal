@@ -209,4 +209,11 @@ class MenuViewModel @Inject constructor(
     fun onSave() {
 
     }
+
+    // Выход из аккаунта
+    fun onLogout() {
+        viewModelScope.launch {
+            _events.emit(MenuEvent.Logout)
+        }
+    }
 }
