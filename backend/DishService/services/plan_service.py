@@ -193,8 +193,13 @@ class PlanService:
 
             recipes_liked = (
                 f"""
-                SELECT DISTINCT recipes.id, ingredients_in_recipes.ingredient_id 
-                FROM recipes
+                SELECT
+                 LP.id AS id, ingredients_and_products.ingredient_id AS ingredient_id, LP.name AS name,
+                 LP.category_id AS category_id, ingredients_and_products.chance AS chance,
+                 ingredients_in_recipes.recipe_id AS recipe_id,
+                 LP.cost  AS cost, LP.calories AS calories, 
+                 LP.proteins AS proteins, LP.carb AS carb, LP.fats AS fats
+                FROM {ingredients_liked_with_rep} AS LP
                 JOIN ingredients_in_recipes ON (ingredients_in_recipes.recipe_id = recipes.id)
                 WHERE ingredients_in_recipes.ingredient_id IN {ingredients_liked};
                 """

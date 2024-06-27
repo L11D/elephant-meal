@@ -16,6 +16,7 @@ class StoreAssortment(Base):
     name = Column(String, nullable=False)
     embedding = Column(LargeBinary, nullable=False)
     cost = Column(Float, nullable=True)
+    value = Column(Float, nullable=True)
     value_type = Column(SQLEnum(ValueType), nullable=True)
     calories = Column(Float, nullable=True)
     proteins = Column(Float, nullable=True)
