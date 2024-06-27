@@ -1,3 +1,5 @@
+import time
+
 from utils.YandexDiskDownloader import download_file_from_yandex_disk
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
@@ -83,5 +85,9 @@ class RecipeToProductsProcessor:
 
 if __name__ == '__main__':
     processor = RecipeToProductsProcessor()
+    start_time = time.time()
     mathess = processor.process('https://www.povarenok.ru/recipes/show/20116/')
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"Время выполнения: {execution_time} секунд")
     print(mathess)
