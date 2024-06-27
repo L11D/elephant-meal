@@ -241,7 +241,7 @@ async def get_profile(access_token: str = Depends(user_config.oauth2_scheme),
         logger.warning(f"OIGOIRJIGJERJPGOJ  {user.height}")
         logger.warning(f"                          ")
 
-        birthdate = user.birth_date.date() if user.birth_date else None
+        birthdate = user.birth_date if user.birth_date else None
         registration_date = user.registration_date
         logger.info(f"(Get user profile) Successful get profile with id: {user.id}")
         print(f"DDDDDDDDDDDDDDDDDDDD    {user}")
@@ -260,7 +260,7 @@ async def get_profile(access_token: str = Depends(user_config.oauth2_scheme),
         returned_data.height = user.height if user.height is not None else returned_data.height
         returned_data.sex = user.sex if user.sex is not None else returned_data.sex
         returned_data.patronymic = user.patronymic if user.patronymic is not None else returned_data.patronymic
-        returned_data.birthdate = user.birthdate if user.birth_date is not None else returned_data.birthdate
+        returned_data.birthdate = user.birth_date if user.birth_date is not None else returned_data.birthdate
 
         return returned_data
     except jwt.PyJWTError as e:

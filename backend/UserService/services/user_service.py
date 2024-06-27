@@ -64,7 +64,7 @@ class UserService:
     async def update_user(self, db: Session, user_data: UserUpdateDTO, user_id: str) -> User:
         try:
             user = db.query(User).filter(User.id == user_id).first()
-
+            print(f"SADJNKWFGWFKKJFBJFBJKBJBBBBBBBBBBB    {user_data.birth_date}  |||||   {user.birth_date}")
             user.surname = user.surname if user_data.surname == None else user_data.surname
             user.name = user.name if user_data.name == None else user_data.name
             user.patronymic = user.patronymic if user_data.patronymic == None else user_data.patronymic
@@ -72,8 +72,8 @@ class UserService:
             user.sex = user.sex if user_data.sex == None else user_data.sex
             user.weight = user.weight if user_data.weight == None else user_data.weight
             user.height = user.height if user_data.height == None else user_data.height
-            user.birth_date = user.birth_date if user_data.birth_date == None else user_data.birth_date
-
+            user.birth_date = user.birth_date if user_data.birth_date is None else user_data.birth_date
+            print(f"SADJNKWFGWFKKJFBJFBJKBJBBBBBBBBBBB     ")
             db.commit()
 
             self.logger.error(f"(Creating user) Success: {user}")
