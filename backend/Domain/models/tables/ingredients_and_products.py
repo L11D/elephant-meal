@@ -12,3 +12,4 @@ class IngerdientAndProduct(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True, nullable=False)
     product_id = Column(UUID(as_uuid=True), ForeignKey('store_assortment.id'), default=uuid.uuid4, nullable=False)
+    chance = Column(Float, nullable=False)
