@@ -24,7 +24,7 @@ class RegistrationThirdUseCase @Inject constructor(
         height: Float?,
         birthDate: String?,
         password: String
-    ) {
+    ): Boolean {
         val inputDateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         val date = inputDateFormat.parse(birthDate ?: "01.01.2000")
         val outputDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -42,6 +42,6 @@ class RegistrationThirdUseCase @Inject constructor(
             password = password
         )
 
-        _registrationThirdRepository.register(registrationData)
+        return _registrationThirdRepository.register(registrationData)
     }
 }

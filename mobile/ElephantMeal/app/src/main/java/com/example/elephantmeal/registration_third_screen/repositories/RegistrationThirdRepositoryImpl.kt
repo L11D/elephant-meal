@@ -9,9 +9,14 @@ class RegistrationThirdRepositoryImpl @Inject constructor(
     private val _registrationThirdApiService: RegistrationThirdApiService
 ) : IRegistrationThirdRepository {
     // Регистрация
-    override suspend fun register(registrationData: RegistrationData) {
-        val token = _registrationThirdApiService.register(registrationData)
+    override suspend fun register(registrationData: RegistrationData): Boolean {
+        try {
+            val token = _registrationThirdApiService.register(registrationData)
 
-        Log.d("idk", token.message)
+            return true
+        }
+        catch (exception: Exception) {
+            return false
+        }
     }
 }

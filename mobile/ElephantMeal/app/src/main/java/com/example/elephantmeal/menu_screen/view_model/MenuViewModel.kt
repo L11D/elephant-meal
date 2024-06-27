@@ -6,9 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.elephantmeal.menu_screen.domain.MenuUseCase
+import com.example.elephantmeal.menu_screen.domain.use_case.MenuUseCase
 import com.example.elephantmeal.registration_second_screen.view_model.Gender
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -46,6 +48,29 @@ class MenuViewModel @Inject constructor(
 
     var weight by mutableStateOf("")
         private set
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            val profile = _menuUseCase.getUserProfile()
+            surname = profile.surname
+            name = profile.name
+            lastName = profile.patronymic
+            height = (profile.height ?: 68.0f).toString()
+            weight = (profile.weight ?: 180.0f).toString()
+
+            _state.update { currentState ->
+                currentState.copy(
+                    gender = if (profile.sex == 2) Gender.Female else Gender.Male
+                )
+            }
+
+            val dateStr = profile.birthdate ?: "2000-01-01"
+            val date = LocalDate.parse(dateStr, DateTimeFormatter.ISO_DATE)
+            val formattedDateStr = date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+
+            birthDate = formattedDateStr
+        }
+    }
 
     // Сделать фото
     fun takePhoto(context: Context) {
@@ -194,13 +219,13 @@ class MenuViewModel @Inject constructor(
     private fun updateSaveButton() {
         _state.update { currentState ->
             currentState.copy(
-                isSaveActive = surname.isNotEmpty() ||
-                name.isNotEmpty() ||
+                isSaveActive = true //surname.isNotEmpty() //||
+                /*name.isNotEmpty() ||
                 lastName.isNotEmpty() ||
                 currentState.gender != null ||
                 birthDate.isNotEmpty() ||
                 height.isNotEmpty() ||
-                weight.isNotEmpty()
+                weight.isNotEmpty()*/
             )
         }
     }
@@ -212,7 +237,8 @@ class MenuViewModel @Inject constructor(
 
     // Выход из аккаунта
     fun onLogout() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
+            _menuUseCase.logout()
             _events.emit(MenuEvent.Logout)
         }
     }

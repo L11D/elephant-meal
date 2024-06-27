@@ -87,7 +87,7 @@ class RegistrationThirdViewModel @Inject constructor(
     ) {
         if (_registrationThirdUseCase.doPasswordsMatch(password, passwordConfirmation)) {
             viewModelScope.launch(Dispatchers.IO) {
-                _registrationThirdUseCase.register(
+                val isRegistered = _registrationThirdUseCase.register(
                     surname,
                     name,
                     lastName,
@@ -98,7 +98,9 @@ class RegistrationThirdViewModel @Inject constructor(
                     birthDate,
                     password
                 )
-                _events.emit(RegistrationThirdEvent.IsRegistered)
+
+                if (isRegistered)
+                    _events.emit(RegistrationThirdEvent.IsRegistered)
             }
         }
         else {

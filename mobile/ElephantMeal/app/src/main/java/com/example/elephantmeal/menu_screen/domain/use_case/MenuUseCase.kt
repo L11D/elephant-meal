@@ -1,4 +1,4 @@
-package com.example.elephantmeal.menu_screen.domain
+package com.example.elephantmeal.menu_screen.domain.use_case
 
 import android.Manifest
 import android.app.Activity
@@ -6,15 +6,28 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.withContext
+import com.example.elephantmeal.menu_screen.domain.models.UserProfile
+import javax.inject.Inject
 
-class MenuUseCase {
+class MenuUseCase @Inject constructor(
+    private val _menuRepository: IMenuRepository
+) {
 
     companion object {
         private val CAMERA_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
+    }
+
+    // Получение профиля пользователя
+    suspend fun getUserProfile(): UserProfile {
+        return _menuRepository.getUserProfile()
+    }
+
+    // Выход из аккаунта пользователя
+    suspend fun logout() {
+        _menuRepository.logout()
     }
 
     // Запрос разрешений
