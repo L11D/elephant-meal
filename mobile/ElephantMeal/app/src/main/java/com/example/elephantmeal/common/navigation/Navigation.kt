@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.elephantmeal.cheat_meal_screen.CheatMealScreen
+import com.example.elephantmeal.confirm_screen.presentation.ConfirmScreen
 import com.example.elephantmeal.login_screen.presentation.LoginScreen
 import com.example.elephantmeal.menu_screen.presentation.MenuWithCamera
 import com.example.elephantmeal.plan_choose_screen.presentation.PlanChooseScreen
@@ -26,9 +27,10 @@ fun ElephantMealNavigation(
 ) {
     NavHost(
         navController = navController,
+        startDestination = Screen.WelcomeScreen.name
        // startDestination = Screen.ProductsBanScreen.name
        // startDestination = "${Screen.TodayScreen.name}/false"
-        startDestination = Screen.WelcomeScreen.name
+        //startDestination = Screen.ConfirmScreen.name
     ) {
         // Приветственный экран
         composable(Screen.WelcomeScreen.name) {
@@ -39,6 +41,19 @@ fun ElephantMealNavigation(
 
                 onLoginButtonClick = {
                     navController.navigate(Screen.LoginScreen.name)
+                }
+            )
+        }
+
+        // Экран подтверждения регистрации
+        composable(Screen.ConfirmScreen.name) {
+            ConfirmScreen(
+                onConfirm = {
+                    navController.navigate(Screen.LoginScreen.name) {
+                        popUpTo(Screen.ConfirmScreen.name) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
@@ -189,7 +204,7 @@ fun ElephantMealNavigation(
                 },
 
                 onRegistered = {
-                    navController.navigate(Screen.PlanningScreen.name) {
+                    navController.navigate(Screen.ConfirmScreen.name) {
                         popUpTo(Screen.WelcomeScreen.name) {
                             inclusive = true
                         }
