@@ -353,6 +353,8 @@ class PlanService:
                     db.add(dish_product)
             db.commit()
 
+            self.organize_meal_times(plan.id, dishes, db)
+
 
             #cheat_calories = итоговая калорийность чит мила * 4
             #ВЫЧИСЛЕНИЯ!!!!
@@ -408,4 +410,35 @@ class PlanService:
         optimal_recipes.sort(key=lambda x: x['recipe_score'], reverse=True)
 
         return optimal_recipes
+
+    def organize_meal_times(self, plan_id, dishes, db: Session):
+        # Примерное распределение времени приема пищи
+        meal_times = [
+            ("08:00:00", 0.25),  # Завтрак
+            ("12:00:00", 0.35),  # Обед
+            ("18:00:00", 0.25),  # Ужин
+            ("10:00:00", 0.15),  # Перекус
+        ]
+
+        current_meal = 0
+
+        for dish_id in dishes:
+            # Выбираем время приема пищи и долю для текущего блюда
+            meal_time, part_of_dish = meal_times[current_meal]
+
+            # Создаем запись в таблице DishInPlan с указанием времени приема пищи и доли блюда
+            dish_in_plan = DishInPlan(
+                dish_id=dish_id,
+                plan_id=plan_id,
+                part_of_dish=part_of_dish,
+                meal_time=datetime.strptime(meal_time, '%H:%M:%S').time()
+            )
+
+            db.add(dish_in_plan)
+            db.flush()
+
+            # Переходим к следующему времени приема пищи (циклически)
+            current_meal = (current_meal + 1) % len(meal_times)
+
+        db.commit()
 
