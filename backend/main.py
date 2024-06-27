@@ -6,6 +6,7 @@ import uvicorn
 
 from sqlalchemy import create_engine, text, Table, Column, Integer, String, MetaData
 
+from backend.DishService.routers.plan_router import plan_router
 from backend.Domain.domain_init import init_db
 from backend.UserService.routers.test_router import test_router
 
@@ -19,6 +20,7 @@ router = APIRouter(prefix="/api/v1")
 
 router.include_router(user_router)
 router.include_router(test_router)
+router.include_router(plan_router)
 
 app = FastAPI()
 app.include_router(router)

@@ -26,3 +26,5 @@ class StoreAssortment(Base):
     description = Column(String, nullable=True)
     composition = Column(String, nullable=True)
     image_id = Column(UUID(as_uuid=True), nullable=True)
+
+

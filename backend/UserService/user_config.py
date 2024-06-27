@@ -203,5 +203,6 @@ TEST_MESSAGE['Subject'] = 'Test message'
 
 SWAGGER_GROUPS = {
     "test": "Test",
-    "user": "User"
+    "user": "User",
+    "plan": "Plan"
 }

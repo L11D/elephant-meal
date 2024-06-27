@@ -66,6 +66,8 @@ async def create_plan(
 
         necessary_elements = await plan_service.get_necessary_elements(final_user, plan_dto)
 
+        await plan_service.make_plan(db, final_user, plan_dto, necessary_elements)
+
         return MessageDTO(message="OK")
     except HTTPException:
         raise

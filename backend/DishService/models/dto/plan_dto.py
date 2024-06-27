@@ -12,7 +12,7 @@ from backend.Domain.models.enum.type_plan import TypePlan
 class PlanDTO(BaseModel):
     like_products: list[UUID] = None
     dislike_products: list[UUID] = None
-    days: list[DaysWeek]
+    days: list[DaysWeek] = None
     cheatmeal_calories: float
     plann_type: TypePlan
     activity_type: ActivityType
