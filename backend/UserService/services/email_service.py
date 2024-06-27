@@ -32,7 +32,7 @@ class EmailService:
         try:
             self.smtpObj.starttls()
             self.smtpObj.login(EMAIL_LOGIN, EMAIL_PASSWORD)
-            S = f"http://{DB_HOST}/api/v1/user/verify/"
+            S = f"http://93.183.70.168:8000/api/v1/user/verify/"
             #S = f"http://localhost:8000/api/v1/user/verify/"
             msg = MIMEText(f'<a href={S + code}>Click to verify</a>', 'html')
             msg['From'] = EMAIL_LOGIN
