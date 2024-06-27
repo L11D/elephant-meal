@@ -4,5 +4,5 @@ sqlalchemy
 psycopg2-binary
 uvicorn
 alembic
-jwt
+PyJWT
 requests
